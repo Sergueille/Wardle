@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Protocard</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="panels.js" defer="defer"></script>
+    <script src="index.js" defer="defer"></script>
+  </head>
+  <body>
+    <!-- Connection menu -->
+    <div class="panel" id="start-panel">
+      <p class="protocard-logo">Wardle :)</p>
+
+      <div class="flex-col">
+        
+        <button id="create-room-btn">
+          Create a room
+        </button>
+        <span class="sep-text">or</span>
+        
+        <div class="flex-row">
+          <input id="join-room-code" placeholder="Enter room code"> <span class="text-margins">and</span>
+          
+          <button id="join-room-btn">
+            Join a room
+          </button>
+        </div>
+
+        <div id="join-error" class="room-join-error hidden">
+          Couldn't join room. Make sure the code is correct.
+        </div>
+
+        <div id="create-error" class="room-join-error hidden">
+          Couldn't create room. The server must have some serious problems.
+        </div>
+      </div>
+    </div>
+
+    <!-- Waiting menu -->
+    <div class="panel" id="wait-panel">
+      <span class="room-code-label">Here's your room code:</span>
+      <span id="room-code"></span>
+      <span class="room-code-clipboard-hint">It has already been put in your clipboard!</span>
+      <span class="waiting-player-hint">Waiting for another player to join...</span>
+    </div>
+
+
+    <!-- Game screen -->
+    <div class="panel" id="game-panel">
+      TODO: implement the game (which I've lost)
+    </div>
+  </body>
+</html>

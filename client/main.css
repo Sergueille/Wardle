@@ -1,0 +1,156 @@
+
+
+* {
+    --bg: #222;
+    --bg-l: #2a2a2a;
+    --bg-ll: #333;
+
+    --prim: #b42a2a;
+
+    --txt: #fff;
+    --txt-d: #ccc;
+
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    color: var(--txt);
+}
+
+body, .panel {
+    background-color: var(--bg);
+}
+
+.panel {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+
+    z-index: -10;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel.hidden {
+    display: none;
+}
+
+
+*::selection {
+    background-color: var(--prim);
+}
+
+button, input {
+    font-family: cascadia;
+    background-color: var(--bg-ll);
+    border: 0;
+    color: white;
+    padding: 6px 15px;
+    font-size: 1.3rem;
+    cursor: pointer;
+
+    transition: 200ms;
+}
+
+*:focus-visible {
+    outline: 4px solid var(--prim);
+    border-radius: 3px;
+    border: none;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+button.connecting {
+    opacity: 0.5;
+    color: transparent;
+    position: relative;
+}
+
+button.connecting::after {
+    content: "Connecting...";
+    color: var(--txt-d);
+    display: block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 50%;
+    transform: translate(0, -50%);
+    text-align: center;
+    line-height: 100%;
+}
+
+
+.sep-text {
+    position: relative;
+    display: block;
+    margin: 20px;
+    color: var(--txt-d);
+    text-align: center;
+    background-color: var(--bg);
+    padding: 0 10px;
+}
+
+.sep-text::before {
+    content: " ";
+    display: block;
+    width: 400px;
+    height: 2px;
+    background-color: var(--txt-d);
+    position: absolute;
+    top: calc(50% - 1px);
+    left: calc(-200px + 50%);
+    z-index: -5;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-margins {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+#room-code {
+    margin: 10px;
+    font-size: 4rem;
+    font-family: monospace;
+}
+
+.room-code-clipboard-hint {
+    color: var(--txt-d);
+    font-style: italic;
+}
+
+.waiting-player-hint {
+    color: var(--txt-d);
+    margin-top: 30px;
+    font-size: 1.5rem;
+}
+
+.room-join-error {
+    color: #e24e4e;
+    margin-top: 40px;
+}
+
+.room-join-error.hidden {
+    display: none;
+}
