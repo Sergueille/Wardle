@@ -8,6 +8,12 @@ use actix_web::web;
 use futures_util::TryStreamExt;
 use std::sync::{Arc, Mutex};
 
+const PLAYER_CONNECTION_LOOP_INTERVAL: u64 = 100; // ms
+
+/// Maximum duration before a player is disconnected it they sent no pings
+const PLAYER_SILENCE_MAX_DURATION: u64 = 5000; // ms
+
+
 pub fn create_message_text<T>(message_type: &str, message_contents: &T) -> String where T : serde::Serialize {
     let serialized_contents = serde_json::to_string(message_contents).unwrap();
     format!("{{\"type\":\"{}\",\"content\":{}}}", message_type, serialized_contents)
@@ -36,33 +42,54 @@ pub fn start_websocket(req: actix_web::HttpRequest, stream: web::Payload)
     Ok((res, crate::SocketConnection { session, stream }))
 }
 
-
 pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: bool, mut connection: crate::SocketConnection) -> Result<(), actix_ws::Closed> {
     let cloned_arc = Arc::clone(&room);
 
-    // Send messages
+    // Connection loop (send messages, check for pings...)
     actix_web::rt::spawn(async move { loop {
-        let mut messages = Vec::new();
-        
-        { // Get the list of messages to send
+        let mut messages_to_send = Vec::new();
+
+        { // Block where the room is locked
             let mut room_ref = cloned_arc.lock().unwrap();
-            std::mem::swap(&mut messages, &mut room_ref.get_player(host_player).messages_to_send);
+            let player = room_ref.get_player(host_player);
+            
+            if !player.connection_alive { // End loop if disconnected
+                break;
+            }
+
+            if std::time::Instant::now().duration_since(player.last_ping_time).as_millis() > PLAYER_SILENCE_MAX_DURATION as u128 { // Disconnect if no pings
+                player.connection_alive = false;
+                break;
+            }
+
+            // Get the list of messages to send from the room
+            std::mem::swap(&mut messages_to_send, &mut room_ref.get_player(host_player).messages_to_send);
         }
 
-        for m in messages {
+        // Send the messages
+        for m in messages_to_send {
             let sent_res = connection.session.text(m.clone()).await;
-            if sent_res.is_err() { break } // Stop if connection closed
+            if sent_res.is_err() {
+                cloned_arc.lock().unwrap().get_player(host_player).connection_alive = false;
+                break; // Stop if connection closed
+            }
         }
-        
-        actix_web::rt::time::sleep(std::time::Duration::from_millis(100)).await;
+
+        actix_web::rt::time::sleep(std::time::Duration::from_millis(PLAYER_CONNECTION_LOOP_INTERVAL)).await;
     }});
 
     let room_ref = Arc::clone(&room);
 
     // Listen for messages
     actix_web::rt::spawn(async move { loop {
+        if !room_ref.lock().unwrap().get_player(host_player).connection_alive {
+            break; // End loop if disconnected
+        }
+
         match connection.stream.try_next().await {
             Ok(Some(actix_ws::AggregatedMessage::Text(text))) => {
+                room.lock().unwrap().get_player(host_player).last_ping_time = std::time::Instant::now();
+
                 match handle_one_message_internal(Arc::clone(&room_ref), &text) {
                     Ok(()) => {},
                     Err(msg) => { log::error!("{}", msg); }
@@ -72,6 +99,7 @@ pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: 
                 // TODO
             },
             _ => {
+                room.lock().unwrap().get_player(host_player).connection_alive = false;
                 break;
             }
         }
@@ -86,7 +114,7 @@ fn handle_one_message_internal(room: Arc<Mutex<RoomState>>, text: &str) -> Resul
             let msg_type = crate::util::get_json_str(&o, "type")?;
             let msg_content = crate::util::get_json_obj(&o, "content")?;
 
-            game::handle_one_message(room, msg_type, msg_content)
+            game::handle_one_message(&mut room.lock().unwrap(), msg_type, msg_content)
         },
         _ => {
             Err(format!("Websocket message is not an object"))
@@ -95,3 +123,11 @@ fn handle_one_message_internal(room: Arc<Mutex<RoomState>>, text: &str) -> Resul
 
 }
 
+pub fn remove_empty_rooms(rooms: &mut std::collections::HashMap<String, Arc<Mutex<RoomState>>>) {
+    rooms.retain(|_, room| {
+        let room_ref = room.lock().unwrap();
+
+        // Room is still alive is at least one player have a valid connection
+        room_ref.host_player.connection_alive || (room_ref.other_player.is_some() && room_ref.other_player.as_ref().unwrap().connection_alive)
+    });
+}
