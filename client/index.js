@@ -4,6 +4,8 @@ const API_URL = "localhost:4268";
 const LOAD_DELAY = 700; //ms
 const TEMPORARY_INFO_DELAY = 10000; //ms
 
+const PING_SEND_DELAY = 1000; //ms
+
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom())
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom())
 
@@ -13,7 +15,8 @@ ShowPanel("start-panel");
 function GetInitialGameState() {
     return {
         websocket_connection: null,
-        room_code: undefined
+        room_code: undefined,
+        ping_loop_handle: undefined,
     };
 }
 
@@ -35,6 +38,7 @@ function JoinRoom()
 
         connection.addEventListener("message", ev => HandleConnectionMessage(state, ev.data));
         connection.addEventListener("open", ev => {
+            StartPingLoop(state);
             OnGameStart(state);
         });
         connection.addEventListener("error", ev => {
@@ -54,6 +58,9 @@ function CreateRoom()
     document.getElementById("create-room-btn").classList.add("connecting");
 
     connection.addEventListener("message", ev => HandleConnectionMessage(state, ev.data));
+    connection.addEventListener("open", ev => {
+        StartPingLoop(state);
+    });
     connection.addEventListener("error", ev => {
         document.getElementById("create-room-btn").classList.remove("connecting");
         document.getElementById("create-error").classList.remove("hidden");
@@ -80,7 +87,14 @@ function TrySendMessage(state, msgType, msgContent) {
     }
 }
 
+function StartPingLoop(state) {
+    state.ping_loop_handle = setInterval((() => {
+        TrySendMessage(state, "ping", {});
+    }), PING_SEND_DELAY);
+}
+
 function HandleConnectionMessage(state, msgText) {
+    console.log("Test");
     let msg;
     try {
         msg = JSON.parse(msgText);

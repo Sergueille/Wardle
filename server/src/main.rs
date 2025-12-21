@@ -28,7 +28,9 @@ struct SocketConnection {
 /// Think we know about a player in a game
 struct Player {
     player_info: Option<PlayerInfo>, // None if not sent by the player yet
-    messages_to_send: Vec<String>
+    messages_to_send: Vec<String>,
+    connection_alive: bool,
+    last_ping_time: std::time::Instant,
 }
 
 struct RoomState {
@@ -46,6 +48,9 @@ type ProtectedAppState = std::sync::LazyLock<Arc<AppState>>;
 
 #[actix_web::get("/create-room")]
 async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: web::Data<&ProtectedAppState>) -> impl actix_web::Responder {
+    // Before creating a new room, check if some rooms can be deleted
+    server_internal::remove_empty_rooms(&mut data.rooms.lock().unwrap());
+
     let code = util::create_random_code();
 
     let test_info = PlayerInfo { name: String::from("John client 1") };
@@ -56,19 +61,20 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
         host_player: Player {
             player_info: Some(test_info),
             messages_to_send: Vec::new(),
+            connection_alive: true,
+            last_ping_time: std::time::Instant::now(),
         },
         other_player: None,
         join_code: code.clone()
     };
 
-    println!("Room creation request: {}", new_room.join_code);
+    println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, data.rooms.lock().unwrap().len() + 1);
 
     let room_in_arc = Arc::new(Mutex::new(new_room));
 
     data.rooms.lock().unwrap().insert(code.clone(), Arc::clone(&room_in_arc));
     
     let (response, connection) = server_internal::start_websocket(req, stream)?;
-    game::start_room_loop(Arc::clone(&room_in_arc));
     server_internal::handle_player_connection(Arc::clone(&room_in_arc), true, connection).await.unwrap();
     server_internal::send_message(&mut room_in_arc.lock().unwrap().host_player, "room-code", &code);
 
@@ -95,7 +101,9 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
         let test_info = PlayerInfo { name: String::from("John client 2") };
         let player = Player { 
             player_info: Some(test_info), 
-            messages_to_send: Vec::new()
+            messages_to_send: Vec::new(),
+            connection_alive: true,
+            last_ping_time: std::time::Instant::now(),
         };
 
         room.lock().unwrap().other_player = Some(player); // Add player to room
