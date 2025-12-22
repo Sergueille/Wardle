@@ -1,8 +1,9 @@
 
 const HINT_REVEAL_ANIMATION_DURATION = 100; // ms
+const MULTIPLE_LETTERS_ANIMATION_DELAY = 40; // ms
 
 
-function PopulateWordGrids(nbColumn, nbRow) {
+function PopulateWordGrids(nbColumn, nbRow, onSabotage) {
     let left = document.getElementById("left-grid");
     let right = document.getElementById("right-grid");
 
@@ -27,6 +28,10 @@ function PopulateWordGrids(nbColumn, nbRow) {
                 [left, right][i].appendChild(container);
                 container.appendChild(el);
                 el.appendChild(label);
+
+                el.addEventListener("mouseup", () => {
+                    onSabotage(x, y);
+                })
             }
         }
     }
@@ -85,19 +90,43 @@ function SetHint(isLeftGrid, x, y, hintColor) {
     }, HINT_REVEAL_ANIMATION_DURATION)
 }
 
+function SetWord(isLeftGrid, y, word) {
+    let setLetter = i => {
+        if (i == WORD_LENGTH) { return; }
+        SetLetter(isLeftGrid, i, y, word[i]);
+
+        setTimeout(() => setLetter(i+1), MULTIPLE_LETTERS_ANIMATION_DELAY)
+    }
+
+    setLetter(0);
+}
+
+function SetHints(isLeftGrid, y, hints) {
+    let setHint = i => {
+        if (i == WORD_LENGTH) { return; }
+        SetHint(isLeftGrid, i, y, hints[i]);
+
+        setTimeout(() => setHint(i+1), MULTIPLE_LETTERS_ANIMATION_DELAY)
+    }
+
+    setHint(0);
+}
 function SetLeftGridActive() {
     document.getElementById("left-grid").classList.remove("inactive");
     document.getElementById("right-grid").classList.add("inactive");
+    document.getElementById("right-grid").classList.remove("sabotage");
 }
 
-function SetRightGridActive() {
+function SetRightGridSabotageTarget() {
     document.getElementById("left-grid").classList.add("inactive");
     document.getElementById("right-grid").classList.remove("inactive");
+    document.getElementById("right-grid").classList.add("sabotage");
 }
 
 function SetBothGridInactive() {
     document.getElementById("left-grid").classList.add("inactive");
     document.getElementById("right-grid").classList.add("inactive");
+    document.getElementById("right-grid").classList.remove("sabotage");
 }
 
 function GetCell(isLeftGrid, x, y) {

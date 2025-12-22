@@ -4,14 +4,29 @@
 mod util;
 mod game;
 mod server_internal;
+mod hints;
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use actix_web::HttpResponse;
 use actix_web::web;
 
+use crate::game::MAX_WORD_COUNT;
+
+#[derive(PartialEq, Eq)]
+enum GamePhase {
+    Typing, Sabotaging,
+}
+
+#[derive(PartialEq, Eq)]
+enum HintType {
+    Green, Yellow, Red, Gray, None
+}
+
 struct GameState {
-    // TODO
+    word_to_guess: String,
+    current_turn: i64,
+    current_phase: GamePhase
 }
 
 /// Settings for a player (thins that the player has configured)
@@ -31,6 +46,9 @@ struct Player {
     messages_to_send: Vec<String>,
     connection_alive: bool,
     last_ping_time: std::time::Instant,
+    typed_word_this_turn: Option<String>,
+    letter_sabotaged_this_turn: Option<u64>,
+    past_words: Vec<String>,
 }
 
 struct RoomState {
@@ -38,6 +56,7 @@ struct RoomState {
     host_player: Player,
     other_player: Option<Player>,
     join_code: String,
+    game_started: bool,
 }
 
 struct AppState {
@@ -55,17 +74,11 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
 
     let test_info = PlayerInfo { name: String::from("John client 1") };
     let new_room = RoomState {
-        game_state: GameState { 
-
-        },
-        host_player: Player {
-            player_info: Some(test_info),
-            messages_to_send: Vec::new(),
-            connection_alive: true,
-            last_ping_time: std::time::Instant::now(),
-        },
+        game_state: game::get_initial_game_state(),
+        host_player: Player::new(Some(test_info)),
         other_player: None,
-        join_code: code.clone()
+        join_code: code.clone(),
+        game_started: false,
     };
 
     println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, data.rooms.lock().unwrap().len() + 1);
@@ -99,16 +112,13 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
         let (response, connection) = server_internal::start_websocket(req, stream)?;
 
         let test_info = PlayerInfo { name: String::from("John client 2") };
-        let player = Player { 
-            player_info: Some(test_info), 
-            messages_to_send: Vec::new(),
-            connection_alive: true,
-            last_ping_time: std::time::Instant::now(),
-        };
-
+        let player = Player::new(Some(test_info));
         room.lock().unwrap().other_player = Some(player); // Add player to room
         server_internal::handle_player_connection(Arc::clone(room), false, connection).await.unwrap(); // Start handling connection
         server_internal::send_message(&mut room.lock().unwrap().host_player, "other-player-connected", &()); // Tell the other player
+        
+        room.lock().unwrap().game_started = true; // Start the game
+        game::game_start(&mut room.lock().unwrap());
 
         Ok::<HttpResponse, actix_web::Error>(response)
     }
@@ -144,6 +154,25 @@ impl RoomState {
         }
         else {
             self.other_player.as_mut().unwrap()
+        }
+    }
+
+    pub fn do_for_all_players(&mut self, f: &dyn Fn(&mut Player, &mut Player) -> ()) {
+        f(&mut self.host_player, self.other_player.as_mut().unwrap());
+        f(self.other_player.as_mut().unwrap(), &mut self.host_player);
+    }
+}
+
+impl Player {
+    pub fn new(info: Option<PlayerInfo>) -> Player {
+        Player { 
+            player_info: info, 
+            messages_to_send: Vec::new(),
+            connection_alive: true,
+            last_ping_time: std::time::Instant::now(),
+            past_words: Vec::with_capacity(MAX_WORD_COUNT as usize),
+            typed_word_this_turn: None,
+            letter_sabotaged_this_turn: None,
         }
     }
 }

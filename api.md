@@ -43,10 +43,20 @@ Indique que l'autre joueur est connecté.
 
 ### `other-player-word`
 
-Mot qu'a écrit l'autre joueur.
+Mot qu'a écrit l'autre joueur. Signale qu'il faut passer à la phase de sabotage.
 
 ```json
 <string> // Le mot
+```
+
+### `word-hints`
+
+Indices pour le dernier mot du joueur. Signale qu'il faut passer au tour suivant.
+
+```json
+[
+    <green|yellow|red|gray> // Indice pour chaque letter
+]
 ```
 
 
@@ -61,5 +71,17 @@ Mot qu'a écrit l'autre joueur.
 Le joueur a entré un nouveau mot
 
 ```json
-<string> // Le mot en question
+{
+    "word": <string>
+}
+```
+
+### `sabotage`
+
+Le joueur a saboté une lettre
+
+```json
+{
+    "id": <string> // Indice de la letter sabotée
+}
 ```

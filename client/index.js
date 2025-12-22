@@ -12,7 +12,8 @@ const MAX_WORD_COUNT = 6;
 const HINT_GREEN = 0;
 const HINT_YELLOW = 1;
 const HINT_RED = 2;
-const HINT_NONE = 3;
+const HINT_GRAY = 3;
+const HINT_NONE = 4;
 
 const PHASE_TYPE = 0;
 const PHASE_TYPE_WAIT = 1;
@@ -87,7 +88,7 @@ function JoinRoom()
         ResetGlobalState();
         state.websocket_connection = connection;
 
-        connection.addEventListener("message", ev => HandleConnectionMessage(state, ev.data));
+        connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
         connection.addEventListener("open", ev => {
             StartPingLoop(state);
             OnGameStart(state);
@@ -95,6 +96,7 @@ function JoinRoom()
         connection.addEventListener("error", ev => {
             document.getElementById("join-room-btn").classList.remove("connecting");
             document.getElementById("join-error").classList.remove("hidden");
+            console.log("Disconnected!");
         });
     }
 }
@@ -112,6 +114,7 @@ function CreateRoom() {
         StartPingLoop();
     });
     connection.addEventListener("error", ev => {
+        console.log("Disconnected!");
         document.getElementById("create-room-btn").classList.remove("connecting");
         document.getElementById("create-error").classList.remove("hidden");
     });
@@ -120,31 +123,39 @@ function CreateRoom() {
 // Called once the game can properly start (both players connected)
 function OnGameStart() {
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
-    PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT);
+    PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
     ShowPanel("game-panel");
     state.gameStarted = true;
 
-    StartTypePhase();
+    StartNextTurn();
 }
 
-function StartTypePhase() {
-    SetGameHint("game-hint-enter-word")
+function StartNextTurn() {
+    SetGameHint("game-hint-enter-word");
     state.currentTurn += 1;
     state.currentPhase = PHASE_TYPE;
-    typedWord = "";
+    state.typedWord = "";
     SetLeftGridActive();
 }
 
 function StartTypeWaitPhase() {
-    SetGameHint("game-hint-wait")
+    SetGameHint("game-hint-wait");
     state.currentPhase = PHASE_TYPE_WAIT;
     SetBothGridInactive();
 }
 
 function StartSabotagePhase() {
     state.currentPhase = PHASE_SABOTAGE;
-    SetRightGridActive();
+    SetRightGridSabotageTarget();
+    SetGameHint("game-hint-sabotage");
 }
+
+function StartSabotageWaitPhase() {
+    SetGameHint("game-hint-wait");
+    state.currentPhase = PHASE_SABOTAGE_WAIT;
+    SetBothGridInactive();
+}
+
 
 function OnLetterTyped(letter) {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length < WORD_LENGTH) {
@@ -156,8 +167,8 @@ function OnLetterTyped(letter) {
 
 function OnEnter() {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length == WORD_LENGTH) {
-        TrySendMessage("word", state.typedWord);
-        playerWords.push(state.typedWord);
+        TrySendMessage("word", { word: state.typedWord });
+        state.playerWords.push(state.typedWord);
         StartTypeWaitPhase();
     }
 }
@@ -166,6 +177,14 @@ function OnBackspace() {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length > 0) {
         state.typedWord = state.typedWord.slice(0, -1);
         RemoveLetter(true, state.typedWord.length, state.currentTurn);
+    }
+}
+
+function OnSabotageLetter(x, y) {
+    if (state.currentPhase == PHASE_SABOTAGE && y == state.currentTurn) {
+        SetHint(false, x, y, HINT_RED);
+        TrySendMessage("sabotage", { id: x });
+        StartSabotageWaitPhase();
     }
 }
 
@@ -194,7 +213,8 @@ function HandleConnectionMessage(msgText) {
         msg = JSON.parse(msgText);
     }
     catch {
-        console.error("Invalid JSON format for websocket message:" + msgText)
+        console.error("Invalid JSON format for websocket message:");
+        console.error(msgText);
     }
 
     if (msg.type == "room-code") {
@@ -207,7 +227,13 @@ function HandleConnectionMessage(msgText) {
         OnGameStart();
     }
     else if (msg.type == "other-player-word") {
-        // TODO
+        SetWord(false, state.currentTurn, msg.content);
+        state.enemyWords.push(msg.content);
+        StartSabotagePhase();
+    }
+    else if (msg.type == "word-hints") {
+        SetHints(true, state.currentTurn, msg.content.map(txt => HintTextToId(txt)));
+        StartNextTurn();
     }
     else {
         console.error("Unknown message type: " + msg.type);
@@ -226,6 +252,14 @@ function SetGameHint(hintId) {
             element.classList.add("hidden")
         }
     }
+}
+
+function HintTextToId(hintText) {
+    if (hintText == "green") { return HINT_GREEN }
+    if (hintText == "gray") { return HINT_GRAY }
+    if (hintText == "red") { return HINT_RED }
+    if (hintText == "yellow") { return HINT_YELLOW }
+    if (hintText == "none") { return HINT_NONE }
 }
 
 

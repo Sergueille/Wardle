@@ -90,12 +90,12 @@ pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: 
             Ok(Some(actix_ws::AggregatedMessage::Text(text))) => {
                 room.lock().unwrap().get_player(host_player).last_ping_time = std::time::Instant::now();
 
-                match handle_one_message_internal(Arc::clone(&room_ref), &text) {
+                match handle_one_message_internal(Arc::clone(&room_ref), &text, host_player) {
                     Ok(()) => {},
                     Err(msg) => { log::error!("{}", msg); }
                 }
             },
-            Ok(Some(actix_ws::AggregatedMessage::Ping(msg))) => {
+            Ok(Some(actix_ws::AggregatedMessage::Ping(_))) => {
                 // TODO
             },
             _ => {
@@ -108,13 +108,13 @@ pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: 
     Ok(())
 }
 
-fn handle_one_message_internal(room: Arc<Mutex<RoomState>>, text: &str) -> Result<(), String> {
+fn handle_one_message_internal(room: Arc<Mutex<RoomState>>, text: &str, is_host: bool) -> Result<(), String> {
     match serde_json::de::from_str::<serde_json::Value>(text).map_err(|err| err.to_string())? {
         serde_json::Value::Object(o) => {
             let msg_type = crate::util::get_json_str(&o, "type")?;
             let msg_content = crate::util::get_json_obj(&o, "content")?;
 
-            game::handle_one_message(&mut room.lock().unwrap(), msg_type, msg_content)
+            game::handle_one_message(&mut room.lock().unwrap(), msg_type, msg_content, is_host)
         },
         _ => {
             Err(format!("Websocket message is not an object"))

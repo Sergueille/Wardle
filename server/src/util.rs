@@ -57,21 +57,21 @@ pub fn create_random_code() -> String {
 pub fn get_json_obj<'a>(o: &'a serde_json::Map<String, serde_json::Value>, field: &str) -> Result<&'a serde_json::Map<String, serde_json::Value>, String> {
     match o.get(field).ok_or("No type field")? {
         serde_json::Value::Object(map) => Ok(map),
-        _ => Err(String::from("Wrong type"))
+        _ => Err(format!("Wrong type, expected object for field {}", field))
     }
 }
 
 pub fn get_json_str<'a>(o: &'a serde_json::Map<String, serde_json::Value>, field: &str) -> Result<&'a str, String> {
     match o.get(field).ok_or("No type field")? {
         serde_json::Value::String(s) => Ok(s),
-        _ => Err(String::from("Wrong type"))
+        _ => Err(format!("Wrong type, expected string for field {}", field))
     }
 }
 
 pub fn get_json_arr<'a>(o: &'a serde_json::Map<String, serde_json::Value>, field: &str) -> Result<&'a Vec<serde_json::Value>, String> {
     match o.get(field).ok_or("No type field")? {
         serde_json::Value::Array(vec) => Ok(vec),
-        _ => Err(String::from("Wrong type"))
+        _ => Err(format!("Wrong type, expected array for field {}", field))
     }
 }
 
@@ -79,6 +79,6 @@ pub fn get_json_arr<'a>(o: &'a serde_json::Map<String, serde_json::Value>, field
 pub fn get_json_number<'a>(o: &'a serde_json::Map<String, serde_json::Value>, field: &str) -> Result<&'a serde_json::Number, String> {
     match o.get(field).ok_or("No type field")? {
         serde_json::Value::Number(n) => Ok(n),
-        _ => Err(String::from("Wrong type"))
+        _ => Err(format!("Wrong type, expected number for field {}", field))
     }
 }
