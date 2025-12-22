@@ -5,6 +5,8 @@
     <title>Wardle</title>
     <link rel="stylesheet" href="main.css">
     <script src="panels.js" defer="defer"></script>
+    <script src="grid.js" defer="defer"></script>
+    <script src="keyboard.js" defer="defer"></script>
     <script src="index.js" defer="defer"></script>
   </head>
   <body>
@@ -48,7 +50,22 @@
 
     <!-- Game screen -->
     <div class="panel" id="game-panel">
-      TODO: implement the game (which I've lost)
+      <div id="game-hint">
+        <div id="game-hint-enter-word">Enter a word</div>
+        <div id="game-hint-wait">Wait for the other player...</div>
+        <div id="game-hint-sabotage">Sabotage a letter</div>
+      </div>
+      <div class="flex-row">
+        <div class="word-grid" id="left-grid">
+
+        </div>
+        <div class="word-grid" id="right-grid">
+          
+        </div>
+      </div>
+      <div id="keyboard">
+        <!-- Populated by PopulateKeyboard() -->
+      </div>
     </div>
   </body>
 </html>

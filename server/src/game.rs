@@ -12,6 +12,12 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
         "ping" => {
             Ok(()) // Nothing to do
         },
+        "word" => {
+
+            // TODO
+
+            Ok(())
+        },
         _ => {
             return Err(format!("Unknown message type {}", msg_type));
         }

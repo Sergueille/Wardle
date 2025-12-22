@@ -4,8 +4,13 @@
     --bg: #222;
     --bg-l: #2a2a2a;
     --bg-ll: #333;
+    --bg-lll: #444;
 
     --prim: #b42a2a;
+
+    --hint-green: #538d4e;
+    --hint-yellow: #b59f3b;
+    --hint-red: #b42a2a;
 
     --txt: #fff;
     --txt-d: #ccc;
@@ -153,4 +158,160 @@ button.connecting::after {
 
 .room-join-error.hidden {
     display: none;
+}
+
+#game-hint {
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+#game-hint .hidden {
+    display: none;
+}
+
+/* WORD GRID */
+
+.word-grid {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    gap: 5px;
+    margin: 50px;
+
+    transition: 200ms;
+}
+
+.word-grid.inactive {
+    opacity: 0.7;
+}
+
+.word-grid-cell-container {
+    width: 70%;
+    height: 70px;
+}
+
+.word-grid-cell {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.word-grid-cell.empty {
+    border: 2px solid var(--bg-ll);
+}
+
+.word-grid-cell.typed-unchecked {
+    border: 2px solid var(--bg-lll);
+}
+
+.word-grid-cell.hint-green {
+    background-color: var(--hint-green);
+}
+
+.word-grid-cell.hint-yellow {
+    background-color: var(--hint-yellow);
+}
+
+.word-grid-cell.hint-red {
+    background-color: var(--hint-red);
+}
+
+.word-grid-cell.hint-none {
+    background-color: var(--bg-ll);
+}
+
+.word-grid-label {
+    font-size: 2rem;
+}
+
+.word-grid-cell.animate-type {
+    animation: word-grid-type 100ms ease 0s 1 forwards;
+}
+.word-grid-cell.animate-hint {
+    animation: word-grid-hint 200ms ease 0s 1 forwards;
+}
+
+@keyframes word-grid-type {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes word-grid-hint {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0, 1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* KEYBOARD */
+
+#keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: 7px;
+    width: 550px;
+}
+
+.keyboard-line {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: stretch;
+    height: 60px;
+    gap: 7px;
+}
+
+.keyboard-letter, .keyboard-enter, .keyboard-backspace {
+    background-color: var(--bg-ll);
+    width: 1px;
+    flex-grow: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.keyboard-enter, .keyboard-backspace {
+    flex-grow: 1.5;
+}
+
+.keyboard-void {
+    width: 1px;
+    flex-grow: 0.3;
+}
+
+.keyboard-letter > span {
+    font-size: 1.6rem;
+}
+
+.keyboard-enter > span{
+    font-size: 1.2rem;
+}
+
+.keyboard-backspace > span {
+    font-size: 0.8rem;
+}
+
+.keyboard-letter:hover, .keyboard-enter:hover, .keyboard-backspace:hover {
+    filter: brightness(1.2);
+}
+
+.keyboard-letter > span, .keyboard-enter > span, .keyboard-backspace > span {
+    pointer-events: none;
+    user-select: none;
 }
