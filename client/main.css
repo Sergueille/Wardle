@@ -12,6 +12,8 @@
     --hint-yellow: #b59f3b;
     --hint-red: #b42a2a;
 
+    --sabotage-clickable: #b64343;
+
     --txt: #fff;
     --txt-d: #ccc;
 
@@ -181,7 +183,15 @@ button.connecting::after {
 }
 
 .word-grid.inactive {
-    opacity: 0.7;
+    opacity: 0.6;
+}
+
+.word-grid.sabotage .word-grid-cell.typed-unchecked {
+    border-color: var(--hint-red);
+    transition: 150ms;
+}
+.word-grid.sabotage .word-grid-cell.typed-unchecked:hover {
+    border-width: 6px;
 }
 
 .word-grid-cell-container {
@@ -223,6 +233,8 @@ button.connecting::after {
 
 .word-grid-label {
     font-size: 2rem;
+    pointer-events: none;
+    user-select: none;
 }
 
 .word-grid-cell.animate-type {
