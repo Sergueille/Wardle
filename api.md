@@ -41,10 +41,25 @@ Indique que l'autre joueur est connecté.
 
 *Pas de contenu*
 
+### `other-player-word`
+
+Mot qu'a écrit l'autre joueur.
+
+```json
+<string> // Le mot
+```
+
+
 ## Clint vers serveur
 
 ### `ping`
 
 *Pas de contenu*
 
+### `word`
 
+Le joueur a entré un nouveau mot
+
+```json
+<string> // Le mot en question
+```
