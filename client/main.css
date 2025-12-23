@@ -68,6 +68,26 @@ button, input {
     transition: 200ms;
 }
 
+input[type='radio'] {
+    display: none;
+    cursor: pointer;
+}
+label{
+    height: 100%;
+    display: block;
+    background: white;
+    border: 2px solid hsla(150, 75%, 50%, 1);
+    border-radius: 20px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    position: relative;
+}
+
+input[type="radio"]:checked + label {
+  background: wheat;
+}
+
 *:focus-visible {
     outline: 4px solid var(--prim);
     border-radius: 3px;
