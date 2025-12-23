@@ -1,6 +1,5 @@
 [package]
-name = "protocard-server"
-version = "0.1.0"
+name = "wardle-server"
 edition = "2024"
 
 [dependencies]
