@@ -437,7 +437,7 @@ button.connecting::after {
 
 @font-face {
     font-family: cascadia;
-    src: url(fonts/CascadiaCode-SemiBold.ttf);
+    src: url(fonts/CascadiaCode-Bold.ttf);
 }
 
 @font-face {
