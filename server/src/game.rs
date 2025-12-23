@@ -14,7 +14,7 @@ pub fn get_initial_game_state() -> GameState {
     GameState {
         current_turn: -1,
         current_phase: GamePhase::Typing,
-        word_to_guess: String::from("PERDU"), // TODO
+        word_to_guess: String::from("LEAST"), // TODO
     }
 }
 
@@ -28,6 +28,7 @@ pub fn start_turn(room: &mut RoomState) {
     room.game_state.current_phase = GamePhase::Typing;
     room.host_player.typed_word_this_turn = None;
     room.other_player.as_mut().unwrap().typed_word_this_turn = None;
+    room.host_player.letter_sabotaged_this_turn = None;
     room.other_player.as_mut().unwrap().letter_sabotaged_this_turn = None;
 }
 
