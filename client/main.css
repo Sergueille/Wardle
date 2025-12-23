@@ -186,14 +186,6 @@ button.connecting::after {
     opacity: 0.6;
 }
 
-.word-grid.sabotage .word-grid-cell.typed-unchecked {
-    border-color: var(--hint-red);
-    transition: 150ms;
-}
-.word-grid.sabotage .word-grid-cell.typed-unchecked:hover {
-    border-width: 6px;
-}
-
 .word-grid-cell-container {
     width: 70%;
     height: 70px;
@@ -229,6 +221,14 @@ button.connecting::after {
 
 .word-grid-cell.hint-none {
     background-color: var(--bg-ll);
+}
+
+.word-grid-cell.sabotage-target {
+    border-color: var(--hint-red);
+    transition: 150ms;
+}
+.word-grid-cell.sabotage-target:hover {
+    border-width: 6px;
 }
 
 .word-grid-label {
@@ -326,4 +326,41 @@ button.connecting::after {
 .keyboard-letter > span, .keyboard-enter > span, .keyboard-backspace > span {
     pointer-events: none;
     user-select: none;
+}
+
+/* TOASTS */
+
+#toasts-container {
+    position: absolute;
+    width: 100vw;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: 400ms ease-out;
+}
+
+#toasts-container {
+    top: -100px;
+    transform: scale(0.5);
+}
+
+#toasts-container.visible {
+    top: 20px;
+    transform: scale(1);
+}
+
+.toast {
+    display: block;
+    background-color: var(--bg-lll);
+    padding: 7px 14px;
+}
+
+.toast.error {
+    background-color: var(--hint-red);
+}
+
+.toast.hidden {
+    display: none;
 }

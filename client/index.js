@@ -76,29 +76,24 @@ function JoinRoom()
 {
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
 
-    if (code.length < 8) {
-        // TODO
-    }
-    else {
-        console.log("http://" + API_URL + "/join-room/" + code);
-        let connection = new WebSocket("http://" + API_URL + "/join-room/" + code);
+    console.log("http://" + API_URL + "/join-room/" + code);
+    let connection = new WebSocket("http://" + API_URL + "/join-room/" + code);
 
-        document.getElementById("join-room-btn").classList.add("connecting");
+    document.getElementById("join-room-btn").classList.add("connecting");
 
-        ResetGlobalState();
-        state.websocket_connection = connection;
+    ResetGlobalState();
+    state.websocket_connection = connection;
 
-        connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
-        connection.addEventListener("open", ev => {
-            StartPingLoop(state);
-            OnGameStart(state);
-        });
-        connection.addEventListener("error", ev => {
-            document.getElementById("join-room-btn").classList.remove("connecting");
-            document.getElementById("join-error").classList.remove("hidden");
-            console.log("Disconnected!");
-        });
-    }
+    connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
+    connection.addEventListener("open", ev => {
+        StartPingLoop(state);
+        OnGameStart(state);
+    });
+    connection.addEventListener("error", ev => {
+        document.getElementById("join-room-btn").classList.remove("connecting");
+        Toast("room-join-failed");
+        console.log("Disconnected!");
+    });
 }
 
 function CreateRoom() {
@@ -116,7 +111,7 @@ function CreateRoom() {
     connection.addEventListener("error", ev => {
         console.log("Disconnected!");
         document.getElementById("create-room-btn").classList.remove("connecting");
-        document.getElementById("create-error").classList.remove("hidden");
+        Toast("room-creation-failed");
     });
 }
 
@@ -146,13 +141,15 @@ function StartTypeWaitPhase() {
 
 function StartSabotagePhase() {
     state.currentPhase = PHASE_SABOTAGE;
-    SetRightGridSabotageTarget();
+    SetRightGridActive();
+    SetSabotageTarget(false, state.currentTurn, true);
     SetGameHint("game-hint-sabotage");
 }
 
 function StartSabotageWaitPhase() {
     SetGameHint("game-hint-wait");
     state.currentPhase = PHASE_SABOTAGE_WAIT;
+    SetSabotageTarget(false, state.currentTurn, false);
     SetBothGridInactive();
 }
 
@@ -197,7 +194,6 @@ function TrySendMessage(msgType, msgContent) {
     }
     else {
         console.log("Couldn't send websocket message")
-        // TODO: try to reconnect
     }
 }
 

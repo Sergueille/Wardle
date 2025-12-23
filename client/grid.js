@@ -111,22 +111,35 @@ function SetHints(isLeftGrid, y, hints) {
 
     setHint(0);
 }
+
+function SetSabotageTarget(isLeftGrid, rowId, enable) {
+    for (let y = 0; y < MAX_WORD_COUNT; y++) {
+        for (let x = 0; x < WORD_LENGTH; x++) {
+            let el = document.getElementById(GetCellId(isLeftGrid, x, y));
+
+            if (!enable || y != rowId) {
+                el.classList.remove("sabotage-target")
+            }
+            else {
+                el.classList.add("sabotage-target")
+            }
+        }
+    }
+}
+
 function SetLeftGridActive() {
     document.getElementById("left-grid").classList.remove("inactive");
     document.getElementById("right-grid").classList.add("inactive");
-    document.getElementById("right-grid").classList.remove("sabotage");
 }
 
-function SetRightGridSabotageTarget() {
+function SetRightGridActive() {
     document.getElementById("left-grid").classList.add("inactive");
     document.getElementById("right-grid").classList.remove("inactive");
-    document.getElementById("right-grid").classList.add("sabotage");
 }
 
 function SetBothGridInactive() {
     document.getElementById("left-grid").classList.add("inactive");
     document.getElementById("right-grid").classList.add("inactive");
-    document.getElementById("right-grid").classList.remove("sabotage");
 }
 
 function GetCell(isLeftGrid, x, y) {
