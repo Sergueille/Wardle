@@ -127,6 +127,37 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
     }
 }
 
+#[actix_web::get("/reconnect/{which_player}/{room_code}")]
+async fn reconnect(req: actix_web::HttpRequest, stream: web::Payload, data: web::Data<&ProtectedAppState>, path: web::Path<(u32, String)>) -> impl actix_web::Responder {
+    let (which_player, room_code) = path.into_inner();
+    let is_host_player = which_player == 0;
+
+    let rooms = data.rooms.lock().unwrap();
+
+    println!("Reconnection of player {} in {}", which_player, room_code);
+
+    if rooms.contains_key(&room_code) { // Room exists
+        let room = &rooms[&room_code];
+        let mut locked_room = room.lock().unwrap();
+
+        if !locked_room.player_exists(is_host_player) || locked_room.get_player(is_host_player).connection_alive {
+            return Ok::<HttpResponse, actix_web::Error>(HttpResponse::BadRequest().body("Player not disconnected"));
+        }
+        
+        let player = locked_room.get_player(is_host_player);
+        let (response, connection) = server_internal::start_websocket(req, stream)?;
+
+        player.connection_alive = true;
+        player.last_ping_time = std::time::Instant::now();
+        server_internal::handle_player_connection(Arc::clone(room), is_host_player, connection).await.unwrap();
+
+        Ok::<HttpResponse, actix_web::Error>(response)
+    }
+    else {
+        Ok::<HttpResponse, actix_web::Error>(HttpResponse::NotFound().body("No room with this code"))
+    }
+}
+
 static APP_DATA: ProtectedAppState = std::sync::LazyLock::new(|| Arc::new(AppState { 
     rooms: Mutex::new(HashMap::new())
 }));
@@ -140,6 +171,7 @@ async fn main() -> std::io::Result<()> {
         .app_data(actix_web::web::Data::new(&APP_DATA))
             .service(create_room)
             .service(join_room)
+            .service(reconnect)
     })
     .bind(("0.0.0.0", 4268))?
     .run()
@@ -148,6 +180,15 @@ async fn main() -> std::io::Result<()> {
 
 
 impl RoomState {
+    pub fn player_exists(&self, get_host_player: bool) -> bool {
+        if get_host_player {
+            true
+        }
+        else {
+            self.other_player.is_some()
+        }
+    }
+
     pub fn get_player(&mut self, get_host_player: bool) -> &mut Player {
         if get_host_player {
             &mut self.host_player

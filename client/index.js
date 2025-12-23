@@ -2,10 +2,10 @@
 const DEFAULT_API_URL = "localhost";
 const API_PORT = 4268;
 
-const LOAD_DELAY = 700; //ms
 const TEMPORARY_INFO_DELAY = 10000; //ms
 
 const PING_SEND_DELAY = 1000; //ms
+const RECONNECTION_DELAY = 2000; //ms
 
 const WORD_LENGTH = 5;
 const MAX_WORD_COUNT = 6;
@@ -60,10 +60,14 @@ Start();
 function ResetGlobalState() {
     state = {
         // Utility for server interaction
-        websocket_connection: null,
+        websocketConnection: null,
         roomCode: undefined,
         pingLoopHandle: undefined,
         gameStarted: false,
+        isHostPlayer: false,
+        messagesToSend: [], // Message that are sent when not connected are stored here, to send them on reconnection
+        lastSentMessage: null, // Also to be resent if there is a problem
+        inReconnectionDelay: false,
 
         // Game state
         playerWords: [],
@@ -78,20 +82,23 @@ function ResetGlobalState() {
 
 function JoinRoom()
 {
+    ResetGlobalState();
+
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
+    state.roomCode = code;
 
     console.log("http://" + GetApiUrl() + "/join-room/" + code);
     let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
 
     document.getElementById("join-room-btn").classList.add("connecting");
 
-    ResetGlobalState();
-    state.websocket_connection = connection;
+    state.websocketConnection = connection;
+    state.isHostPlayer = false;
 
     connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
     connection.addEventListener("open", ev => {
-        StartPingLoop(state);
-        OnGameStart(state);
+        StartPingLoop();
+        OnGameStart();
     });
     connection.onerror = ev => {
         document.getElementById("join-room-btn").classList.remove("connecting");
@@ -103,7 +110,8 @@ function CreateRoom() {
     let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
 
     ResetGlobalState();
-    state.websocket_connection = connection;
+    state.websocketConnection = connection;
+    state.isHostPlayer = true;
 
     document.getElementById("create-room-btn").classList.add("connecting");
 
@@ -124,7 +132,7 @@ function OnGameStart() {
     ShowPanel("game-panel");
     state.gameStarted = true;
 
-    state.websocket_connection.onerror = ev => {
+    state.websocketConnection.onerror = ev => {
         OnDisconnection()
     }
 
@@ -192,29 +200,63 @@ function OnSabotageLetter(x, y) {
 }
 
 function TrySendMessage(msgType, msgContent) {
-    if (state.websocket_connection && state.websocket_connection.readyState == WebSocket.OPEN) {
-        state.websocket_connection.send(JSON.stringify({
-            type: msgType,
-            content: msgContent,
-        }));
+    let msgObject = {
+        type: msgType,
+        content: msgContent,
+    };
+    let msgText = JSON.stringify(msgObject);
+
+    if (state.websocketConnection && state.websocketConnection.readyState == WebSocket.OPEN) {
+        if (msgType != "ping") { state.lastSentMessage = msgObject; }
+        state.websocketConnection.send(msgText);
     }
     else {
         console.log("Couldn't send websocket message");
+        state.messagesToSend.push(msgObject);
         OnDisconnection();
     }
 }
 
 function StartPingLoop() {
-    state.ping_loop_handle = setInterval((() => {
+    state.pingLoopHandle = setInterval((() => {
         TrySendMessage("ping", {});
     }), PING_SEND_DELAY);
 }
 
 function OnDisconnection() {
+    if (state.inReconnectionDelay) { return; } // Already reconnecting
+
     console.log("Disconnected!");
     Toast("toast-disconnected");
+    clearTimeout(state.pingLoopHandle); // Prevent further pings
+    state.inReconnectionDelay = true;
 
-    // TODO: try to reconnect
+    setTimeout(() => { // Wait a little before reconnecting
+        state.inReconnectionDelay = false;
+
+        let connection = new WebSocket("http://" + GetApiUrl() + "/reconnect/" + (state.isHostPlayer ? 0 : 1) + "/" + state.roomCode);
+        state.websocketConnection = connection;
+        
+        connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
+        connection.addEventListener("open", ev => {
+            Toast("room-reconnected");
+            StartPingLoop();
+
+            // Send messages that couldn't be sent during the disconnection
+            if (state.lastSentMessage != null) { TrySendMessage(state.lastSentMessage.type, state.lastSentMessage.content); }   
+            
+            let msgToSendCopy = state.messagesToSend.slice();
+            for (let msg of msgToSendCopy) {
+                console.log(msg);
+                TrySendMessage(msg.type, msg.content);
+            }
+
+            state.messagesToSend = [];
+        });
+        connection.onerror = ev => {
+            OnDisconnection();
+        };
+    }, RECONNECTION_DELAY)
 }
 
 function HandleConnectionMessage(msgText) {
