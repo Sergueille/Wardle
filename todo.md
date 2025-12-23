@@ -9,11 +9,20 @@
 
 ### Game
 
-- everything
+- condition de fin
+- choisir un mot
+- verifier que le mot est correct
+- menu d'options
+
+### Interface
+
+- couleurs clavier
+- fix scrolling mobile
+- afficher indices chez l'adversaire
 
 ### Server
 
-- check for player pings and disconnect if necessary
 - allow players to reconnect if disconnected
-- remove room when both players are disconnected
 - make a request to server on frontend startup to see if the server is alive
+- check if server still works after panics
+
