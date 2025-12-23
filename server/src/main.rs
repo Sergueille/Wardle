@@ -18,7 +18,7 @@ enum GamePhase {
     Typing, Sabotaging,
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 enum HintType {
     Green, Yellow, Red, Gray, None
 }

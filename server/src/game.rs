@@ -14,7 +14,7 @@ pub fn get_initial_game_state() -> GameState {
     GameState {
         current_turn: -1,
         current_phase: GamePhase::Typing,
-        word_to_guess: String::from("LEAST"), // TODO
+        word_to_guess: String::from("LOOSE"), // TODO
     }
 }
 
