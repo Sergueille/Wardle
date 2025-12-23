@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex};
 const PLAYER_CONNECTION_LOOP_INTERVAL: u64 = 100; // ms
 
 /// Maximum duration before a player is disconnected it they sent no pings
-const PLAYER_SILENCE_MAX_DURATION: u64 = 5000; // ms
+const PLAYER_SILENCE_MAX_DURATION: u64 = 10000; // ms
 
 
 pub fn create_message_text<T>(message_type: &str, message_contents: &T) -> String where T : serde::Serialize {
@@ -59,6 +59,8 @@ pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: 
 
             if std::time::Instant::now().duration_since(player.last_ping_time).as_millis() > PLAYER_SILENCE_MAX_DURATION as u128 { // Disconnect if no pings
                 player.connection_alive = false;
+                let _ = connection.session.close(None).await;
+                println!("A player is disconnected because they sent no pings");
                 break;
             }
 

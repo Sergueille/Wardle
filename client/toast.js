@@ -27,3 +27,7 @@ function Toast(toastId) {
     }, TOAST_DURATION);
 }
 
+function CustomToast(contents) {
+    document.getElementById("toast-test").innerHTML = contents;
+    Toast("toast-test");
+}
