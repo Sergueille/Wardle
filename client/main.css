@@ -18,6 +18,8 @@
     --txt-d: #ccc;
 
     box-sizing: border-box;
+
+    font-family: roboto;
 }
 
 body {
@@ -54,7 +56,6 @@ body, .panel {
 }
 
 button, input {
-    font-family: cascadia;
     background-color: var(--bg-ll);
     border: 0;
     color: white;
@@ -139,7 +140,7 @@ button.connecting::after {
 #room-code {
     margin: 10px;
     font-size: 4rem;
-    font-family: monospace;
+    font-family: cascadia;
 }
 
 .room-code-clipboard-hint {
@@ -253,9 +254,10 @@ button.connecting::after {
 }
 
 .word-grid-label {
-    font-size: 2rem;
+    font-size: 2.2rem;
     pointer-events: none;
     user-select: none;
+    font-family: cascadia;
 }
 
 .word-grid-cell.animate-type {
@@ -430,3 +432,16 @@ button.connecting::after {
         height: 60px;
     }
 }
+
+/* FONTS */
+
+@font-face {
+    font-family: cascadia;
+    src: url(fonts/CascadiaCode-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: roboto;
+    src: url(fonts/Roboto-Light.ttf);
+}
+
