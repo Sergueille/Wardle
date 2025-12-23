@@ -180,6 +180,18 @@ button.connecting::after {
     margin-bottom: 100px;
 }
 
+.server-url-panel {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.server-url-panel input {
+    padding: 4px 10px;
+    font-size: 1rem;
+    margin-left: 5px;
+}
+
 /* WORD GRID */
 
 .word-grid {
