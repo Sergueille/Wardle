@@ -230,7 +230,14 @@ function HandleConnectionMessage(msgText) {
     if (msg.type == "room-code") {
         state.roomCode = msg.content;
         document.getElementById("room-code").textContent = state.roomCode;
-        navigator.clipboard.writeText(state.roomCode);
+
+        try {
+            navigator.clipboard.writeText(state.roomCode).then();
+        }
+        catch (e) {
+            CustomToast("Couldn't access clipboard. You will have to copy the code by hand. Sorry!");
+        }
+
         ShowPanel("wait-panel");
     }
     else if (msg.type == "other-player-connected") {

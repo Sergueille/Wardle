@@ -391,7 +391,7 @@ button.connecting::after {
 @media (max-width: 1000px) {
     #grids-container {
         width: fit-content;
-        padding: 0 calc(50vw - 20px - 2.5*70px - 20px);
+        padding: 0 calc(50vw - 20px - 2.5*70px - 10px);
     }
 
     #grids-scroll-area {
