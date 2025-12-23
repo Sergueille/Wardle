@@ -96,6 +96,59 @@
       </div>
     </div>
 
+    <!-- Options menu -->
+    <div class="panel" id="options-panel">
+      <div class="flex-col">
+        <span class="options-label">Select your options:</span>
+        <div class="flex-row">
+          <div class="flex-col" id="lang-label">
+            <legend>Language</legend>
+            <input id='button-lang-fr'
+            name='language'
+            type='radio'
+            value='francais' 
+            checked  />
+            <label for='button-fr' class='radio-label'>Français</label>
+            <input id='button-lang-en'
+            name='language'
+            type='radio'
+            value='english' />
+            <label for='button-en' class='radio-label'>English</label>
+            </div>
+          
+            <div class="flex-col" id="hard-label">
+            <legend>Hard-mode</legend>
+            <input id='button-hm-off'
+            name='hm'
+            type='radio'
+              value='off' 
+              checked  />
+            <label for='button-hm-off' class='radio-label'>Disable</label>
+            <input id='button-hm-on'
+            name='hm'
+            type='radio'
+            value='on' />
+            <label for='button-hm-on' class='radio-label'>Enable</label>
+            </div>
+            <!--
+            <div class="flex-col" id="length-label">
+              
+            </div>
+            -->
+            <!--
+            <div class="flex-col" id="sabotage-label">
+                
+            </div>
+              -->
+          </div>
+          <button id="go-btn">
+            Go!
+          </button>
+        </div>
+      </div>
+    </div>
+
+
     <!-- Waiting menu -->
     <div class="panel" id="wait-panel">
       <span class="room-code-label">Here's your room code:</span>

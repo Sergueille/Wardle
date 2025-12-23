@@ -25,7 +25,8 @@ const PHASE_RESTART = 4;
 const PHASE_RESTART_WAIT = 5;
 
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
-document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
+document.getElementById("create-room-btn").addEventListener("click", ev => ChooseOptions());
+document.getElementById("go-btn").addEventListener("click", ev => CreateRoom());
 
 document.getElementById("server-url-input").addEventListener("change", ev => SetApiUrl(ev.target.value));
 document.getElementById("server-url-input").value = GetApiUrlWithoutPort();
@@ -158,6 +159,11 @@ function CreateRoom() {
         document.getElementById("create-room-btn").classList.remove("connecting");
         Toast("room-creation-failed");
     };
+}
+
+function ChooseOptions() {
+    // do interesting stuff with the options
+    ShowPanel("options-panel");
 }
 
 // Called once the game can properly start (both players connected)
