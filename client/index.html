@@ -5,11 +5,24 @@
     <title>Wardle</title>
     <link rel="stylesheet" href="main.css">
     <script src="panels.js" defer="defer"></script>
+    <script src="toast.js" defer="defer"></script>
     <script src="grid.js" defer="defer"></script>
     <script src="keyboard.js" defer="defer"></script>
     <script src="index.js" defer="defer"></script>
   </head>
   <body>
+    <div id="toasts-container">
+      <div class="toast error" id="toast-disconnected">
+        Connection lost!
+      </div>
+      <div class="toast error" id="room-creation-failed">
+        Couldn't create room. The server must have some serious problems.
+      </div>
+      <div class="toast error" id="room-join-failed">
+          Couldn't join room. Make sure the code is correct.
+      </div>
+    </div>
+
     <!-- Connection menu -->
     <div class="panel" id="start-panel">
       <p class="protocard-logo">Wardle :)</p>
@@ -27,14 +40,6 @@
           <button id="join-room-btn">
             Join a room
           </button>
-        </div>
-
-        <div id="join-error" class="room-join-error hidden">
-          Couldn't join room. Make sure the code is correct.
-        </div>
-
-        <div id="create-error" class="room-join-error hidden">
-          Couldn't create room. The server must have some serious problems.
         </div>
       </div>
     </div>
