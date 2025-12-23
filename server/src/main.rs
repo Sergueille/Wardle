@@ -141,7 +141,7 @@ async fn main() -> std::io::Result<()> {
             .service(create_room)
             .service(join_room)
     })
-    .bind(("localhost", 4268))?
+    .bind(("0.0.0.0", 4268))?
     .run()
     .await
 }

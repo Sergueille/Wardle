@@ -1,5 +1,6 @@
 
-const API_URL = "localhost:4268";
+const DEFAULT_API_URL = "localhost";
+const API_PORT = 4268;
 
 const LOAD_DELAY = 700; //ms
 const TEMPORARY_INFO_DELAY = 10000; //ms
@@ -22,6 +23,9 @@ const PHASE_SABOTAGE_WAIT = 2;
 
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
+
+document.getElementById("server-url-input").addEventListener("change", ev => SetApiUrl(ev.target.value));
+document.getElementById("server-url-input").value = GetApiUrlWithoutPort();
 
 document.addEventListener("keydown", (event) => {
     if (!state || !state.gameStarted) {
@@ -76,8 +80,8 @@ function JoinRoom()
 {
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
 
-    console.log("http://" + API_URL + "/join-room/" + code);
-    let connection = new WebSocket("http://" + API_URL + "/join-room/" + code);
+    console.log("http://" + GetApiUrl() + "/join-room/" + code);
+    let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
 
     document.getElementById("join-room-btn").classList.add("connecting");
 
@@ -96,7 +100,7 @@ function JoinRoom()
 }
 
 function CreateRoom() {
-    let connection = new WebSocket("http://" + API_URL + "/create-room");
+    let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
 
     ResetGlobalState();
     state.websocket_connection = connection;
@@ -267,5 +271,19 @@ function HintTextToId(hintText) {
     if (hintText == "yellow") { return HINT_YELLOW }
     if (hintText == "none") { return HINT_NONE }
 }
+
+function GetApiUrl() {
+    return GetApiUrlWithoutPort() + ":" + API_PORT.toString();
+}
+function GetApiUrlWithoutPort() {
+    let res = window.localStorage.getItem("apiUrl");
+    if (res == null) return DEFAULT_API_URL;
+    return res;
+}
+function SetApiUrl(url) {
+    window.localStorage.setItem("apiUrl", url)
+}
+
+
 
 
