@@ -69,12 +69,23 @@ pub async fn handle_player_connection(room: Arc<Mutex<RoomState>>, host_player: 
         }
 
         // Send the messages
-        for m in messages_to_send {
-            let sent_res = connection.session.text(m.clone()).await;
+        let mut all_ok = true;
+        messages_to_send.reverse();
+        while messages_to_send.len() > 0 {
+            let top = messages_to_send.pop().unwrap();
+            let sent_res = connection.session.text(top).await;
             if sent_res.is_err() {
                 cloned_arc.lock().unwrap().get_player(host_player).connection_alive = false;
+                all_ok = false;
                 break; // Stop if connection closed
             }
+        }
+
+        if !all_ok { // If some messages couldn't be sent correctly, put them back in the list
+            messages_to_send.reverse();
+            let mut room_ref = cloned_arc.lock().unwrap();
+            std::mem::swap(&mut messages_to_send, &mut room_ref.get_player(host_player).messages_to_send);
+            break;
         }
 
         actix_web::rt::time::sleep(std::time::Duration::from_millis(PLAYER_CONNECTION_LOOP_INTERVAL)).await;

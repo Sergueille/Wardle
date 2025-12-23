@@ -1,10 +1,6 @@
 
 # TODO list
 
-## What's implemented?
-
-- Players can create new rooms, and join a room with a code
-
 ## TODO
 
 ### Game
@@ -22,7 +18,7 @@
 
 ### Server
 
-- allow players to reconnect if disconnected
+- find a way do resent all messages the client wanted to send on reconnection, not just the last one
 - make a request to server on frontend startup to see if the server is alive
 - check if server still works after panics
 
