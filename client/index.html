@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Wardle</title>
     <link rel="stylesheet" href="main.css">
+    <meta name="viewport" content="initial-scale=0.8,user-scalable=0">
     <script src="panels.js" defer="defer"></script>
     <script src="toast.js" defer="defer"></script>
     <script src="grid.js" defer="defer"></script>
@@ -25,7 +26,39 @@
 
     <!-- Connection menu -->
     <div class="panel" id="start-panel">
-      <p class="protocard-logo">Wardle :)</p>
+      <div class="logo">
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none">
+            <span class="word-grid-label">W</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-red">
+            <span class="word-grid-label">A</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none">
+            <span class="word-grid-label">R</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none">
+            <span class="word-grid-label">D</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none">
+            <span class="word-grid-label">L</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none">
+            <span class="word-grid-label">E</span>
+          </div>
+        </div>
+
+      </div>
 
       <div class="flex-col">
         
@@ -34,7 +67,7 @@
         </button>
         <span class="sep-text">or</span>
         
-        <div class="flex-row">
+        <div class="flex-row" id="join-room-row">
           <input id="join-room-code" placeholder="Enter room code"> <span class="text-margins">and</span>
           
           <button id="join-room-btn">
@@ -60,12 +93,14 @@
         <div id="game-hint-wait">Wait for the other player...</div>
         <div id="game-hint-sabotage">Sabotage a letter</div>
       </div>
-      <div class="flex-row">
-        <div class="word-grid" id="left-grid">
-
-        </div>
-        <div class="word-grid" id="right-grid">
-          
+      <div id="grids-scroll-area">
+        <div class="flex-row" id="grids-container">
+          <div class="word-grid" id="left-grid">
+            
+          </div>
+          <div class="word-grid" id="right-grid">
+            
+          </div>
         </div>
       </div>
       <div id="keyboard">

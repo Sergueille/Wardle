@@ -89,11 +89,10 @@ function JoinRoom()
         StartPingLoop(state);
         OnGameStart(state);
     });
-    connection.addEventListener("error", ev => {
+    connection.onerror = ev => {
         document.getElementById("join-room-btn").classList.remove("connecting");
         Toast("room-join-failed");
-        console.log("Disconnected!");
-    });
+    };
 }
 
 function CreateRoom() {
@@ -108,11 +107,10 @@ function CreateRoom() {
     connection.addEventListener("open", ev => {
         StartPingLoop();
     });
-    connection.addEventListener("error", ev => {
-        console.log("Disconnected!");
+    connection.onerror = ev => {
         document.getElementById("create-room-btn").classList.remove("connecting");
         Toast("room-creation-failed");
-    });
+    };
 }
 
 // Called once the game can properly start (both players connected)
@@ -121,6 +119,10 @@ function OnGameStart() {
     PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
     ShowPanel("game-panel");
     state.gameStarted = true;
+
+    state.websocket_connection.onerror = ev => {
+        OnDisconnection()
+    }
 
     StartNextTurn();
 }
@@ -193,7 +195,8 @@ function TrySendMessage(msgType, msgContent) {
         }));
     }
     else {
-        console.log("Couldn't send websocket message")
+        console.log("Couldn't send websocket message");
+        OnDisconnection();
     }
 }
 
@@ -201,6 +204,13 @@ function StartPingLoop() {
     state.ping_loop_handle = setInterval((() => {
         TrySendMessage("ping", {});
     }), PING_SEND_DELAY);
+}
+
+function OnDisconnection() {
+    console.log("Disconnected!");
+    Toast("toast-disconnected");
+
+    // TODO: try to reconnect
 }
 
 function HandleConnectionMessage(msgText) {

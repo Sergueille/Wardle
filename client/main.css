@@ -171,6 +171,15 @@ button.connecting::after {
     display: none;
 }
 
+.logo {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
 /* WORD GRID */
 
 .word-grid {
@@ -363,4 +372,49 @@ button.connecting::after {
 
 .toast.hidden {
     display: none;
+}
+
+/* RESPONSIVENESS */
+
+@media (max-width: 1000px) {
+    #grids-container {
+        width: fit-content;
+        padding: 0 calc(50vw - 20px - 2.5*70px - 20px);
+    }
+
+    #grids-scroll-area {
+        width: 100vw;
+        overflow-x: auto;
+    }
+
+    #left-grid {
+        margin: 50px 20px;
+    }
+
+    #right-grid {
+        margin: 50px 20px;
+    }
+
+    #keyboard {
+        width: 95vw;
+        margin-bottom: 30px;
+        gap: 4px;
+    }
+
+    .keyboard-line {
+        height: 75px;
+        gap: 4px;
+    }
+}
+
+@media (max-width: 600px) {
+    #join-room-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logo .word-grid-cell-container, .logo .word-grid-cell {
+        width: 60px;
+        height: 60px;
+    }
 }
