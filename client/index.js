@@ -19,7 +19,7 @@ const HINT_NONE = 4;
 const PHASE_TYPE = 0;
 const PHASE_TYPE_WAIT = 1;
 const PHASE_SABOTAGE = 2;
-const PHASE_SABOTAGE_WAIT = 2;
+const PHASE_SABOTAGE_WAIT = 3;
 
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
