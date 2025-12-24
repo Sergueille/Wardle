@@ -52,6 +52,7 @@ let state; // Global game state
 
 function Start() {
     HideAllPanels();
+    SetupToasts();
     ShowPanel("start-panel");
 }
 
