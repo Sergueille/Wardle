@@ -82,6 +82,7 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
     };
 
     println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, data.rooms.lock().unwrap().len() + 1);
+    println!("Word to guess is {}", new_room.game_state.word_to_guess);
 
     let room_in_arc = Arc::new(Mutex::new(new_room));
 

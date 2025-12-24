@@ -1,6 +1,7 @@
 
 const HINT_REVEAL_ANIMATION_DURATION = 100; // ms
 const MULTIPLE_LETTERS_ANIMATION_DELAY = 40; // ms
+const WIN_ANIMATION_DELAY = 100; // ms
 
 
 function PopulateWordGrids(nbColumn, nbRow, onSabotage) {
@@ -144,6 +145,24 @@ function InvalidAnimation(isLeftGrid, rowId) {
     console.log(rowId);
 }
 
+function WinAnimation(isLeftGrid, rowId) {
+    for (let y = 0; y < MAX_WORD_COUNT; y++) {
+        for (let x = 0; x < WORD_LENGTH; x++) {
+            let el = document.getElementById(GetCellId(isLeftGrid, x, y));
+
+            if (y == rowId) {
+                setTimeout(() => {
+                    el.classList.add("win-animation");
+                    el.classList.add("hint-green")
+                    el.classList.remove("typed-unchecked");
+                }, WIN_ANIMATION_DELAY * x);
+            }
+        }
+    }
+
+    console.log(rowId);
+}
+
 function SetLeftGridActive() {
     document.getElementById("left-grid").classList.remove("inactive");
     document.getElementById("right-grid").classList.add("inactive");
@@ -157,6 +176,11 @@ function SetRightGridActive() {
 function SetBothGridInactive() {
     document.getElementById("left-grid").classList.add("inactive");
     document.getElementById("right-grid").classList.add("inactive");
+}
+
+function SetBothGridActive() {
+    document.getElementById("left-grid").classList.remove("inactive");
+    document.getElementById("right-grid").classList.remove("inactive");
 }
 
 function GetCell(isLeftGrid, x, y) {

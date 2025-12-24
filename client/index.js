@@ -287,9 +287,25 @@ function HandleConnectionMessage(msgText) {
         OnGameStart();
     }
     else if (msg.type == "other-player-word") {
-        SetWord(false, state.currentTurn, msg.content);
-        state.enemyWords.push(msg.content);
-        StartSabotagePhase();
+        SetWord(false, state.currentTurn, msg.content.word);
+
+        if (msg.content.who_wins == "none") {
+            state.enemyWords.push(msg.content);
+            StartSabotagePhase();
+        }
+        else if (msg.content.who_wins == "you") {
+            SetBothGridActive();
+            SetGameHint("hint-win");
+            WinAnimation(true, state.currentTurn);
+        }
+        else if (msg.content.who_wins == "other") {
+            SetBothGridActive();
+            SetGameHint("hint-loose");
+            WinAnimation(false, state.currentTurn);
+        }
+        else {
+            CustomToast("Invalid who_wins value " + msg.content.who_wins);
+        }
     }
     else if (msg.type == "word-hints") {
         SetHints(true, state.currentTurn, msg.content.map(txt => HintTextToId(txt)));
