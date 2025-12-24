@@ -14,7 +14,7 @@ pub fn get_initial_game_state() -> GameState {
     GameState {
         current_turn: -1,
         current_phase: GamePhase::Typing,
-        word_to_guess: String::from("LOOSE"), // TODO
+        word_to_guess: util::get_random_secret_word(),
     }
 }
 
@@ -86,8 +86,14 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             if room.game_state.current_phase != GamePhase::Typing { return Err(String::from("Wrong phase")); }
 
             let word = crate::util::get_json_str(msg_contents, "word").unwrap();
-            room.get_player(is_host).typed_word_this_turn = Some(String::from(word));
-            check_for_type_end(room);
+
+            if util::is_valid_word(word) {   
+                room.get_player(is_host).typed_word_this_turn = Some(String::from(word));
+                check_for_type_end(room);
+            }
+            else {
+                send_message(room.get_player(is_host), "word-rejected", &());
+            }
         },
         "sabotage" => {
             if room.game_state.current_phase != GamePhase::Sabotaging { return Err(String::from("Wrong phase")); }

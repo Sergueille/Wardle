@@ -294,6 +294,13 @@ function HandleConnectionMessage(msgText) {
         SetHints(true, state.currentTurn, msg.content.map(txt => HintTextToId(txt)));
         StartNextTurn();
     }
+    else if (msg.type == "word-rejected") {
+        SetGameHint("game-hint-enter-word");
+        Toast("toast-invalid-word");
+        InvalidAnimation(true, state.currentTurn);
+        state.currentPhase = PHASE_TYPE;
+        SetLeftGridActive();
+    }
     else {
         console.error("Unknown message type: " + msg.type);
     }
