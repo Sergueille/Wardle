@@ -269,6 +269,17 @@ button.connecting::after {
 .word-grid-cell.invalid-animation {
     animation: word-grid-invalid 300ms ease 0s 1 forwards;
 }
+.word-grid-cell.win-animation {
+    transition: 300ms;
+    animation: 
+        word-grid-win-start 700ms ease-in-out 0s 1 forwards,
+        word-grid-win-loop 1000ms alternate infinite ease-in-out 700ms;
+    box-shadow: 0 0 10px 0px var(--bg);
+}
+.word-grid-cell.win-animation .word-grid-label {
+    animation: 
+        word-grid-win-label 700ms ease-in-out 0s 1 backwards;
+}
 
 @keyframes word-grid-type {
     0% {
@@ -312,6 +323,36 @@ button.connecting::after {
     }
     100% {
         transform: translate(0, 0);
+    }
+}
+
+@keyframes word-grid-win-start {
+    0% {
+        transform: translate(0, 0) rotate(0);
+    }
+    100% {
+        transform: translate(0, 10px) rotate(360deg);
+    }
+}
+
+@keyframes word-grid-win-label {
+    0% {
+        transform: rotate(0);
+    }
+    99% {
+        transform: rotate(-359deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes word-grid-win-loop {
+    0% {
+        transform: translate(0, 10px);
+    }
+    100% {
+        transform: translate(0, -10px);
     }
 }
 

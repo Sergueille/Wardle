@@ -52,7 +52,10 @@ Le mot envoyé pour ce tour est incorrect
 Mot qu'a écrit l'autre joueur. Signale qu'il faut passer à la phase de sabotage.
 
 ```json
-<string> // Le mot
+{
+    "word": <string>, // Le mot
+    "who_wins": <none|you|other>, // Si quelqu'un gagne ce tour ci (en tout cas moi je perds)
+}
 ```
 
 ### `word-hints`
@@ -64,7 +67,6 @@ Indices pour le dernier mot du joueur. Signale qu'il faut passer au tour suivant
     <green|yellow|red|gray> // Indice pour chaque letter
 ]
 ```
-
 
 ## Client vers serveur
 

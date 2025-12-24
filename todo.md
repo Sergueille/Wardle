@@ -5,7 +5,7 @@
 
 ### Game
 
-- condition de fin
+- bouton pour rejouer après la fin
 - menu d'options
 
 ### Interface

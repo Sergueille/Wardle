@@ -43,8 +43,34 @@ pub fn check_for_type_end(room: &mut RoomState) {
     room.game_state.current_phase = GamePhase::Sabotaging;
 
     // Send other words
-    send_message(&mut room.host_player, "other-player-word", &room.other_player.as_ref().unwrap().typed_word_this_turn.clone().unwrap());
-    send_message(room.other_player.as_mut().unwrap(), "other-player-word", &room.host_player.typed_word_this_turn.clone().unwrap());
+    #[derive(serde::Serialize)]
+    struct Msg<'a> {
+        word: &'a str,
+        who_wins: String, 
+    }
+
+    let host_word = room.host_player.typed_word_this_turn.clone().unwrap();
+    let other_word = room.other_player.as_ref().unwrap().typed_word_this_turn.clone().unwrap();
+    let mut host_msg = Msg {
+        word: &other_word,
+        who_wins: String::from("none"),
+    };
+    let mut other_msg = Msg {
+        word: &host_word,
+        who_wins: String::from("none"),
+    };
+
+    if host_word == room.game_state.word_to_guess {
+        host_msg.who_wins = String::from("you");
+        other_msg.who_wins = String::from("other");
+    }
+    else if other_word == room.game_state.word_to_guess {
+        host_msg.who_wins = String::from("other");
+        other_msg.who_wins = String::from("you");
+    }
+
+    send_message(&mut room.host_player, "other-player-word", &host_msg);
+    send_message(room.other_player.as_mut().unwrap(), "other-player-word", &other_msg);
 
     room.do_for_all_players(&|player, _other| {
         player.past_words.push(player.typed_word_this_turn.as_ref().unwrap().clone());
