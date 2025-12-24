@@ -127,6 +127,23 @@ function SetSabotageTarget(isLeftGrid, rowId, enable) {
     }
 }
 
+function InvalidAnimation(isLeftGrid, rowId) {
+    for (let y = 0; y < MAX_WORD_COUNT; y++) {
+        for (let x = 0; x < WORD_LENGTH; x++) {
+            let el = document.getElementById(GetCellId(isLeftGrid, x, y));
+
+            if (y == rowId) {
+                el.classList.add("invalid-animation")
+                el.classList.remove("animate-type")
+                
+                setTimeout(() => el.classList.remove("invalid-animation"), 300);
+            }
+        }
+    }
+
+    console.log(rowId);
+}
+
 function SetLeftGridActive() {
     document.getElementById("left-grid").classList.remove("inactive");
     document.getElementById("right-grid").classList.add("inactive");

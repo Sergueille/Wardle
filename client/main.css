@@ -266,6 +266,9 @@ button.connecting::after {
 .word-grid-cell.animate-hint {
     animation: word-grid-hint 200ms ease 0s 1 forwards;
 }
+.word-grid-cell.invalid-animation {
+    animation: word-grid-invalid 300ms ease 0s 1 forwards;
+}
 
 @keyframes word-grid-type {
     0% {
@@ -288,6 +291,27 @@ button.connecting::after {
     }
     100% {
         transform: scale(1);
+    }
+}
+
+@keyframes word-grid-invalid {
+    0% {
+        transform: translate(0, 0);
+    }
+    20% {
+        transform: translate(10px, 0);
+    }
+    40% {
+        transform: translate(-10px, 0);
+    }
+    60% {
+        transform: translate(10px, 0);
+    }
+    80% {
+        transform: translate(-10px, 0);
+    }
+    100% {
+        transform: translate(0, 0);
     }
 }
 

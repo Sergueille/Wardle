@@ -41,6 +41,12 @@ Indique que l'autre joueur est connecté.
 
 *Pas de contenu*
 
+### `word-rejected`
+
+Le mot envoyé pour ce tour est incorrect
+
+*Pas de contenu*
+
 ### `other-player-word`
 
 Mot qu'a écrit l'autre joueur. Signale qu'il faut passer à la phase de sabotage.
@@ -60,7 +66,7 @@ Indices pour le dernier mot du joueur. Signale qu'il faut passer au tour suivant
 ```
 
 
-## Clint vers serveur
+## Client vers serveur
 
 ### `ping`
 
