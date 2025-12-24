@@ -3,6 +3,12 @@ const TOAST_DURATION = 5000;
 
 let toastHideHandle = undefined;
 
+function SetupToasts() {
+    for (let element of container.children) {
+        element.classList.add("hidden");
+    }
+}
+
 function Toast(toastId) {
     let container = document.getElementById("toasts-container");
 
