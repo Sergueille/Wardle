@@ -99,10 +99,8 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
 async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web::Data<&ProtectedAppState>, path: web::Path<String>) -> impl actix_web::Responder {
     let room_code = path.into_inner();
 
-    let rooms = data.rooms.lock().unwrap();
-
-    if rooms.contains_key(&room_code) { // Room exists
-        let room = &rooms[&room_code];
+    if data.rooms.lock().unwrap().contains_key(&room_code) { // Room exists
+        let room = Arc::clone(&data.rooms.lock().unwrap()[&room_code]);
 
         if room.lock().unwrap().other_player.is_some() { // Room already full
             return Ok::<HttpResponse, actix_web::Error>(HttpResponse::BadRequest().body("Room already full"));
@@ -115,7 +113,7 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
         let test_info = PlayerInfo { name: String::from("John client 2") };
         let player = Player::new(Some(test_info));
         room.lock().unwrap().other_player = Some(player); // Add player to room
-        server_internal::handle_player_connection(Arc::clone(room), false, connection).await.unwrap(); // Start handling connection
+        server_internal::handle_player_connection(Arc::clone(&room), false, connection).await.unwrap(); // Start handling connection
         server_internal::send_message(&mut room.lock().unwrap().host_player, "other-player-connected", &()); // Tell the other player
         
         room.lock().unwrap().game_started = true; // Start the game
@@ -133,12 +131,10 @@ async fn reconnect(req: actix_web::HttpRequest, stream: web::Payload, data: web:
     let (which_player, room_code) = path.into_inner();
     let is_host_player = which_player == 0;
 
-    let rooms = data.rooms.lock().unwrap();
-
     println!("Reconnection of player {} in {}", which_player, room_code);
 
-    if rooms.contains_key(&room_code) { // Room exists
-        let room = &rooms[&room_code];
+    if data.rooms.lock().unwrap().contains_key(&room_code) { // Room exists
+        let room = Arc::clone(&data.rooms.lock().unwrap()[&room_code]);
         let mut locked_room = room.lock().unwrap();
 
         if !locked_room.player_exists(is_host_player) || locked_room.get_player(is_host_player).connection_alive {
@@ -150,7 +146,7 @@ async fn reconnect(req: actix_web::HttpRequest, stream: web::Payload, data: web:
 
         player.connection_alive = true;
         player.last_ping_time = std::time::Instant::now();
-        server_internal::handle_player_connection(Arc::clone(room), is_host_player, connection).await.unwrap();
+        server_internal::handle_player_connection(Arc::clone(&room), is_host_player, connection).await.unwrap();
 
         Ok::<HttpResponse, actix_web::Error>(response)
     }
