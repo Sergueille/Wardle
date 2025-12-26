@@ -138,9 +138,15 @@ fn handle_one_message_internal(room: Arc<Mutex<RoomState>>, text: &str, is_host:
 
 pub fn remove_empty_rooms(rooms: &mut std::collections::HashMap<String, Arc<Mutex<RoomState>>>) {
     rooms.retain(|_, room| {
-        let room_ref = room.lock().unwrap();
-
-        // Room is still alive is at least one player have a valid connection
-        room_ref.host_player.connection_alive || (room_ref.other_player.is_some() && room_ref.other_player.as_ref().unwrap().connection_alive)
+        match room.lock() {
+            Ok(room_ref) => {
+                // Room is still alive is at least one player have a valid connection
+                room_ref.host_player.connection_alive || (room_ref.other_player.is_some() && room_ref.other_player.as_ref().unwrap().connection_alive)
+            },
+            Err(_) => {
+                // The mutex is probably poisoned, so just remove the room and act as if nothing happened
+                false
+            },
+        }
     });
 }
