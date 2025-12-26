@@ -75,6 +75,7 @@ function ResetGlobalState() {
         enemyWords: [],
         currentTurn: -1,
         currentPhase: PHASE_TYPE,
+        knownHints: {},
 
         // Information for type phase
         typedWord: "",
@@ -308,7 +309,9 @@ function HandleConnectionMessage(msgText) {
         }
     }
     else if (msg.type == "word-hints") {
-        SetHints(true, state.currentTurn, msg.content.map(txt => HintTextToId(txt)));
+        let hints = msg.content.map(txt => HintTextToId(txt));
+        SetHints(true, state.currentTurn, hints);
+        UpdateKnownHints(state.typedWord, hints);
         StartNextTurn();
     }
     else if (msg.type == "word-rejected") {
@@ -320,6 +323,36 @@ function HandleConnectionMessage(msgText) {
     }
     else {
         console.error("Unknown message type: " + msg.type);
+    }
+}
+
+function UpdateKnownHints(word, hints) {
+    for (let i = 0; i < word.length; i++) {
+        if (hints[i] == HINT_YELLOW) {
+            if (Object.hasOwn(state.knownHints, word[i])) {
+                if (state.knownHints[word[i]] != HINT_GREEN) {
+                    state.knownHints[word[i]] = HINT_YELLOW;
+                }
+            }
+            else {
+                state.knownHints[word[i]] = HINT_YELLOW;
+            }
+        }
+        else if (hints[i] == HINT_GRAY) {
+            if (!Object.hasOwn(state.knownHints, word[i])) {
+                state.knownHints[word[i]] = HINT_GRAY;
+            }
+        }
+        else if (hints[i] == HINT_RED) {
+            // Nothing
+        }
+        else {
+            state.knownHints[word[i]] = hints[i];
+        }
+    }
+
+    for (let char in state.knownHints) {
+        SetKeyboardHint(char, state.knownHints[char]);
     }
 }
 
