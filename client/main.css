@@ -377,7 +377,7 @@ button.connecting::after {
 }
 
 .keyboard-letter, .keyboard-enter, .keyboard-backspace {
-    background-color: var(--bg-ll);
+    border: 2px solid var(--bg-ll);
     width: 1px;
     flex-grow: 1;
 
@@ -414,6 +414,26 @@ button.connecting::after {
 .keyboard-letter > span, .keyboard-enter > span, .keyboard-backspace > span {
     pointer-events: none;
     user-select: none;
+}
+
+.keyboard-letter.hint-gray {
+    background-color: var(--bg-ll);
+    border: none;
+}
+
+.keyboard-letter.hint-green {
+    background-color: var(--hint-green);
+    border: none;
+}
+
+.keyboard-letter.hint-red {
+    background-color: var(--hint-red);
+    border: none;
+}
+
+.keyboard-letter.hint-yellow {
+    background-color: var(--hint-yellow);
+    border: none;
 }
 
 /* TOASTS */

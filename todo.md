@@ -7,10 +7,11 @@
 
 - bouton pour rejouer après la fin
 - menu d'options
+- cas ou les deux joueurs ne trouvent pas la mot
+- cas ou les joueurs trouvent le mot en même temps
 
 ### Interface
 
-- couleurs clavier
 - fix scrolling mobile
 - afficher indices chez l'adversaire
 
