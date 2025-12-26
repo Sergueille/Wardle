@@ -384,6 +384,8 @@ button.connecting::after {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    transition: 400ms;
 }
 
 .keyboard-enter, .keyboard-backspace {
@@ -418,22 +420,22 @@ button.connecting::after {
 
 .keyboard-letter.hint-gray {
     background-color: var(--bg-ll);
-    border: none;
+    border-color: var(--bg-ll);
 }
 
 .keyboard-letter.hint-green {
     background-color: var(--hint-green);
-    border: none;
+    border-color: var(--hint-green);
 }
 
 .keyboard-letter.hint-red {
     background-color: var(--hint-red);
-    border: none;
+    border-color: var(--hint-red);
 }
 
 .keyboard-letter.hint-yellow {
     background-color: var(--hint-yellow);
-    border: none;
+    border-color: var(--hint-yellow);
 }
 
 /* TOASTS */
