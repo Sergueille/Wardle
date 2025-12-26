@@ -18,7 +18,10 @@ pub fn get_hints(secret_word: &str, input_word: &str, sabotage_index: usize) -> 
 
         if secret_chars[i] == char {
             res[i] = crate::HintType::Green;
-            shown_counts[id] += 1;
+
+            if i != sabotage_index {
+                shown_counts[id] += 1;
+            }
         }
     }
 
@@ -28,7 +31,10 @@ pub fn get_hints(secret_word: &str, input_word: &str, sabotage_index: usize) -> 
 
         if secret_chars[i] != char && shown_counts[id] < letter_counts[id] {
             res[i] = crate::HintType::Yellow;
-            shown_counts[id] += 1;
+            
+            if i != sabotage_index {
+                shown_counts[id] += 1;
+            }
         }
     }
     
