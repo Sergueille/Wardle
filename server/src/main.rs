@@ -68,7 +68,21 @@ type ProtectedAppState = std::sync::LazyLock<Arc<AppState>>;
 #[actix_web::get("/create-room")]
 async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: web::Data<&ProtectedAppState>) -> impl actix_web::Responder {
     // Before creating a new room, check if some rooms can be deleted
-    server_internal::remove_empty_rooms(&mut data.rooms.lock().unwrap());
+    let mutex_ok = match data.rooms.lock() {
+        Ok(mut rooms) => {
+            server_internal::remove_empty_rooms(&mut rooms);
+            true
+        },
+        Err(_) => {
+            println!("If we go in this branch, the server probably went through a lot of problems... All rooms will be deleted");
+            false
+        }
+    };
+
+    if !mutex_ok { // If the mutex was poisoned, reset the rooms
+        data.rooms.clear_poison();
+        *data.rooms.lock().unwrap() = HashMap::new();
+    }
 
     let code = util::create_random_code();
 
@@ -155,6 +169,11 @@ async fn reconnect(req: actix_web::HttpRequest, stream: web::Payload, data: web:
     }
 }
 
+#[actix_web::get("/ping")]
+async fn ping() -> impl actix_web::Responder {
+    Ok::<HttpResponse, actix_web::Error>(HttpResponse::Ok().body(""))
+}
+
 static APP_DATA: ProtectedAppState = std::sync::LazyLock::new(|| Arc::new(AppState { 
     rooms: Mutex::new(HashMap::new())
 }));
@@ -169,6 +188,7 @@ async fn main() -> std::io::Result<()> {
             .service(create_room)
             .service(join_room)
             .service(reconnect)
+            .service(ping)
     })
     .bind(("0.0.0.0", 4268))?
     .run()
