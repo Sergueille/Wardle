@@ -182,6 +182,18 @@ static APP_DATA: ProtectedAppState = std::sync::LazyLock::new(|| Arc::new(AppSta
 async fn main() -> std::io::Result<()> {
     env_logger::init();
 
+    let args: Vec<String> = std::env::args().collect();
+
+    println!("Starting backend server!");
+    
+    let address = if args.contains(&String::from("--localhost")) {
+        println!("Serving on local network");
+        "0.0.0.0:4268"
+    }
+    else {
+        "[2a09:6847:fa10:1410::278]:4268"
+    };
+
     actix_web::HttpServer::new(|| {
         actix_web::App::new()
         .app_data(actix_web::web::Data::new(&APP_DATA))
@@ -190,7 +202,7 @@ async fn main() -> std::io::Result<()> {
             .service(reconnect)
             .service(ping)
     })
-    .bind(("0.0.0.0", 4268))?
+    .bind(address)?
     .run()
     .await
 }
