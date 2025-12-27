@@ -1,8 +1,9 @@
 
-const DEFAULT_API_URL = "localhost";
+const DEFAULT_API_URL = "[2a09:6847:fa10:1410::278]";
 const API_PORT = 4268;
 
 const TEMPORARY_INFO_DELAY = 10000; //ms
+const WORD_OK_DELAY = 100; //ms
 
 const PING_SEND_DELAY = 1000; //ms
 const RECONNECTION_DELAY = 2000; //ms
@@ -49,11 +50,13 @@ document.addEventListener("keydown", (event) => {
 });
 
 let state; // Global game state
+let allowedWords = [];
 
 function Start() {
     HideAllPanels();
     SetupToasts();
     ShowPanel("start-panel");
+    GetAllWords();
 }
 
 Start();
@@ -79,6 +82,7 @@ function ResetGlobalState() {
 
         // Information for type phase
         typedWord: "",
+        waitPhaseInterfaceTimeout: null,
     };
 }
 
@@ -150,9 +154,12 @@ function StartNextTurn() {
 }
 
 function StartTypeWaitPhase() {
-    SetGameHint("game-hint-wait");
     state.currentPhase = PHASE_TYPE_WAIT;
-    SetBothGridInactive();
+    
+    state.waitPhaseInterfaceTimeout = setTimeout(() => {  
+        SetGameHint("game-hint-wait");
+        SetBothGridInactive();
+    }, WORD_OK_DELAY);
 }
 
 function StartSabotagePhase() {
@@ -180,9 +187,14 @@ function OnLetterTyped(letter) {
 
 function OnEnter() {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length == WORD_LENGTH) {
-        TrySendMessage("word", { word: state.typedWord });
-        state.playerWords.push(state.typedWord);
-        StartTypeWaitPhase();
+        if (CheckIfWordIsValid(state.typedWord)) {
+            TrySendMessage("word", { word: state.typedWord });
+            state.playerWords.push(state.typedWord);
+            StartTypeWaitPhase();
+        }
+        else {
+            OnWordRejected();
+        }
     }
 }
 
@@ -199,6 +211,14 @@ function OnSabotageLetter(x, y) {
         TrySendMessage("sabotage", { id: x });
         StartSabotageWaitPhase();
     }
+}
+
+function OnWordRejected() {
+    SetGameHint("game-hint-enter-word");
+    Toast("toast-invalid-word");
+    InvalidAnimation(true, state.currentTurn);
+    state.currentPhase = PHASE_TYPE;
+    SetLeftGridActive();
 }
 
 function TrySendMessage(msgType, msgContent) {
@@ -288,6 +308,10 @@ function HandleConnectionMessage(msgText) {
         OnGameStart();
     }
     else if (msg.type == "other-player-word") {
+        if (state.waitPhaseInterfaceTimeout) {
+            clearTimeout(state.waitPhaseInterfaceTimeout)
+        }
+
         SetWord(false, state.currentTurn, msg.content.word);
 
         if (msg.content.who_wins == "none") {
@@ -315,11 +339,11 @@ function HandleConnectionMessage(msgText) {
         StartNextTurn();
     }
     else if (msg.type == "word-rejected") {
-        SetGameHint("game-hint-enter-word");
-        Toast("toast-invalid-word");
-        InvalidAnimation(true, state.currentTurn);
-        state.currentPhase = PHASE_TYPE;
-        SetLeftGridActive();
+        if (state.waitPhaseInterfaceTimeout) {
+            clearTimeout(state.waitPhaseInterfaceTimeout)
+        }
+
+        OnWordRejected();
     }
     else {
         console.error("Unknown message type: " + msg.type);
@@ -390,6 +414,16 @@ function SetApiUrl(url) {
     window.localStorage.setItem("apiUrl", url)
 }
 
+function GetAllWords() {
+    fetch("words/english-all.txt").then(res => {
+        return res.text()
+    }).then(txt => {
+        allowedWords = txt.split(";");
+    });
+}
 
+function CheckIfWordIsValid(word) {
+    return allowedWords.includes(word.toLowerCase());
+}
 
 

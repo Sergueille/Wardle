@@ -274,7 +274,7 @@ button.connecting::after {
     animation: 
         word-grid-win-start 700ms ease-in-out 0s 1 forwards,
         word-grid-win-loop 1000ms alternate infinite ease-in-out 700ms;
-    box-shadow: 0 0 10px 0px var(--bg);
+    box-shadow: 0 0 10px -3px var(--bg);
 }
 .word-grid-cell.win-animation .word-grid-label {
     animation: 
@@ -385,7 +385,7 @@ button.connecting::after {
     align-items: center;
     justify-content: center;
 
-    transition: 400ms;
+    transition: 600ms;
 }
 
 .keyboard-enter, .keyboard-backspace {
