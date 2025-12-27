@@ -6,4 +6,5 @@ scp target/release/wardle-server root@\[2a09:6847:fa10:1410::278\]:/root/server/
 cd ..
 
 # Frontend
-scp -r client root@\[2a09:6847:fa10:1410::278\]:/root/client/www
+scp -r client/* root@\[2a09:6847:fa10:1410::278\]:/root/client/www
+scp -r client/index.html root@\[2a09:6847:fa10:1410::278\]:/root/client/www/test.html
