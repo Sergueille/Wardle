@@ -264,11 +264,6 @@ button.connecting::after {
     opacity: 0.6;
 }
 
-.word-grid-cell-container {
-    width: 70%;
-    height: 70px;
-}
-
 .word-grid-cell {
     width: 70px;
     height: 70px;
@@ -572,6 +567,39 @@ button.connecting::after {
     }
 }
 
+@media (max-height: 950px) {
+    #left-grid, #right-grid {
+        margin: 10px 20px 40px 20px;
+    }
+
+    .keyboard-line {
+        height: 65px;
+    }
+
+    .word-grid-cell {
+        height: 65px;
+        width: 65px;
+    }
+
+    #grids-container {
+        padding: 0 calc(50vw - 20px - 2.5*65px - 10px);
+    }
+}
+
+@media (max-height: 850px) {
+    .keyboard-line {
+        height: 65px;
+    }
+
+    .word-grid-cell {
+        height: 60px;
+        width: 60px;
+    }
+
+    #grids-container {
+        padding: 0 calc(50vw - 20px - 2.5*60px - 10px);
+    }
+}
 /* FONTS */
 
 @font-face {

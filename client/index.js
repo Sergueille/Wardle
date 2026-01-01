@@ -164,6 +164,7 @@ function StartNextTurn() {
     state.currentPhase = PHASE_TYPE;
     state.typedWord = "";
     SetLeftGridActive();
+    AutoScroll(true);
 }
 
 function StartTypeWaitPhase() {
@@ -195,6 +196,7 @@ function OnLetterTyped(letter) {
         state.typedWord += letter;
 
         SetLetter(true, state.typedWord.length - 1, state.currentTurn, letter);
+        AutoScroll(true);
     }
 }
 
@@ -341,24 +343,28 @@ function HandleConnectionMessage(msgText) {
 
         if (msg.content.who_wins == "none") {
             state.enemyWords.push(msg.content);
+            AutoScroll(false);
             
             if (state.currentTurn < MAX_WORD_COUNT - 1) { // If that was the las guess, no point in sabotaging
                 StartSabotagePhase();
             }
         }
         else if (msg.content.who_wins == "you") {
+            AutoScroll(true);
             SetBothGridActive();
             SetGameHint("hint-win");
             WinAnimation(true, state.currentTurn);
             OnGameEnd();
         }
         else if (msg.content.who_wins == "other") {
+            AutoScroll(false);
             SetBothGridActive();
             SetGameHint("hint-loose");
             WinAnimation(false, state.currentTurn);
             OnGameEnd();
         }
         else if (msg.content.who_wins == "both") {
+            AutoScroll(true);
             SetBothGridActive();
             SetGameHint("hint-both-win");
             WinAnimation(true, state.currentTurn);
@@ -471,4 +477,12 @@ function BeginningAnimation() {
     document.getElementById("start-options").classList.add("animate");
 }
 
+// Scrolls the word list on mobile. Go to the start if `start` is true, otherwise go to the end
+function AutoScroll(start) {
+    document.getElementById("grids-scroll-area").scroll({
+        top: 0,
+        left: start ? 0 : 1000000,
+        behavior: "smooth",
+    });
+}
 
