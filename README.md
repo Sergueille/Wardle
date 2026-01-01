@@ -16,11 +16,13 @@
 
 ## Send files to server
 
-run `deploy_to_server.sh`
+- reboot the server
+- run `deploy_to_server.sh`
+- follow [Start the server](#start-the-server) steps
 
 ## Start the server
 
-make sure server is on
-start an ssh session
-run `server_launch.sh` in a tmux session and detach
+- make sure server is on
+- start an ssh session
+- run `launch.sh` in a tmux session and detach (`ctrl+B, D`)
 
