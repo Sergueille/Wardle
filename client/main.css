@@ -194,6 +194,14 @@ button.connecting::after {
     margin-bottom: 100px;
 }
 
+.logo .word-grid-cell {
+    opacity: 0;
+}
+
+.logo .word-grid-cell.animate-hint {
+    opacity: 1;
+}
+
 .server-url-panel {
     position: absolute;
     right: 10px;
@@ -204,6 +212,41 @@ button.connecting::after {
     padding: 4px 10px;
     font-size: 1rem;
     margin-left: 5px;
+}
+
+#loading-screen {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 10000;
+    background-color: var(--bg);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#loading-screen.hidden {
+    display: none;
+}
+
+#loading-screen span {
+    font-size: 3rem;
+    color: var(--txt-d);
+}
+
+#start-options.animate {
+    animation: start-options-animation 500ms ease 0s 1 forwards;
+}
+
+@keyframes start-options-animation {
+    0% {
+        margin-top: 150px;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
 /* WORD GRID */
