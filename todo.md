@@ -13,6 +13,7 @@
 
 - fix scrolling mobile
 - icônes clavier
+- gérer retour/rechargement de la page correctement
 
 ### Server
 

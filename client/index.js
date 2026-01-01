@@ -61,9 +61,13 @@ function Start() {
     GetAllWords();
     HideChildren("game-hint-2");
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
+
+    document.getElementById("loading-screen").classList.add("hidden");
+    BeginningAnimation();
 }
 
-Start();
+window.addEventListener("load", () => Start()) // Start only when the document is fully loaded (otherwise the font isn't ready and the logo is unreadable)
+
 
 function ResetGlobalState() {
     state = {
@@ -457,6 +461,14 @@ function GetAllWords() {
 
 function CheckIfWordIsValid(word) {
     return allowedWords.includes(word.toLowerCase());
+}
+
+function BeginningAnimation() {
+    for (let i = 0; i < 6; i++) {
+        setTimeout(() => document.getElementById("logo-" + i).classList.add("animate-hint"), 30 * i);
+    }
+
+    document.getElementById("start-options").classList.add("animate");
 }
 
 
