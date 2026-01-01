@@ -68,6 +68,20 @@ Indices pour le dernier mot du joueur. Signale qu'il faut passer au tour suivant
 ]
 ```
 
+### `solution`
+
+Solution de la partie en cours. Indique également que les deux joueurs ont perdu. (et moi aussi)
+
+```
+<string>
+```
+
+### `restart`
+
+La partie recommence
+
+*Pas de contenu*
+
 ## Client vers serveur
 
 ### `ping`
@@ -92,4 +106,12 @@ Le joueur a saboté une lettre
 {
     "id": <string> // Indice de la letter sabotée
 }
+```
+
+### `restart-ready`
+
+Le joueur est prêt a recommencer
+
+```json
+{}
 ```

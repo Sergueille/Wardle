@@ -16,24 +16,25 @@ function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
 
         for (let i = 0; i < line.length; i++) {
             let el = document.createElement("div");
-            lineElement.appendChild(el);
             let label = document.createElement("span");
             el.appendChild(label);
 
             if (line[i] == '.') {
                 el.classList.add("keyboard-void");
+                lineElement.appendChild(el);
             }
             else if (line[i] == '%') {
-                el.classList.add("keyboard-enter");
-                label.textContent = "ENTER"
-                el.addEventListener("mouseup", ev => onEnter())
-                el.id = "key-enter";
+                let key = document.getElementById("key-enter");
+                key.addEventListener("mouseup", ev => onEnter());
+                SetSubElement("key-enter", "icon-enter");
+                lineElement.appendChild(key);
             }
             else if (line[i] == '!') {
                 el.classList.add("keyboard-backspace");
                 label.textContent = "BACKSPACE"
                 el.addEventListener("mouseup", ev => onBackspace())
                 el.id = "key-backspace";
+                lineElement.appendChild(el);
             }
             else {
                 el.classList.add("keyboard-letter");
@@ -42,6 +43,8 @@ function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
                 let char = line[i];
                 el.addEventListener("mouseup", ev => onPressCallback(char))
                 el.id = "key-" + char;
+
+                lineElement.appendChild(el);
             }
         }
     }
@@ -73,5 +76,21 @@ function SetKeyboardHint(char, hintType) {
     else {
         console.error("Uuh?")
     }
+}
+
+function ClearKeyboardHints() {
+    let keyboard_container = document.getElementById("keyboard");
+    for (let line of keyboard_container.children) {
+        for (let key of line.children) {
+            key.classList.remove("hint-gray")
+            key.classList.remove("hint-green")
+            key.classList.remove("hint-yellow")
+            key.classList.remove("hint-red")
+        }
+    }
+}
+
+function SetKeyboardEnterIcon(icon_id) {
+    SetSubElement("key-enter", icon_id)
 }
 

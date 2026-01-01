@@ -8,6 +8,9 @@ function PopulateWordGrids(nbColumn, nbRow, onSabotage) {
     let left = document.getElementById("left-grid");
     let right = document.getElementById("right-grid");
 
+    left.innerHTML = "";
+    right.innerHTML = "";
+
     for (let i = 0; i < 2; i++) {
         for (let y = 0; y < nbRow; y++) {
             for (let x = 0; x < nbColumn; x++) {

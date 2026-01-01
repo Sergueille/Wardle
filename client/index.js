@@ -21,6 +21,8 @@ const PHASE_TYPE = 0;
 const PHASE_TYPE_WAIT = 1;
 const PHASE_SABOTAGE = 2;
 const PHASE_SABOTAGE_WAIT = 3;
+const PHASE_RESTART = 4;
+const PHASE_RESTART_WAIT = 5;
 
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
@@ -57,6 +59,8 @@ function Start() {
     SetupToasts();
     ShowPanel("start-panel");
     GetAllWords();
+    HideChildren("game-hint-2");
+    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
 }
 
 Start();
@@ -72,18 +76,19 @@ function ResetGlobalState() {
         messagesToSend: [], // Message that are sent when not connected are stored here, to send them on reconnection
         lastSentMessage: null, // Also to be resent if there is a problem
         inReconnectionDelay: false,
-
-        // Game state
-        playerWords: [],
-        enemyWords: [],
-        currentTurn: -1,
-        currentPhase: PHASE_TYPE,
-        knownHints: {},
-
-        // Information for type phase
-        typedWord: "",
-        waitPhaseInterfaceTimeout: null,
     };
+
+    ResetGlobalGameState();
+}
+
+function ResetGlobalGameState() {
+    state.playerWords = [];
+    state.enemyWords = [];
+    state.currentTurn = -1;
+    state.currentPhase = PHASE_TYPE;
+    state.knownHints = {};
+    state.typedWord = "";
+    state.waitPhaseInterfaceTimeout = null;
 }
 
 function JoinRoom()
@@ -126,6 +131,8 @@ function CreateRoom() {
         StartPingLoop();
     });
     connection.onerror = ev => {
+    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
+    PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
         document.getElementById("create-room-btn").classList.remove("connecting");
         Toast("room-creation-failed");
     };
@@ -133,9 +140,11 @@ function CreateRoom() {
 
 // Called once the game can properly start (both players connected)
 function OnGameStart() {
-    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
+    ClearKeyboardHints();
+    ResetGlobalGameState();
     ShowPanel("game-panel");
+    HideChildren("game-hint-2")
     state.gameStarted = true;
 
     state.websocketConnection.onerror = ev => {
@@ -196,6 +205,12 @@ function OnEnter() {
             OnWordRejected();
         }
     }
+    else if (state.currentPhase == PHASE_RESTART) {
+        SetSubElement("game-hint-2", "game-hint-restart-wait");
+        SetKeyboardEnterIcon("icon-enter");
+        state.currentPhase = PHASE_RESTART_WAIT;
+        TrySendMessage("restart-ready", {});
+    }
 }
 
 function OnBackspace() {
@@ -219,6 +234,12 @@ function OnWordRejected() {
     InvalidAnimation(true, state.currentTurn);
     state.currentPhase = PHASE_TYPE;
     SetLeftGridActive();
+}
+
+function OnGameEnd() {
+    SetSubElement("game-hint-2", "game-hint-restart");
+    SetKeyboardEnterIcon("icon-restart");
+    state.currentPhase = PHASE_RESTART;
 }
 
 function TrySendMessage(msgType, msgContent) {
@@ -316,17 +337,22 @@ function HandleConnectionMessage(msgText) {
 
         if (msg.content.who_wins == "none") {
             state.enemyWords.push(msg.content);
-            StartSabotagePhase();
+            
+            if (state.currentTurn < MAX_WORD_COUNT - 1) { // If that was the las guess, no point in sabotaging
+                StartSabotagePhase();
+            }
         }
         else if (msg.content.who_wins == "you") {
             SetBothGridActive();
             SetGameHint("hint-win");
             WinAnimation(true, state.currentTurn);
+            OnGameEnd();
         }
         else if (msg.content.who_wins == "other") {
             SetBothGridActive();
             SetGameHint("hint-loose");
             WinAnimation(false, state.currentTurn);
+            OnGameEnd();
         }
         else {
             CustomToast("Invalid who_wins value " + msg.content.who_wins);
@@ -344,6 +370,15 @@ function HandleConnectionMessage(msgText) {
         }
 
         OnWordRejected();
+    }
+    else if (msg.type == "solution") {
+        document.getElementById("solution-hint").textContent = msg.content;
+        SetGameHint("hint-loose-solution");
+        SetBothGridActive();
+        OnGameEnd();
+    }
+    else if (msg.type == "restart") {
+        OnGameStart();
     }
     else {
         console.error("Unknown message type: " + msg.type);
@@ -382,16 +417,7 @@ function UpdateKnownHints(word, hints) {
 
 // Display the specified hint above the UI
 function SetGameHint(hintId) {
-    let container = document.getElementById("game-hint");
-
-    for (let element of container.children) {
-        if (element.id == hintId) {
-            element.classList.remove("hidden")
-        }
-        else {
-            element.classList.add("hidden")
-        }
-    }
+    SetSubElement("game-hint", hintId);
 }
 
 function HintTextToId(hintText) {

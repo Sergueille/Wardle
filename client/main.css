@@ -164,11 +164,24 @@ button.connecting::after {
 }
 
 #game-hint {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     text-align: center;
+    margin-bottom: 5px;
 }
 
-#game-hint .hidden {
+#game-hint-2 {
+    font-size: 1rem;
+    text-align: center;
+    color: var(--txt-d);
+    font-style: italic;
+    height: 30px;
+}
+
+#solution-hint {
+    font-family: cascadia;
+}
+
+.sub-hidden {
     display: none;
 }
 
@@ -199,7 +212,7 @@ button.connecting::after {
     display: grid;
     grid-template-columns: repeat(5, auto);
     gap: 5px;
-    margin: 50px;
+    margin: 30px 50px 50px 50px;
 
     transition: 200ms;
 }
@@ -413,7 +426,7 @@ button.connecting::after {
     filter: brightness(1.2);
 }
 
-.keyboard-letter > span, .keyboard-enter > span, .keyboard-backspace > span {
+.keyboard-letter *, .keyboard-enter *, .keyboard-backspace * {
     pointer-events: none;
     user-select: none;
 }
@@ -488,12 +501,8 @@ button.connecting::after {
         overflow-x: auto;
     }
 
-    #left-grid {
-        margin: 50px 20px;
-    }
-
-    #right-grid {
-        margin: 50px 20px;
+    #left-grid, #right-grid {
+        margin: 30px 20px 50px 20px;
     }
 
     #keyboard {
