@@ -5,6 +5,7 @@
     <title>Wardle</title>
     <link rel="stylesheet" href="main.css">
     <meta name="viewport" content="initial-scale=0.8,user-scalable=0">
+    <script src="util.js" defer="defer"></script>
     <script src="panels.js" defer="defer"></script>
     <script src="toast.js" defer="defer"></script>
     <script src="grid.js" defer="defer"></script>
@@ -108,6 +109,11 @@
         <div id="game-hint-sabotage">Sabotage a letter</div>
         <div id="hint-win">Congratulations!</div>
         <div id="hint-loose">Too bad!</div>
+        <div id="hint-loose-solution">Too bad! The word was <span id="solution-hint">XXXXX</span></div>
+      </div>
+      <div id="game-hint-2">
+        <div id="game-hint-restart">Press enter to start a new game</div>
+        <div id="game-hint-restart-wait">Wait for the other player to also restart...</div>
       </div>
       <div id="grids-scroll-area">
         <div class="flex-row" id="grids-container">
@@ -121,6 +127,10 @@
       </div>
       <div id="keyboard">
         <!-- Populated by PopulateKeyboard() -->
+      </div>
+      <div id="key-enter" class="keyboard-enter"> <!-- Enter key template for PopulateKeyboard() -->
+        <span id=icon-enter>ENTER</span>
+        <span id=icon-restart>RESTART</span>
       </div>
     </div>
   </body>
