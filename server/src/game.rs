@@ -64,7 +64,12 @@ pub fn check_for_type_end(room: &mut RoomState) {
         who_wins: String::from("none"),
     };
 
-    if host_word == room.game_state.word_to_guess {
+    // TODO: when players will have a limited number of hints, consider changing the victory condition to account for the number of remaining sabotages
+    if host_word == room.game_state.word_to_guess && other_word == room.game_state.word_to_guess {
+        host_msg.who_wins = String::from("both");
+        other_msg.who_wins = String::from("both");
+    }
+    else if host_word == room.game_state.word_to_guess {
         host_msg.who_wins = String::from("you");
         other_msg.who_wins = String::from("other");
     }

@@ -54,7 +54,7 @@ Mot qu'a écrit l'autre joueur. Signale qu'il faut passer à la phase de sabotag
 ```json
 {
     "word": <string>, // Le mot
-    "who_wins": <none|you|other>, // Si quelqu'un gagne ce tour ci (en tout cas moi je perds)
+    "who_wins": <none|you|other|both>, // Si quelqu'un gagne ce tour ci (en tout cas moi je perds)
 }
 ```
 

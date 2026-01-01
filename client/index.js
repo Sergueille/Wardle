@@ -354,6 +354,13 @@ function HandleConnectionMessage(msgText) {
             WinAnimation(false, state.currentTurn);
             OnGameEnd();
         }
+        else if (msg.content.who_wins == "both") {
+            SetBothGridActive();
+            SetGameHint("hint-both-win");
+            WinAnimation(true, state.currentTurn);
+            WinAnimation(false, state.currentTurn);
+            OnGameEnd();
+        }
         else {
             CustomToast("Invalid who_wins value " + msg.content.who_wins);
         }
