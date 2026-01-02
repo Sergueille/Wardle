@@ -61,6 +61,7 @@ function Start() {
     GetAllWords();
     HideChildren("game-hint-2");
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
+    SetVersionText();
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
@@ -486,3 +487,10 @@ function AutoScroll(start) {
     });
 }
 
+function SetVersionText() {
+    fetch("version.txt").then(r => {
+        if (r.ok) {
+            r.text().then(t => document.getElementById("version").textContent = t)
+        }
+    });   
+}
