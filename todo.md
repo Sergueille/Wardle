@@ -11,6 +11,10 @@
 
 ### Interface
 
+- rappel des règles
+- fix animation cassée quand pas focus
+- afficher quand l'autre joueur attend
+- son/changement de titre quand action requise
 - icônes clavier
 - gérer retour/rechargement de la page correctement
 
