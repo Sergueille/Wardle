@@ -16,6 +16,7 @@
 
     --txt: #fff;
     --txt-d: #ccc;
+    --txt-dd: #999;
 
     box-sizing: border-box;
 
@@ -206,7 +207,13 @@ button.connecting::after {
     position: absolute;
     right: 10px;
     top: 10px;
+    opacity: 0;
 }
+
+.server-url-panel:hover {
+    opacity: 1;
+}
+
 
 .server-url-panel input {
     padding: 4px 10px;
@@ -247,6 +254,14 @@ button.connecting::after {
     100% {
         opacity: 1;
     }
+}
+
+#version {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    color: var(--txt-dd);
+    font-family: cascadia;
 }
 
 /* WORD GRID */

@@ -1,4 +1,6 @@
 
+echo "test version $(git rev-parse --short HEAD)" > client/version.txt
+
 # Backend
 cd server
 cargo build --release
