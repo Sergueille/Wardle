@@ -5,18 +5,21 @@
 
 ### Game
 
-- cas où les joueurs trouvent le mot en même temps
 - menu d'options
 - tester autres types de sabotage (plusieurs par tour)
+- option pour mode difficile
+- option pour timer
 
 ### Interface
 
+- code de salle pas case sensitive
 - rappel des règles
 - fix animation cassée quand pas focus
 - afficher quand l'autre joueur attend
 - son/changement de titre quand action requise
 - icônes clavier
 - gérer retour/rechargement de la page correctement
+- meilleur codes de salles
 
 ### Server
 
