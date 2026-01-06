@@ -51,10 +51,28 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+window.addEventListener("beforeunload", e => {
+    e.preventDefault();
+    e.returnValue = true;
+    return true;
+});
+
+window.addEventListener('popstate', e => {
+    if (currentPanel.id == "wait-panel") {
+        e.preventDefault();
+        ShowPanel("start-panel");
+        window.history.pushState({}, null, null);
+    }
+    else {
+        history.back();
+    }
+});
+
 let state; // Global game state
 let allowedWords = [];
 
 function Start() {
+    window.history.pushState({}, null, null); // TEST
     HideAllPanels();
     SetupToasts();
     ShowPanel("start-panel");
@@ -68,7 +86,6 @@ function Start() {
 }
 
 window.addEventListener("load", () => Start()) // Start only when the document is fully loaded (otherwise the font isn't ready and the logo is unreadable)
-
 
 function ResetGlobalState() {
     state = {
@@ -113,6 +130,7 @@ function JoinRoom()
 
     connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
     connection.addEventListener("open", ev => {
+        document.getElementById("join-room-btn").classList.remove("connecting");
         StartPingLoop();
         OnGameStart();
     });
@@ -133,11 +151,10 @@ function CreateRoom() {
 
     connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
     connection.addEventListener("open", ev => {
+        document.getElementById("create-room-btn").classList.remove("connecting");
         StartPingLoop();
     });
     connection.onerror = ev => {
-    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
-    PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
         document.getElementById("create-room-btn").classList.remove("connecting");
         Toast("room-creation-failed");
     };
