@@ -12,7 +12,6 @@
 
 ### Interface
 
-- code de salle pas case sensitive
 - rappel des règles
 - fix animation cassée quand pas focus
 - afficher quand l'autre joueur attend
