@@ -96,14 +96,26 @@
       </div>
     </div>
 
-    <!-- Waiting menu -->
+    <!-- Waiting menu for the host -->
     <div class="panel" id="wait-panel">
       <span class="room-code-label">Here's your room code:</span>
       <span id="room-code"></span>
       <span class="room-code-clipboard-hint">It has already been put in your clipboard!</span>
-      <span class="waiting-player-hint">Waiting for another player to join...</span>
+      <div id="options-container">
+        <span class="options-title">Game options</span>
+
+        <span>
+          TODO: options
+        </span>
+      </div>
+      <span id="host-waiting-other-hint" class="waiting-player-hint">Waiting for another player to join...</span>
+      <button id="host-ready-btn">Ready to start</button>
     </div>
 
+    <!-- Waiting menu for the other player -->
+    <div class="panel" id="wait-other">
+      <span class="waiting-player-hint">Waiting for the host player to be ready...</span>
+    </div>
 
     <!-- Game screen -->
     <div class="panel" id="game-panel">

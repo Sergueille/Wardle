@@ -82,6 +82,12 @@ La partie recommence
 
 *Pas de contenu*
 
+### `wait-for-host`
+
+Le joueur doit attendre l'hôte
+
+*Pas de contenu*
+
 ## Client vers serveur
 
 ### `ping`
@@ -110,8 +116,18 @@ Le joueur a saboté une lettre
 
 ### `restart-ready`
 
-Le joueur est prêt a recommencer
+Le joueur est prêt a recommencer (ou a commencer)
 
 ```json
 {}
+```
+
+### `game-options`
+
+Mise a jour des options pour la partie.
+
+```json
+{
+    "options": <GameOptions> // Correspond au type option dans `main.rs`
+}
 ```
