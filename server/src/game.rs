@@ -133,7 +133,7 @@ pub fn check_for_sabotage_end(room: &mut RoomState) {
 
 pub fn check_for_restart_end(room: &mut RoomState) {
     // Check that both player restarted
-    if !room.get_player(false).ready_to_restart 
+    if !room.player_exists(false) || !room.get_player(false).ready_to_restart 
     || !room.get_player(true).ready_to_restart {
         return;
     }
@@ -143,11 +143,7 @@ pub fn check_for_restart_end(room: &mut RoomState) {
     game_start(room);
 }
 
-pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &JsonMap, is_host: bool) -> Result<(), String> {
-    if !room.game_started && msg_type != "ping" {
-        return Err(String::from("Message sent before game started")); // Do nothing if room hasn't even started
-    }
-    
+pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &JsonMap, is_host: bool) -> Result<(), String> {    
     match msg_type {
         "ping" => {
             // Nothing to do
@@ -173,9 +169,13 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             check_for_sabotage_end(room)
         },
         "restart-ready" => {
-            if room.game_state.current_phase != GamePhase::Restarting { return Err(String::from("Wrong phase")); }
+            if room.game_state.current_phase != GamePhase::Restarting && room.game_started { return Err(String::from("Wrong phase")); }
             room.get_player(is_host).ready_to_restart = true;
             check_for_restart_end(room);
+        },
+        "game-options" => {
+            if room.game_started { return Err(String::from("Game already started")); }
+            room.game_options = serde_json::from_value(msg_contents.get("options").unwrap().clone()).expect("Invalid option format");
         },
         _ => {
             return Err(format!("Unknown message type {}", msg_type));

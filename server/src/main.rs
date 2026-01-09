@@ -29,6 +29,34 @@ struct GameState {
     current_phase: GamePhase
 }
 
+// NOTE: do not rename these enums' values! Serialization depend on the names.
+#[derive(serde::Deserialize)]
+enum Language {
+    French, English
+}
+#[derive(serde::Deserialize)]
+enum Mode {
+    Normal, Hard
+}
+#[derive(serde::Deserialize)]
+enum Attack {
+    Sabotage, InvisibleSabotage, Espionage
+}
+#[derive(serde::Deserialize)]
+enum AttackMode {
+    OncePerTurn,
+    Multiple {
+        available_attacks: Vec<Attack>
+    }
+}
+
+#[derive(serde::Deserialize)]
+struct GameOptions {
+    lang: Language,
+    mode: Mode,
+    attacks: AttackMode,
+}
+
 /// Settings for a player (thins that the player has configured)
 #[derive(serde::Serialize, Clone)]
 struct PlayerInfo {
@@ -58,6 +86,7 @@ struct RoomState {
     other_player: Option<Player>,
     join_code: String,
     game_started: bool,
+    game_options: GameOptions,
 }
 
 struct AppState {
@@ -94,6 +123,7 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
         other_player: None,
         join_code: code.clone(),
         game_started: false,
+        game_options: GameOptions::default(),
     };
 
     println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, data.rooms.lock().unwrap().len() + 1);
@@ -125,13 +155,19 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
         let (response, connection) = server_internal::start_websocket(req, stream)?;
 
         let test_info = PlayerInfo { name: String::from("John client 2") };
-        let player = Player::new(Some(test_info));
+        let mut player = Player::new(Some(test_info));
+        player.ready_to_restart = true; // Player is immediately ready
+
         room.lock().unwrap().other_player = Some(player); // Add player to room
         server_internal::handle_player_connection(Arc::clone(&room), false, connection).await.unwrap(); // Start handling connection
         server_internal::send_message(&mut room.lock().unwrap().host_player, "other-player-connected", &()); // Tell the other player
         
-        room.lock().unwrap().game_started = true; // Start the game
-        game::game_start(&mut room.lock().unwrap());
+        if room.lock().unwrap().host_player.ready_to_restart {
+            game::check_for_restart_end(&mut room.lock().unwrap());
+        }
+        else {
+            server_internal::send_message(&mut room.lock().unwrap().get_player(false), "wait-for-host", &());
+        }
 
         Ok::<HttpResponse, actix_web::Error>(response)
     }
@@ -245,5 +281,11 @@ impl Player {
             letter_sabotaged_this_turn: None,
             ready_to_restart: false,
         }
+    }
+}
+
+impl GameOptions {
+    pub fn default() -> GameOptions {
+        GameOptions { lang: Language::English, mode: Mode::Normal, attacks: AttackMode::OncePerTurn }
     }
 }

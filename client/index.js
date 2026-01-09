@@ -30,6 +30,12 @@ document.getElementById("create-room-btn").addEventListener("click", ev => Creat
 document.getElementById("server-url-input").addEventListener("change", ev => SetApiUrl(ev.target.value));
 document.getElementById("server-url-input").value = GetApiUrlWithoutPort();
 
+document.getElementById("host-ready-btn").addEventListener("click", ev => {
+    TrySendMessage("restart-ready", {});
+    document.getElementById("host-waiting-other-hint").classList.remove("hidden");
+    document.getElementById("host-ready-btn").classList.add("hidden");
+});
+
 document.addEventListener("keydown", (event) => {
     if (!state || !state.gameStarted) {
         return;
@@ -130,9 +136,7 @@ function JoinRoom()
 
     connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
     connection.addEventListener("open", ev => {
-        document.getElementById("join-room-btn").classList.remove("connecting");
         StartPingLoop();
-        OnGameStart();
     });
     connection.onerror = ev => {
         document.getElementById("join-room-btn").classList.remove("connecting");
@@ -347,10 +351,11 @@ function HandleConnectionMessage(msgText) {
             CustomToast("Couldn't access clipboard. You will have to copy the code by hand. Sorry!");
         }
 
+        document.getElementById("host-waiting-other-hint").classList.add("hidden");
         ShowPanel("wait-panel");
     }
     else if (msg.type == "other-player-connected") {
-        OnGameStart();
+        //OnGameStart();
     }
     else if (msg.type == "other-player-word") {
         if (state.waitPhaseInterfaceTimeout) {
@@ -413,7 +418,12 @@ function HandleConnectionMessage(msgText) {
         OnGameEnd();
     }
     else if (msg.type == "restart") {
+        document.getElementById("join-room-btn").classList.remove("connecting");
         OnGameStart();
+    }
+    else if (msg.type == "wait-for-host") {
+        document.getElementById("join-room-btn").classList.remove("connecting");
+        ShowPanel("wait-other");
     }
     else {
         console.error("Unknown message type: " + msg.type);
