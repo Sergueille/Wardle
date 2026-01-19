@@ -87,8 +87,8 @@ function Start() {
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
 
-    if (window.location.protocol == "https") {
-        CustomToast("HTTPS is unsupported! Please use HTTP instead!")
+    if (window.location.protocol == "https:") {
+        Toast("toast-https");
     }
 }
 
@@ -127,41 +127,51 @@ function JoinRoom()
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
     state.roomCode = code;
 
-    let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
+    try {
+        let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
 
-    document.getElementById("join-room-btn").classList.add("connecting");
+        document.getElementById("join-room-btn").classList.add("connecting");
 
-    state.websocketConnection = connection;
-    state.isHostPlayer = false;
+        state.websocketConnection = connection;
+        state.isHostPlayer = false;
 
-    connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
-    connection.addEventListener("open", ev => {
-        StartPingLoop();
-    });
-    connection.onerror = ev => {
-        document.getElementById("join-room-btn").classList.remove("connecting");
-        Toast("room-join-failed");
-    };
+        connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
+        connection.addEventListener("open", ev => {
+            StartPingLoop();
+        });
+        connection.onerror = ev => {
+            document.getElementById("join-room-btn").classList.remove("connecting");
+            Toast("room-join-failed");
+        };
+    }
+    catch {
+        Toast("toast-https");
+    }
 }
 
 function CreateRoom() {
-    let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
+    try {
+        let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
 
-    ResetGlobalState();
-    state.websocketConnection = connection;
-    state.isHostPlayer = true;
+        ResetGlobalState();
+        state.websocketConnection = connection;
+        state.isHostPlayer = true;
 
-    document.getElementById("create-room-btn").classList.add("connecting");
+        document.getElementById("create-room-btn").classList.add("connecting");
 
-    connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
-    connection.addEventListener("open", ev => {
-        document.getElementById("create-room-btn").classList.remove("connecting");
-        StartPingLoop();
-    });
-    connection.onerror = ev => {
-        document.getElementById("create-room-btn").classList.remove("connecting");
-        Toast("room-creation-failed");
-    };
+        connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
+        connection.addEventListener("open", ev => {
+            document.getElementById("create-room-btn").classList.remove("connecting");
+            StartPingLoop();
+        });
+        connection.onerror = ev => {
+            document.getElementById("create-room-btn").classList.remove("connecting");
+            Toast("room-creation-failed");
+        };
+    }
+    catch {
+        Toast("toast-https");
+    }
 }
 
 // Called once the game can properly start (both players connected)
