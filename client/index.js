@@ -123,8 +123,7 @@ function JoinRoom()
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
     state.roomCode = code;
 
-    console.log("http://" + GetApiUrl() + "/join-room/" + code);
-    let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
+    let connection = new WebSocket("wss://" + GetApiUrl() + "/join-room/" + code);
 
     document.getElementById("join-room-btn").classList.add("connecting");
 
@@ -142,7 +141,7 @@ function JoinRoom()
 }
 
 function CreateRoom() {
-    let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
+    let connection = new WebSocket("wss://" + GetApiUrl() + "/create-room");
 
     ResetGlobalState();
     state.websocketConnection = connection;
