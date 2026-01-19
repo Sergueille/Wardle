@@ -105,7 +105,7 @@ button.connecting::after {
     position: relative;
     display: block;
     margin: 20px;
-    color: var(--txt-d);
+    color: var(--txt);
     text-align: center;
     background-color: var(--bg);
     padding: 0 10px;
@@ -116,7 +116,7 @@ button.connecting::after {
     display: block;
     width: 400px;
     height: 2px;
-    background-color: var(--txt-d);
+    background-color: var(--txt-dd);
     position: absolute;
     top: calc(50% - 1px);
     left: calc(-200px + 50%);
@@ -204,24 +204,6 @@ button.connecting::after {
 
 .logo .word-grid-cell.animate-hint {
     opacity: 1;
-}
-
-.server-url-panel {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    opacity: 0;
-}
-
-.server-url-panel:hover {
-    opacity: 1;
-}
-
-
-.server-url-panel input {
-    padding: 4px 10px;
-    font-size: 1rem;
-    margin-left: 5px;
 }
 
 #loading-screen {

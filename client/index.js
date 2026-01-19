@@ -27,9 +27,6 @@ const PHASE_RESTART_WAIT = 5;
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
 
-document.getElementById("server-url-input").addEventListener("change", ev => SetApiUrl(ev.target.value));
-document.getElementById("server-url-input").value = GetApiUrlWithoutPort();
-
 document.getElementById("host-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
     document.getElementById("host-waiting-other-hint").classList.remove("hidden");
@@ -477,12 +474,7 @@ function GetApiUrl() {
     return GetApiUrlWithoutPort() + ":" + API_PORT.toString();
 }
 function GetApiUrlWithoutPort() {
-    let res = window.localStorage.getItem("apiUrl");
-    if (res == null) return DEFAULT_API_URL;
-    return res;
-}
-function SetApiUrl(url) {
-    window.localStorage.setItem("apiUrl", url)
+    return window.location.hostname;
 }
 
 function GetAllWords() {
