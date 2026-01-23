@@ -19,6 +19,8 @@
 - icônes clavier
 - gérer retour/rechargement de la page correctement
 - meilleur codes de salles
+- changement de logo en fonction de l'url
+- lien vers le wordle sur la page d'accueil
 
 ### Server
 
@@ -30,4 +32,5 @@
 - afficher indices chez l'adversaire
 - make a request to server on frontend startup to see if the server is alive
 - add a delay before a room can be deleted when both player disconnect
+- chat
 
