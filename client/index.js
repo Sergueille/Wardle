@@ -1,5 +1,5 @@
 
-const DEFAULT_API_URL = "[2a09:6847:fa10:1410::278]";
+const DEFAULT_API_URL = "api.wardle.rezel.net";
 const API_PORT = 4268;
 
 const TEMPORARY_INFO_DELAY = 10000; //ms
@@ -86,10 +86,6 @@ function Start() {
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
-
-    if (window.location.protocol == "https:") {
-        Toast("toast-https");
-    }
 }
 
 window.addEventListener("load", () => Start()) // Start only when the document is fully loaded (otherwise the font isn't ready and the logo is unreadable)
@@ -128,7 +124,7 @@ function JoinRoom()
     state.roomCode = code;
 
     try {
-        let connection = new WebSocket("http://" + GetApiUrl() + "/join-room/" + code);
+        let connection = new WebSocket("https://" + GetApiUrl() + "/join-room/" + code);
 
         document.getElementById("join-room-btn").classList.add("connecting");
 
@@ -145,13 +141,13 @@ function JoinRoom()
         };
     }
     catch {
-        Toast("toast-https");
+        Toast("toast-connection-fail");
     }
 }
 
 function CreateRoom() {
     try {
-        let connection = new WebSocket("http://" + GetApiUrl() + "/create-room");
+        let connection = new WebSocket("https://" + GetApiUrl() + "/create-room");
 
         ResetGlobalState();
         state.websocketConnection = connection;
@@ -170,7 +166,7 @@ function CreateRoom() {
         };
     }
     catch {
-        Toast("toast-https");
+        Toast("toast-connection-fail");
     }
 }
 
@@ -484,10 +480,10 @@ function HintTextToId(hintText) {
 }
 
 function GetApiUrl() {
-    return GetApiUrlWithoutPort() + ":" + API_PORT.toString();
+    return GetApiUrlWithoutPort();// + ":" + API_PORT.toString();
 }
 function GetApiUrlWithoutPort() {
-    return window.location.hostname;
+    return DEFAULT_API_URL;
 }
 
 function GetAllWords() {
