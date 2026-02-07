@@ -57,7 +57,7 @@ body, .panel {
     background-color: var(--prim);
 }
 
-button, input {
+button, input, select {
     background-color: var(--bg-ll);
     border: 0;
     color: white;
@@ -548,6 +548,35 @@ button.connecting::after {
 
 .toast.hidden {
     display: none;
+}
+
+
+/* OPTIONS */
+
+.option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.option-name {
+    font-size: 1.3rem;
+}
+
+.option-description {
+    font-style: italic;
+    color: var(--txt-dd);
+}
+
+.option-select {
+    margin-left: 10px;
+}
+
+.option-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
 }
 
 /* RESPONSIVENESS */

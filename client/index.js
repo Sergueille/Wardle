@@ -84,6 +84,8 @@ function Start() {
     HideChildren("game-hint-2");
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     SetVersionText();
+    LoadOptions();
+    InitializeOptions();
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
@@ -160,6 +162,7 @@ function CreateRoom() {
         connection.addEventListener("open", ev => {
             document.getElementById("create-room-btn").classList.remove("connecting");
             StartPingLoop();
+            SendOptionsToServer();
         });
         connection.onerror = ev => {
             document.getElementById("create-room-btn").classList.remove("connecting");
