@@ -24,6 +24,14 @@ pub fn get_initial_game_state() -> GameState {
 pub fn game_start(room: &mut RoomState) {
     room.game_started = true;
     room.do_for_all_players(&|p, _| p.ready_to_restart = false);
+
+    #[derive(serde::Serialize, Clone)]
+    struct MessageType {
+        options: GameOptions,
+    }
+    let current_options = MessageType { options: room.game_options.clone() };
+    send_message(room.get_player(false), "game-options", &current_options);
+
     start_turn(room);
 }
 

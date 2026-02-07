@@ -50,7 +50,7 @@ enum AttackMode {
     }
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, Clone)]
 struct GameOptions {
     timer: f32, // 0 iff the timer is disabled
 }

@@ -94,6 +94,16 @@ L'autre joueur a fini son action
 
 *Pas de contenu*
 
+### `game-options`
+
+Options pour la partie (envoyé seulement au joueur non hote)
+
+```json
+{
+    "options": <GameOptions> // Correspond au type option dans `main.rs`
+}
+```
+
 ## Client vers serveur
 
 ### `ping`
