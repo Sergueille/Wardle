@@ -36,11 +36,12 @@ pub fn start_turn(room: &mut RoomState) {
     room.other_player.as_mut().unwrap().letter_sabotaged_this_turn = None;
 }
 
-pub fn check_for_type_end(room: &mut RoomState) {
+/// Do things if both player typed their word. Returns wether both player typed their words
+pub fn check_for_type_end(room: &mut RoomState) -> bool {
     // Check that both plater entered a word
     if room.get_player(false).typed_word_this_turn.is_none() 
     || room.get_player(true).typed_word_this_turn.is_none() {
-        return;
+        return false;
     }
 
     // Go to next phase
@@ -84,7 +85,7 @@ pub fn check_for_type_end(room: &mut RoomState) {
     let someone_win = host_word == room.game_state.word_to_guess || other_word == room.game_state.word_to_guess;
     if someone_win {
         on_game_end(room);
-        return;
+        return true;
     }
 
     let was_last_guess = room.game_state.current_turn == MAX_WORD_COUNT as i64 - 1; // Was this the last possible guess for this game?
@@ -101,6 +102,8 @@ pub fn check_for_type_end(room: &mut RoomState) {
     if was_last_guess { 
         on_game_end(room);
     }
+
+    return true;
 }
 
 pub fn on_game_end(room: &mut RoomState) {
@@ -109,11 +112,11 @@ pub fn on_game_end(room: &mut RoomState) {
     room.game_state.current_phase = GamePhase::Restarting;
 }
 
-pub fn check_for_sabotage_end(room: &mut RoomState) {
+pub fn check_for_sabotage_end(room: &mut RoomState) -> bool {
     // Check that both player sabotaged
     if room.get_player(false).letter_sabotaged_this_turn.is_none() 
     || room.get_player(true).letter_sabotaged_this_turn.is_none() {
-        return;
+        return false;
     }
 
     // Send hints
@@ -129,6 +132,8 @@ pub fn check_for_sabotage_end(room: &mut RoomState) {
     });
 
     start_turn(room); // Next turn
+
+    return true;
 }
 
 pub fn check_for_restart_end(room: &mut RoomState) {
@@ -155,7 +160,11 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
 
             if util::is_valid_word(word) {   
                 room.get_player(is_host).typed_word_this_turn = Some(String::from(word));
-                check_for_type_end(room);
+                let ended = check_for_type_end(room);
+
+                if !ended { // Tell the other player
+                    send_message(room.get_player(!is_host), "other-player-is-done", &());
+                }
             }
             else {
                 send_message(room.get_player(is_host), "word-rejected", &());
@@ -166,7 +175,10 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
 
             let id = crate::util::get_json_number(msg_contents, "id").unwrap();
             room.get_player(is_host).letter_sabotaged_this_turn = Some(id.as_u64().unwrap()); // TODO: check that the number is between 0 and 5
-            check_for_sabotage_end(room)
+            let ended = check_for_sabotage_end(room);
+
+            // Tell the other player
+            if !ended { send_message(room.get_player(!is_host), "other-player-is-done", &()); }
         },
         "restart-ready" => {
             if room.game_state.current_phase != GamePhase::Restarting && room.game_started { return Err(String::from("Wrong phase")); }

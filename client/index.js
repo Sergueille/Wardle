@@ -192,6 +192,7 @@ function OnGameStart() {
 
 function StartNextTurn() {
     SetGameHint("game-hint-enter-word");
+    HideChildren("game-hint-2");
     state.currentTurn += 1;
     state.currentPhase = PHASE_TYPE;
     state.typedWord = "";
@@ -204,6 +205,7 @@ function StartTypeWaitPhase() {
     
     state.waitPhaseInterfaceTimeout = setTimeout(() => {  
         SetGameHint("game-hint-wait");
+        HideChildren("game-hint-2");
         SetBothGridInactive();
     }, WORD_OK_DELAY);
 }
@@ -213,10 +215,12 @@ function StartSabotagePhase() {
     SetRightGridActive();
     SetSabotageTarget(false, state.currentTurn, true);
     SetGameHint("game-hint-sabotage");
+    HideChildren("game-hint-2");
 }
 
 function StartSabotageWaitPhase() {
     SetGameHint("game-hint-wait");
+    HideChildren("game-hint-2");
     state.currentPhase = PHASE_SABOTAGE_WAIT;
     SetSabotageTarget(false, state.currentTurn, false);
     SetBothGridInactive();
@@ -434,6 +438,9 @@ function HandleConnectionMessage(msgText) {
     else if (msg.type == "wait-for-host") {
         document.getElementById("join-room-btn").classList.remove("connecting");
         ShowPanel("wait-other");
+    }
+    else if (msg.type == "other-player-is-done") {
+        SetSubElement("game-hint-2", "game-hint-other-done");
     }
     else {
         console.error("Unknown message type: " + msg.type);

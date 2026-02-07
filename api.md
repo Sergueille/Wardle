@@ -88,6 +88,12 @@ Le joueur doit attendre l'hôte
 
 *Pas de contenu*
 
+### `other-player-is-done`
+
+L'autre joueur a fini son action
+
+*Pas de contenu*
+
 ## Client vers serveur
 
 ### `ping`
