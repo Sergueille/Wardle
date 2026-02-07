@@ -162,6 +162,7 @@ function CreateRoom() {
         connection.addEventListener("open", ev => {
             document.getElementById("create-room-btn").classList.remove("connecting");
             StartPingLoop();
+            LoadOptions();
             SendOptionsToServer();
         });
         connection.onerror = ev => {
@@ -441,6 +442,10 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "other-player-is-done") {
         SetSubElement("game-hint-2", "game-hint-other-done");
+    }
+    else if (msg.type == "game-options") {
+        currentOptions = msg.content.options;
+        console.log("Options received.")
     }
     else {
         console.error("Unknown message type: " + msg.type);
