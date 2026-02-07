@@ -48,11 +48,6 @@ body, .panel {
     justify-content: center;
 }
 
-.panel.hidden {
-    display: none;
-}
-
-
 *::selection {
     background-color: var(--prim);
 }
@@ -98,7 +93,7 @@ button.connecting::after {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .sep-text {
@@ -163,14 +158,10 @@ button.connecting::after {
     margin-top: 40px;
 }
 
-.room-join-error.hidden {
-    display: none;
-}
-
 #game-hint {
     font-size: 1.7rem;
     text-align: center;
-    margin-bottom: 5px;
+    height: 40px;
 }
 
 #game-hint-2 {
@@ -216,10 +207,6 @@ button.connecting::after {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-#loading-screen.hidden {
-    display: none;
 }
 
 #loading-screen span {
@@ -271,6 +258,12 @@ button.connecting::after {
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 0 5px;
+}
+
+#timer {
+    font-size: 2rem;
+    font-family: cascadia;
+    height: 40px;
 }
 
 /* WORD GRID */
@@ -545,11 +538,6 @@ button.connecting::after {
 .toast.error {
     background-color: var(--hint-red);
 }
-
-.toast.hidden {
-    display: none;
-}
-
 
 /* OPTIONS */
 

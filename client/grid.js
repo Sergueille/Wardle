@@ -144,8 +144,6 @@ function InvalidAnimation(isLeftGrid, rowId) {
             }
         }
     }
-
-    console.log(rowId);
 }
 
 function WinAnimation(isLeftGrid, rowId) {

@@ -75,10 +75,14 @@ window.addEventListener('popstate', e => {
 let state; // Global game state
 let allowedWords = [];
 
+let timerIntervalHandle = null;
+let timerTimeoutHandle = null;
+
 function Start() {
     window.history.pushState({}, null, null); // TEST
     HideAllPanels();
     SetupToasts();
+    HideTimer();
     ShowPanel("start-panel");
     GetAllWords();
     HideChildren("game-hint-2");
@@ -193,6 +197,7 @@ function OnGameStart() {
 
 function StartNextTurn() {
     SetGameHint("game-hint-enter-word");
+    HideTimer();
     HideChildren("game-hint-2");
     state.currentTurn += 1;
     state.currentPhase = PHASE_TYPE;
@@ -204,7 +209,8 @@ function StartNextTurn() {
 function StartTypeWaitPhase() {
     state.currentPhase = PHASE_TYPE_WAIT;
     
-    state.waitPhaseInterfaceTimeout = setTimeout(() => {  
+    state.waitPhaseInterfaceTimeout = setTimeout(() => {
+        HideTimer();
         SetGameHint("game-hint-wait");
         HideChildren("game-hint-2");
         SetBothGridInactive();
@@ -213,6 +219,7 @@ function StartTypeWaitPhase() {
 
 function StartSabotagePhase() {
     state.currentPhase = PHASE_SABOTAGE;
+    HideTimer();
     SetRightGridActive();
     SetSabotageTarget(false, state.currentTurn, true);
     SetGameHint("game-hint-sabotage");
@@ -220,6 +227,7 @@ function StartSabotagePhase() {
 }
 
 function StartSabotageWaitPhase() {
+    HideTimer();
     SetGameHint("game-hint-wait");
     HideChildren("game-hint-2");
     state.currentPhase = PHASE_SABOTAGE_WAIT;
@@ -442,6 +450,30 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "other-player-is-done") {
         SetSubElement("game-hint-2", "game-hint-other-done");
+
+        if (currentOptions.timer > 0) {
+            HideChildren("game-hint");
+            StartTimer(currentOptions.timer, () => {
+
+                if (state.currentPhase == PHASE_TYPE) {
+                    let rand = Math.random() * 2;
+                    let word = ["AARGH", "OOMPH"][Math.floor(rand)];
+
+                    state.typedWord = word;
+                    for (let i = 0; i < WORD_LENGTH; i++) {
+                        SetLetter(true, i, state.currentTurn, state.typedWord[i]);
+                    }
+
+                    InvalidAnimation(true, state.currentTurn);
+                    Toast("toast-too-late");
+                    OnEnter();
+                }
+                else if (state.currentPhase == PHASE_SABOTAGE) {
+                    let rand = Math.floor(Math.random() * WORD_LENGTH);
+                    OnSabotageLetter(rand, state.currentTurn);
+                }
+            });
+        }
     }
     else if (msg.type == "game-options") {
         currentOptions = msg.content.options;
@@ -542,4 +574,37 @@ function SetVersionText() {
             r.text().then(t => document.getElementById("version").textContent = t)
         }
     });   
+}
+
+function HideTimer() {
+    document.getElementById("timer").classList.add("hidden");
+    document.getElementById("game-hint").classList.remove("hidden");
+
+    if (timerIntervalHandle != null)
+    {
+        clearInterval(timerIntervalHandle);
+        clearInterval(timerTimeoutHandle);
+    }
+}
+
+function StartTimer(initialValue, onFinished) {
+    document.getElementById("timer").classList.remove("hidden");
+    document.getElementById("game-hint").classList.add("hidden");
+
+    let startTime = Date.now();
+    document.getElementById("timer").textContent = initialValue;
+
+    timerIntervalHandle = setInterval(() => {
+        let deltaMilliseconds = Date.now() - startTime;
+        let secondsRemaining = initialValue - Math.floor(deltaMilliseconds / 1000);
+        document.getElementById("timer").textContent = secondsRemaining;
+    }, 10);
+
+    timerTimeoutHandle = setTimeout(() => {
+        clearInterval(timerIntervalHandle);
+        HideTimer();
+        onFinished();
+        timerIntervalHandle = null;
+        timerTimeoutHandle = null;
+    }, initialValue * 1000)
 }
