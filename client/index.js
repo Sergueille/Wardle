@@ -1,5 +1,6 @@
 
-const DEFAULT_API_URL = "api.wardle.rezel.net";
+const DEFAULT_API_URL = "https://api.wardle.rezel.net";
+const LOCALHOST_API_URL = "http://localhost:4268";
 const API_PORT = 4268;
 
 const TEMPORARY_INFO_DELAY = 10000; //ms
@@ -124,7 +125,7 @@ function JoinRoom()
     state.roomCode = code;
 
     try {
-        let connection = new WebSocket("https://" + GetApiUrl() + "/join-room/" + code);
+        let connection = new WebSocket(GetApiUrl() + "/join-room/" + code);
 
         document.getElementById("join-room-btn").classList.add("connecting");
 
@@ -147,7 +148,7 @@ function JoinRoom()
 
 function CreateRoom() {
     try {
-        let connection = new WebSocket("https://" + GetApiUrl() + "/create-room");
+        let connection = new WebSocket(GetApiUrl() + "/create-room");
 
         ResetGlobalState();
         state.websocketConnection = connection;
@@ -483,7 +484,12 @@ function GetApiUrl() {
     return GetApiUrlWithoutPort();// + ":" + API_PORT.toString();
 }
 function GetApiUrlWithoutPort() {
-    return DEFAULT_API_URL;
+    if (window.location.host.indexOf("localhost") != -1) {
+        return LOCALHOST_API_URL;
+    }
+    else {   
+        return DEFAULT_API_URL;
+    }
 }
 
 function GetAllWords() {
