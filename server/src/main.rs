@@ -52,9 +52,7 @@ enum AttackMode {
 
 #[derive(serde::Deserialize)]
 struct GameOptions {
-    lang: Language,
-    mode: Mode,
-    attacks: AttackMode,
+    timer: f32, // 0 iff the timer is disabled
 }
 
 /// Settings for a player (thins that the player has configured)
@@ -286,6 +284,6 @@ impl Player {
 
 impl GameOptions {
     pub fn default() -> GameOptions {
-        GameOptions { lang: Language::English, mode: Mode::Normal, attacks: AttackMode::OncePerTurn }
+        GameOptions { timer: 0.0 }
     }
 }
