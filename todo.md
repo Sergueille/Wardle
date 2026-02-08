@@ -5,22 +5,20 @@
 
 ### Game
 
-- menu d'options
 - tester autres types de sabotage (plusieurs par tour)
 - option pour mode difficile
-- option pour timer
+- option pour la langue
 
 ### Interface
 
-- rappel des règles
 - fix animation cassée quand pas focus
-- afficher quand l'autre joueur attend
 - son/changement de titre quand action requise
 - icônes clavier
 - gérer retour/rechargement de la page correctement
 - meilleur codes de salles
 - changement de logo en fonction de l'url
 - lien vers le wordle sur la page d'accueil
+- si déconnexion manuelle du joueur, envoyer un message au serveur pour tout de suit supprimer la pièce et avertir l'autre joueur
 
 ### Server
 
