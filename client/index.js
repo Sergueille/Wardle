@@ -28,6 +28,11 @@ const PHASE_RESTART_WAIT = 5;
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
 
+document.getElementById("show-rules-btn").addEventListener("click", ev => ShowPanel("game-rules-panel"));
+document.getElementById("rules-done-btn").addEventListener("click", ev => ShowPanel("start-panel"));
+document.getElementById("host-cancel-btn").addEventListener("click", ev => QuitGame());
+document.getElementById("other-wait-cancel-btn").addEventListener("click", ev => QuitGame());
+
 document.getElementById("host-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
     document.getElementById("host-waiting-other-hint").classList.remove("hidden");
@@ -62,9 +67,9 @@ window.addEventListener("beforeunload", e => {
 });
 
 window.addEventListener('popstate', e => {
-    if (currentPanel.id == "wait-panel") {
+    if (currentPanel.id == "wait-panel" || currentPanel.id == "wait-other") {
         e.preventDefault();
-        ShowPanel("start-panel");
+        QuitGame("start-panel");
         window.history.pushState({}, null, null);
     }
     else {
@@ -323,6 +328,7 @@ function StartPingLoop() {
 
 function OnDisconnection() {
     if (state.inReconnectionDelay) { return; } // Already reconnecting
+    if (state.websocketConnection == null) { return; } // Connection ended manually
 
     console.log("Disconnected!");
     Toast("toast-disconnected");
@@ -612,4 +618,16 @@ function StartTimer(initialValue, onFinished) {
         timerIntervalHandle = null;
         timerTimeoutHandle = null;
     }, initialValue * 1000)
+}
+
+function QuitGame()
+{
+    if (state.websocketConnection != null) {
+        state.websocketConnection.onerror = () => {};
+        state.websocketConnection.close();
+    }
+
+    state.websocketConnection = null;
+
+    ShowPanel("start-panel");
 }

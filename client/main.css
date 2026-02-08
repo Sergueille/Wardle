@@ -46,6 +46,12 @@ body, .panel {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    animation: panel-appear 500ms cubic-bezier(0.83, 0, 0.263, 1.006) 0s 1 forwards;
+}
+
+.no-animation {
+    animation: none !important;
 }
 
 *::selection {
@@ -65,7 +71,6 @@ button, input, select {
 
 *:focus-visible {
     outline: 4px solid var(--prim);
-    border-radius: 3px;
     border: none;
 }
 
@@ -116,6 +121,38 @@ button.connecting::after {
     top: calc(50% - 1px);
     left: calc(-200px + 50%);
     z-index: -5;
+}
+
+.margin {
+    width: 60px;
+    height: 60px;
+}
+
+.small-text {
+    font-size: 0.9rem;
+    color: var(--txt-d);
+    font-style: italic;
+}
+
+.link-button {
+    color: white;
+    margin: 10px 2px;
+    background-color: transparent;
+    display: inline;
+    padding: 0;
+    text-decoration: none;
+    font-family: cascadia;
+    font-style: normal;
+}
+
+.link-button:hover {
+    transform: none;
+    text-decoration: underline;
+}
+
+.link-button.gray {
+    color: var(--txt-dd);
+    font-size: 1.0rem;
 }
 
 .flex-col {
@@ -197,6 +234,15 @@ button.connecting::after {
     opacity: 1;
 }
 
+.rules-example {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin: 0px;
+}
+
 #loading-screen {
     width: 100%;
     height: 100%;
@@ -264,6 +310,37 @@ button.connecting::after {
     font-size: 2rem;
     font-family: cascadia;
     height: 40px;
+}
+
+.rules-title {
+    font-size: 2rem;
+    font-family: cascadia;
+    margin: 20px 0 20px 20px;
+}
+
+.rule-letter {
+    font-family: cascadia;
+    display: inline;
+}
+
+.rules-container {
+    align-items: start;
+    max-width: 500px;
+    text-align: justify;
+    margin: 0 20px;
+}
+
+@keyframes panel-appear {
+    0% {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: none;
+    }
 }
 
 /* WORD GRID */
@@ -347,6 +424,15 @@ button.connecting::after {
 .word-grid-cell.win-animation .word-grid-label {
     animation: 
         word-grid-win-label 700ms ease-in-out 0s 1 backwards;
+}
+
+.rules-example .word-grid-cell {
+    width: 50px;
+    height: 50px;
+}
+
+.rules-example .word-grid-label {
+    font-size: 1.8rem;
 }
 
 @keyframes word-grid-type {
@@ -607,6 +693,10 @@ button.connecting::after {
     .logo .word-grid-cell-container, .logo .word-grid-cell {
         width: 60px;
         height: 60px;
+    }
+
+    .flex-column-when-screen-too-small {
+        flex-direction: column;
     }
 }
 
