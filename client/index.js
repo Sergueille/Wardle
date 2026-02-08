@@ -93,6 +93,10 @@ function Start() {
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
+
+    if (IsConnectedLocally()) {
+        CustomToast("Frontend will connect to local server: " + GetApiUrl())
+    }
 }
 
 window.addEventListener("load", () => Start()) // Start only when the document is fully loaded (otherwise the font isn't ready and the logo is unreadable)
@@ -528,15 +532,16 @@ function HintTextToId(hintText) {
 }
 
 function GetApiUrl() {
-    return GetApiUrlWithoutPort();// + ":" + API_PORT.toString();
-}
-function GetApiUrlWithoutPort() {
-    if (window.location.host.indexOf("localhost") != -1) {
-        return LOCALHOST_API_URL;
+    if (IsConnectedLocally()) {
+        return "http://" + window.location.host.split(":")[0] + ":" + API_PORT.toString();;
     }
     else {   
         return DEFAULT_API_URL;
     }
+}
+
+function IsConnectedLocally() {
+    return window.location.host.indexOf("rezel") == -1;
 }
 
 function GetAllWords() {
