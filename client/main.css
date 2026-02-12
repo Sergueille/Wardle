@@ -63,7 +63,7 @@ button, input, select {
     border: 0;
     color: white;
     padding: 6px 15px;
-    font-size: 1.3rem;
+    font-size: 1.3em;
     cursor: pointer;
 
     transition: 200ms;
@@ -129,7 +129,7 @@ button.connecting::after {
 }
 
 .small-text {
-    font-size: 0.9rem;
+    font-size: 0.9em;
     color: var(--txt-d);
     font-style: italic;
 }
@@ -152,7 +152,7 @@ button.connecting::after {
 
 .link-button.gray {
     color: var(--txt-dd);
-    font-size: 1.0rem;
+    font-size: 1.0em;
 }
 
 .flex-col {
@@ -176,7 +176,7 @@ button.connecting::after {
 
 #room-code {
     margin: 10px;
-    font-size: 4rem;
+    font-size: 4em;
     font-family: cascadia;
 }
 
@@ -187,7 +187,7 @@ button.connecting::after {
 
 .waiting-player-hint {
     color: var(--txt-d);
-    font-size: 1.5rem;
+    font-size: 1.5em;
 }
 
 .room-join-error {
@@ -196,13 +196,13 @@ button.connecting::after {
 }
 
 #game-hint {
-    font-size: 1.7rem;
+    font-size: 1.7em;
     text-align: center;
     height: 40px;
 }
 
 #game-hint-2 {
-    font-size: 1rem;
+    font-size: 1em;
     text-align: center;
     color: var(--txt-d);
     font-style: italic;
@@ -256,7 +256,7 @@ button.connecting::after {
 }
 
 #loading-screen span {
-    font-size: 3rem;
+    font-size: 3em;
     color: var(--txt-d);
 }
 
@@ -299,7 +299,7 @@ button.connecting::after {
 .options-title {
     background-color: var(--bg);
     position: absolute;
-    font-size: 1.3rem;
+    font-size: 1.3em;
 
     top: 0;
     left: 50%;
@@ -308,13 +308,13 @@ button.connecting::after {
 }
 
 #timer {
-    font-size: 2rem;
+    font-size: 2em;
     font-family: cascadia;
     height: 40px;
 }
 
 .rules-title {
-    font-size: 2rem;
+    font-size: 2em;
     font-family: cascadia;
     margin: 20px 0 20px 20px;
 }
@@ -329,6 +329,10 @@ button.connecting::after {
     max-width: 500px;
     text-align: justify;
     margin: 0 20px;
+}
+
+#host-cancel-btn, #other-wait-cancel-btn {
+    margin-top: 20px;
 }
 
 @keyframes panel-appear {
@@ -400,7 +404,7 @@ button.connecting::after {
 }
 
 .word-grid-label {
-    font-size: 2.2rem;
+    font-size: 2.2em;
     pointer-events: none;
     user-select: none;
     font-family: cascadia;
@@ -433,7 +437,7 @@ button.connecting::after {
 }
 
 .rules-example .word-grid-label {
-    font-size: 1.8rem;
+    font-size: 1.8em;
 }
 
 @keyframes word-grid-type {
@@ -553,15 +557,15 @@ button.connecting::after {
 }
 
 .keyboard-letter > span {
-    font-size: 1.6rem;
+    font-size: 1.6em;
 }
 
 .keyboard-enter > span{
-    font-size: 1.2rem;
+    font-size: 1.2em;
 }
 
 .keyboard-backspace > span {
-    font-size: 0.8rem;
+    font-size: 0.8em;
 }
 
 .keyboard-letter:hover, .keyboard-enter:hover, .keyboard-backspace:hover {
@@ -635,7 +639,7 @@ button.connecting::after {
 }
 
 .option-name {
-    font-size: 1.3rem;
+    font-size: 1.3em;
 }
 
 .option-description {
@@ -721,13 +725,24 @@ button.connecting::after {
 }
 
 @media (max-height: 850px) {
+    body {
+        font-size: 0.8em;
+    }
+
+    #keyboard {
+        width: 450px;
+        margin-bottom: 30px;
+        gap: 3px;
+    }
+
     .keyboard-line {
-        height: 65px;
+        height: 55px;
+        gap: 3px;
     }
 
     .word-grid-cell {
-        height: 60px;
-        width: 60px;
+        height: 55px;
+        width: 55px;
     }
 
     #grids-container {

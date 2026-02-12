@@ -7,7 +7,6 @@
 
 - tester autres types de sabotage (plusieurs par tour)
 - option pour mode difficile
-- option pour la langue
 
 ### Interface
 
