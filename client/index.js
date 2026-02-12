@@ -471,7 +471,7 @@ function HandleConnectionMessage(msgText) {
 
                     let lateWords = {
                         "English": ["AARGH", "OOMPH"],
-                        "French": ["MERDE"],
+                        "French": ["MERDE", "FLUTE"],
                     };
 
                     let word = lateWords[currentOptions.language][Math.floor(rand * lateWords[currentOptions.language].length)];
