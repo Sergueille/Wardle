@@ -27,6 +27,7 @@ const PHASE_RESTART_WAIT = 5;
 
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
+document.getElementById("join-room-code").addEventListener("keydown", ev => { if (ev.key == "Enter") { JoinRoom(); }; });
 
 document.getElementById("show-rules-btn").addEventListener("click", ev => ShowPanel("game-rules-panel"));
 document.getElementById("rules-done-btn").addEventListener("click", ev => ShowPanel("start-panel"));
