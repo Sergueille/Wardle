@@ -256,7 +256,7 @@ function OnLetterTyped(letter) {
 
 function OnEnter() {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length == WORD_LENGTH) {
-        if (CheckIfWordIsValid(state.typedWord)) {
+        if (CheckIfWordIsValid(state.typedWord, currentOptions.language)) {
             TrySendMessage("word", { word: state.typedWord });
             state.playerWords.push(state.typedWord);
             StartTypeWaitPhase();
@@ -466,8 +466,14 @@ function HandleConnectionMessage(msgText) {
             StartTimer(currentOptions.timer, () => {
 
                 if (state.currentPhase == PHASE_TYPE) {
-                    let rand = Math.random() * 2;
-                    let word = ["AARGH", "OOMPH"][Math.floor(rand)];
+                    let rand = Math.random();
+
+                    let lateWords = {
+                        "English": ["AARGH", "OOMPH"],
+                        "French": ["MERDE"],
+                    };
+
+                    let word = lateWords[currentOptions.language][Math.floor(rand * lateWords[currentOptions.language].length)];
 
                     state.typedWord = word;
                     for (let i = 0; i < WORD_LENGTH; i++) {
@@ -551,15 +557,23 @@ function IsConnectedLocally() {
 }
 
 function GetAllWords() {
+    allowedWords = {}
+
     fetch("words/english-all.txt").then(res => {
         return res.text()
     }).then(txt => {
-        allowedWords = txt.split(";");
+        allowedWords["English"] = txt.split(";");
+    });
+
+    fetch("words/francais-all.txt").then(res => {
+        return res.text()
+    }).then(txt => {
+        allowedWords["French"] = txt.split(";");
     });
 }
 
-function CheckIfWordIsValid(word) {
-    return allowedWords.includes(word.toLowerCase());
+function CheckIfWordIsValid(word, lang) {
+    return allowedWords[lang].includes(word.toLowerCase());
 }
 
 function BeginningAnimation() {
