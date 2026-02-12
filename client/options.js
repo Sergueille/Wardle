@@ -1,5 +1,16 @@
 
 const OPTIONS_UI = {
+    language: {
+        displayName: "Language",
+        possibleValues: [{
+                val: "English",
+                name: "English",
+            },{
+                val: "French",
+                name: "Français",
+            },
+        ],
+    },
     timer: {
         displayName: "Timer",
         possibleValues: [{
@@ -19,13 +30,15 @@ const OPTIONS_UI = {
                 name: "30 seconds",
             },
         ],
-    }
+    },
 }
 
-// This initial value is the default value for the options
-let currentOptions = {
-    timer: 0.0
+let defaultOptions = {
+    timer: 0.0,
+    language: "English"
 };
+
+let currentOptions = defaultOptions;
 
 // Populates the UI with the current options
 function InitializeOptions()
@@ -68,8 +81,10 @@ function InitializeOptions()
         if (!foundAVal) {
             console.error(`Invalid value found for option "${key}"`)
             sel.value = 0;
-            currentOptions = val.possibleValues[0].val;
-            OnOptionsChanged();
+            currentOptions = defaultOptions;
+            StoreOptions();
+            InitializeOptions();
+            return;
         }
 
         cont.appendChild(title);

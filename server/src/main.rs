@@ -24,13 +24,13 @@ enum HintType {
 }
 
 struct GameState {
-    word_to_guess: String,
+    word_to_guess: Option<String>,
     current_turn: i64,
     current_phase: GamePhase
 }
 
 // NOTE: do not rename these enums' values! Serialization depend on the names.
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, serde::Serialize, Clone, Copy)]
 enum Language {
     French, English
 }
@@ -53,6 +53,7 @@ enum AttackMode {
 #[derive(serde::Serialize, serde::Deserialize, Clone)]
 struct GameOptions {
     timer: f32, // 0 iff the timer is disabled
+    language: Language,
 }
 
 /// Settings for a player (thins that the player has configured)
@@ -284,6 +285,6 @@ impl Player {
 
 impl GameOptions {
     pub fn default() -> GameOptions {
-        GameOptions { timer: 0.0 }
+        GameOptions { timer: 0.0, language: Language::English }
     }
 }

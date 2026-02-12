@@ -11,19 +11,21 @@ pub const WORD_LENGTH: u64 = 5;
 pub const MAX_WORD_COUNT: u64 = 6;
 
 pub fn get_initial_game_state() -> GameState {
-    let word_to_guess = util::get_random_secret_word();
-    println!("Word to guess is {}", word_to_guess);
-
     GameState {
         current_turn: -1,
         current_phase: GamePhase::Typing,
-        word_to_guess,
+        word_to_guess: None,
     }
 }
 
 pub fn game_start(room: &mut RoomState) {
     room.game_started = true;
     room.do_for_all_players(&|p, _| p.ready_to_restart = false);
+
+    // Pick a new word to guess
+    let word_to_guess = util::get_random_secret_word(room.game_options.language);
+    println!("Word to guess is {}", word_to_guess);
+    room.game_state.word_to_guess = Some(word_to_guess);
 
     #[derive(serde::Serialize, Clone)]
     struct MessageType {
@@ -74,15 +76,15 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     };
 
     // TODO: when players will have a limited number of hints, consider changing the victory condition to account for the number of remaining sabotages
-    if host_word == room.game_state.word_to_guess && other_word == room.game_state.word_to_guess {
+    if host_word == *room.game_state.word_to_guess.as_ref().unwrap() && other_word == *room.game_state.word_to_guess.as_ref().unwrap() {
         host_msg.who_wins = String::from("both");
         other_msg.who_wins = String::from("both");
     }
-    else if host_word == room.game_state.word_to_guess {
+    else if host_word == *room.game_state.word_to_guess.as_ref().unwrap() {
         host_msg.who_wins = String::from("you");
         other_msg.who_wins = String::from("other");
     }
-    else if other_word == room.game_state.word_to_guess {
+    else if other_word == *room.game_state.word_to_guess.as_ref().unwrap() {
         host_msg.who_wins = String::from("other");
         other_msg.who_wins = String::from("you");
     }
@@ -90,7 +92,7 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     send_message(&mut room.host_player, "other-player-word", &host_msg);
     send_message(room.other_player.as_mut().unwrap(), "other-player-word", &other_msg);
 
-    let someone_win = host_word == room.game_state.word_to_guess || other_word == room.game_state.word_to_guess;
+    let someone_win = host_word == *room.game_state.word_to_guess.as_ref().unwrap() || other_word == *room.game_state.word_to_guess.as_ref().unwrap();
     if someone_win {
         on_game_end(room);
         return true;
@@ -131,7 +133,7 @@ pub fn check_for_sabotage_end(room: &mut RoomState) -> bool {
     let word_to_guess = room.game_state.word_to_guess.clone();
     room.do_for_all_players(&|player: &mut Player, other| {
         let hints = hints::get_hints(
-            &word_to_guess, 
+            word_to_guess.as_ref().unwrap(), 
             &player.typed_word_this_turn.as_ref().unwrap(), 
             other.letter_sabotaged_this_turn.unwrap() as usize
         );
@@ -166,7 +168,7 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
 
             let word = crate::util::get_json_str(msg_contents, "word").unwrap();
 
-            if util::is_valid_word(word) {   
+            if util::is_valid_word(word, room.game_options.language) {   
                 room.get_player(is_host).typed_word_this_turn = Some(String::from(word));
                 let ended = check_for_type_end(room);
 

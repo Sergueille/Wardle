@@ -54,9 +54,13 @@ pub fn create_random_code() -> String {
     return res;
 }
 
-pub fn get_random_secret_word() -> String {
+pub fn get_random_secret_word(lang: crate::Language) -> String {
     let n = crate::game::WORD_LENGTH as usize;
-    let bytes = include_bytes!("../../words/english-few.txt");
+    let bytes: &[u8] = match lang {
+        crate::Language::English => include_bytes!("../../words/english-few.txt"),
+        crate::Language::French => include_bytes!("../../words/francais-few.txt"),
+    };
+
     let word_count = bytes.len() / (n+1);
     let rand_id = rand::random_range(0..word_count);
     
@@ -68,12 +72,16 @@ pub fn get_random_secret_word() -> String {
 }
 
 // Should be in O(log(nb_words))
-pub fn is_valid_word(w: &str) -> bool {
+pub fn is_valid_word(w: &str, lang: crate::Language) -> bool {
     let n = crate::game::WORD_LENGTH as usize;
 
     if !w.is_ascii() || w.chars().count() != n { return false; }
 
-    let bytes = include_bytes!("../../words/english-all.txt");
+    let bytes: &[u8] = match lang {
+        crate::Language::English => include_bytes!("../../words/english-all.txt"),
+        crate::Language::French => include_bytes!("../../words/francais-all.txt"),
+    };
+        
     let w_lower = w.to_lowercase();
     let w_bytes = w_lower.bytes();
 
