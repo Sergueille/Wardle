@@ -12,6 +12,8 @@
 
 ### Interface
 
+- fix timer qui continue si victoire
+- fix forme clavier inconsistante
 - fix animation cassée quand pas focus
 - son/changement de titre quand action requise
 - icônes clavier * 2 :
