@@ -24,5 +24,6 @@
 
 - make sure server is on
 - start an ssh session
-- run `launch.sh` in a tmux session and detach (`ctrl+B, D`)
+- `systemctl start wardle-backend.service`
+- `systemctl start caddy`
 
