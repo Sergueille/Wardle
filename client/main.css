@@ -660,6 +660,51 @@ button.connecting::after {
 
 /* RESPONSIVENESS */
 
+@media (max-height: 900px) {
+    #left-grid, #right-grid {
+        margin: 10px 20px 40px 20px;
+    }
+
+    .keyboard-line {
+        height: 65px;
+    }
+
+    .word-grid-cell {
+        height: 65px;
+        width: 65px;
+    }
+
+    #grids-container {
+        padding: 0 calc(50vw - 20px - 2.5*65px - 10px);
+    }
+}
+
+@media (max-height: 850px) {
+    body {
+        font-size: 0.8em;
+    }
+
+    #keyboard {
+        width: 450px;
+        margin-bottom: 30px;
+        gap: 3px;
+    }
+
+    .keyboard-line {
+        height: 55px;
+        gap: 3px;
+    }
+
+    .word-grid-cell {
+        height: 55px;
+        width: 55px;
+    }
+
+    #grids-container {
+        padding: 0 calc(50vw - 20px - 2.5*60px - 10px);
+    }
+}
+
 @media (max-width: 1000px) {
     #left-grid, #right-grid {
         margin: 30px 20px 50px 20px;
@@ -705,50 +750,6 @@ button.connecting::after {
     }
 }
 
-@media (max-height: 900px) {
-    #left-grid, #right-grid {
-        margin: 10px 20px 40px 20px;
-    }
-
-    .keyboard-line {
-        height: 65px;
-    }
-
-    .word-grid-cell {
-        height: 65px;
-        width: 65px;
-    }
-
-    #grids-container {
-        padding: 0 calc(50vw - 20px - 2.5*65px - 10px);
-    }
-}
-
-@media (max-height: 850px) {
-    body {
-        font-size: 0.8em;
-    }
-
-    #keyboard {
-        width: 450px;
-        margin-bottom: 30px;
-        gap: 3px;
-    }
-
-    .keyboard-line {
-        height: 55px;
-        gap: 3px;
-    }
-
-    .word-grid-cell {
-        height: 55px;
-        width: 55px;
-    }
-
-    #grids-container {
-        padding: 0 calc(50vw - 20px - 2.5*60px - 10px);
-    }
-}
 /* FONTS */
 
 @font-face {
