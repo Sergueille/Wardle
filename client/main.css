@@ -18,6 +18,10 @@
     --txt-d: #ccc;
     --txt-dd: #777;
 
+    --keyboard-no-hint: #444;
+    --hint-gray-keyboard: #2b2b2b;
+    --hint-gray-keyboard-text: #888;
+
     box-sizing: border-box;
 
     font-family: roboto;
@@ -536,13 +540,13 @@ button.connecting::after {
 }
 
 .keyboard-letter, .keyboard-enter, .keyboard-backspace {
-    border: 2px solid var(--bg-ll);
     width: 1px;
     flex-grow: 1;
 
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--keyboard-no-hint);
 
     transition: 600ms;
 }
@@ -578,23 +582,20 @@ button.connecting::after {
 }
 
 .keyboard-letter.hint-gray {
-    background-color: var(--bg-ll);
-    border-color: var(--bg-ll);
+    background-color: var(--hint-gray-keyboard);
+    color: var(--hint-gray-keyboard-text);
 }
 
 .keyboard-letter.hint-green {
     background-color: var(--hint-green);
-    border-color: var(--hint-green);
 }
 
 .keyboard-letter.hint-red {
     background-color: var(--hint-red);
-    border-color: var(--hint-red);
 }
 
 .keyboard-letter.hint-yellow {
     background-color: var(--hint-yellow);
-    border-color: var(--hint-yellow);
 }
 
 /* TOASTS */
