@@ -13,12 +13,9 @@
 ### Interface
 
 - fix timer qui continue si victoire
-- fix forme clavier inconsistante
 - fix animation cassée quand pas focus
 - son/changement de titre quand action requise
-- icônes clavier * 2 :
-    + Passage en azerty en français
-    + Inverser les couleurs ou au moins les changer (s'il te plaît, c'est vraiment aussi terrible que ce que les gens disent)
++ option azerty
 - gérer retour/rechargement de la page correctement
 - meilleur codes de salles
 - changement de logo en fonction de l'url
