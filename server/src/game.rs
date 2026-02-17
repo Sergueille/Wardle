@@ -201,7 +201,7 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             check_for_restart_end(room);
         },
         "game-options" => {
-            if room.game_started && room.game_state.current_phase != GamePhase::Restarting { return Err(String::from("Game in progress")); } // TODO!
+            if room.game_started && room.game_state.current_phase != GamePhase::Restarting { return Err(String::from("Game in progress")); }
             room.game_options = serde_json::from_value(msg_contents.get("options").unwrap().clone()).expect("Invalid option format");
 
             if room.game_state.current_phase == GamePhase::Restarting {

@@ -3,8 +3,8 @@
 
 ## TODO 1.0
 
-- Quand on gagne en même temps, en fait c'est au shotgun. De manière générale, ne pas attendre le sabotage quand le mot mis est le bon
-- Possibilité de changer les options pendant un restart (genre restart ave les mêmes règles / changer les règles et restart)
+- FAIT Quand on gagne en même temps, en fait c'est au shotgun. De manière générale, ne pas attendre le sabotage quand le mot mis est le bon
+- FAIT Possibilité de changer les options pendant un restart (genre restart ave les mêmes règles / changer les règles et restart)
 - Passage en azerty en français
 - icônes (*4)
 - gérer retour/rechargement de la page correctement
