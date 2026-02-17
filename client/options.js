@@ -10,6 +10,7 @@ const OPTIONS_UI = {
                 name: "Français",
             },
         ],
+        description: "Language of the word to guess for this game"
     },
     timer: {
         displayName: "Timer",
@@ -30,6 +31,7 @@ const OPTIONS_UI = {
                 name: "30 seconds",
             },
         ],
+        description: "The timer will start when the other player takes an action"
     },
 }
 
@@ -95,6 +97,13 @@ function PopulateOptionsInParent(parent)
         cont.appendChild(sel);
 
         parent.appendChild(cont);
+
+        if (val.description != "") {
+            let description = document.createElement("span");
+            description.classList.add("option-description");
+            description.textContent = val.description;
+            parent.appendChild(description);
+        }
     }
 }
 
