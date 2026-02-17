@@ -92,12 +92,15 @@ let timerIntervalHandle = null;
 let timerTimeoutHandle = null;
 
 function Start() {
-    /* // TEST
+    /*
+    // TEST
     HideAllPanels();
     ShowPanel("game-panel");
     document.getElementById("loading-screen").classList.add("hidden");
+    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     return;
     */
+    
 
     window.history.pushState({}, null, null);
     HideAllPanels();

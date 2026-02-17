@@ -606,6 +606,11 @@ button.connecting::after {
     background-color: var(--hint-yellow);
 }
 
+.keyboard-icon {
+    filter: invert(1);
+    height: 80%;
+}
+
 /* TOASTS */
 
 #toasts-container {
