@@ -40,9 +40,22 @@ pub fn start_turn(room: &mut RoomState) {
     room.other_player.as_mut().unwrap().letter_sabotaged_this_turn = None;
 }
 
-/// Do things if both player typed their word. Returns wether both player typed their words
+/// Do things if both player typed their word. Returns wether both player typed their words (returns true is there is a victory)
 pub fn check_for_type_end(room: &mut RoomState) -> bool {
-    // Check that both plater entered a word
+    // Check for victory
+    let player_a = &mut room.host_player;
+    let player_b = room.other_player.as_mut().unwrap();
+    let word_to_guess = &room.game_state.word_to_guess.as_ref().unwrap();
+
+    let a_wins = handle_victory_condition(player_a, player_b, word_to_guess);
+    let b_wins = handle_victory_condition(player_b, player_a, word_to_guess);
+
+    if a_wins || b_wins { // Game finished 
+        on_game_end(room);
+        return true;
+    } 
+
+    // Before handling turn end, check that both plater entered a word
     if room.get_player(false).typed_word_this_turn.is_none() 
     || room.get_player(true).typed_word_this_turn.is_none() {
         return false;
@@ -55,42 +68,19 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     #[derive(serde::Serialize)]
     struct Msg<'a> {
         word: &'a str,
-        who_wins: String, 
     }
 
     let host_word = room.host_player.typed_word_this_turn.clone().unwrap();
     let other_word = room.other_player.as_ref().unwrap().typed_word_this_turn.clone().unwrap();
-    let mut host_msg = Msg {
+    let host_msg = Msg {
         word: &other_word,
-        who_wins: String::from("none"),
     };
-    let mut other_msg = Msg {
+    let other_msg = Msg {
         word: &host_word,
-        who_wins: String::from("none"),
     };
-
-    // TODO: when players will have a limited number of hints, consider changing the victory condition to account for the number of remaining sabotages
-    if host_word == *room.game_state.word_to_guess.as_ref().unwrap() && other_word == *room.game_state.word_to_guess.as_ref().unwrap() {
-        host_msg.who_wins = String::from("both");
-        other_msg.who_wins = String::from("both");
-    }
-    else if host_word == *room.game_state.word_to_guess.as_ref().unwrap() {
-        host_msg.who_wins = String::from("you");
-        other_msg.who_wins = String::from("other");
-    }
-    else if other_word == *room.game_state.word_to_guess.as_ref().unwrap() {
-        host_msg.who_wins = String::from("other");
-        other_msg.who_wins = String::from("you");
-    }
 
     send_message(&mut room.host_player, "other-player-word", &host_msg);
     send_message(room.other_player.as_mut().unwrap(), "other-player-word", &other_msg);
-
-    let someone_win = host_word == *room.game_state.word_to_guess.as_ref().unwrap() || other_word == *room.game_state.word_to_guess.as_ref().unwrap();
-    if someone_win {
-        on_game_end(room);
-        return true;
-    }
 
     let was_last_guess = room.game_state.current_turn == MAX_WORD_COUNT as i64 - 1; // Was this the last possible guess for this game?
     let solution = room.game_state.word_to_guess.clone();
@@ -108,6 +98,27 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     }
 
     return true;
+}
+
+// Handles victory. Returns wether `player` won the game
+pub fn handle_victory_condition(player: &mut Player, other: &mut Player, word_to_guess: &str) -> bool {
+    match &player.typed_word_this_turn {
+        Some(w) => {
+            if *w == word_to_guess {
+                match &other.typed_word_this_turn {
+                    Some(other_w) => send_message(player, "you-win", &other_w),
+                    None => send_message(player, "you-win", &()),
+                }
+                
+                send_message(other, "other-player-win", &word_to_guess);
+                true
+            }
+            else {
+                false
+            }
+        },
+        None => false,
+    }
 }
 
 pub fn on_game_end(room: &mut RoomState) {

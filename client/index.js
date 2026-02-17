@@ -426,38 +426,11 @@ function HandleConnectionMessage(msgText) {
 
         SetWord(false, state.currentTurn, msg.content.word);
 
-        if (msg.content.who_wins == "none") {
-            state.enemyWords.push(msg.content);
-            AutoScroll(false);
-            
-            if (state.currentTurn < MAX_WORD_COUNT - 1) { // If that was the las guess, no point in sabotaging
-                StartSabotagePhase();
-            }
-        }
-        else if (msg.content.who_wins == "you") {
-            AutoScroll(true);
-            SetBothGridActive();
-            SetGameHint("hint-win");
-            WinAnimation(true, state.currentTurn);
-            OnGameEnd();
-        }
-        else if (msg.content.who_wins == "other") {
-            AutoScroll(false);
-            SetBothGridActive();
-            SetGameHint("hint-loose");
-            WinAnimation(false, state.currentTurn);
-            OnGameEnd();
-        }
-        else if (msg.content.who_wins == "both") {
-            AutoScroll(true);
-            SetBothGridActive();
-            SetGameHint("hint-both-win");
-            WinAnimation(true, state.currentTurn);
-            WinAnimation(false, state.currentTurn);
-            OnGameEnd();
-        }
-        else {
-            CustomToast("Invalid who_wins value " + msg.content.who_wins);
+        state.enemyWords.push(msg.content.word);
+        AutoScroll(false);
+        
+        if (state.currentTurn < MAX_WORD_COUNT - 1) { // If that was the last guess, no point in sabotaging
+            StartSabotagePhase();
         }
     }
     else if (msg.type == "word-hints") {
@@ -523,6 +496,36 @@ function HandleConnectionMessage(msgText) {
     else if (msg.type == "game-options") {
         currentOptions = msg.content.options;
         console.log("Options received.")
+    }
+    else if (msg.type == "other-player-win") {
+        if (state.waitPhaseInterfaceTimeout) {
+            clearTimeout(state.waitPhaseInterfaceTimeout)
+        }
+
+        SetWord(false, state.currentTurn, msg.content);
+        state.enemyWords.push(msg.content);
+
+        AutoScroll(false);
+        SetBothGridActive();
+        SetGameHint("hint-loose");
+        WinAnimation(false, state.currentTurn);
+        OnGameEnd();
+    }
+    else if (msg.type == "you-win") {
+        if (state.waitPhaseInterfaceTimeout) {
+            clearTimeout(state.waitPhaseInterfaceTimeout)
+        }
+
+        if (msg.content != null && msg.content != "") {
+            SetWord(false, state.currentTurn, msg.content);
+            state.playerWords.push(msg.content);
+        }
+
+        AutoScroll(true);
+        SetBothGridActive();
+        SetGameHint("hint-win");
+        WinAnimation(true, state.currentTurn);
+        OnGameEnd();
     }
     else {
         console.error("Unknown message type: " + msg.type);

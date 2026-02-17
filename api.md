@@ -54,7 +54,6 @@ Mot qu'a écrit l'autre joueur. Signale qu'il faut passer à la phase de sabotag
 ```json
 {
     "word": <string>, // Le mot
-    "who_wins": <none|you|other|both>, // Si quelqu'un gagne ce tour ci (en tout cas moi je perds)
 }
 ```
 
@@ -74,6 +73,22 @@ Solution de la partie en cours. Indique également que les deux joueurs ont perd
 
 ```
 <string>
+```
+
+### `you-win`
+
+Le joueur gagne.
+
+```json
+<string> // Le mot de l'autre joueur si il existe, sinon rien
+```
+
+### `other-player-win`
+
+L'autre joueur gagne.
+
+```json
+<string> // Le mot gagnant
 ```
 
 ### `restart`
