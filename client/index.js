@@ -102,7 +102,7 @@ function Start() {
     window.history.pushState({}, null, null);
     HideAllPanels();
     SetupToasts();
-    HideTimer();
+    ClearTimer();
     ShowPanel("start-panel");
     GetAllWords();
     HideChildren("game-hint-2");
@@ -221,7 +221,7 @@ function OnGameStart() {
 
 function StartNextTurn() {
     SetGameHint("game-hint-enter-word");
-    HideTimer();
+    ClearTimer();
     HideChildren("game-hint-2");
     state.currentTurn += 1;
     state.currentPhase = PHASE_TYPE;
@@ -234,7 +234,7 @@ function StartTypeWaitPhase() {
     state.currentPhase = PHASE_TYPE_WAIT;
     
     state.waitPhaseInterfaceTimeout = setTimeout(() => {
-        HideTimer();
+        ClearTimer();
         SetGameHint("game-hint-wait");
         HideChildren("game-hint-2");
         SetBothGridInactive();
@@ -243,7 +243,7 @@ function StartTypeWaitPhase() {
 
 function StartSabotagePhase() {
     state.currentPhase = PHASE_SABOTAGE;
-    HideTimer();
+    ClearTimer();
     SetRightGridActive();
     SetSabotageTarget(false, state.currentTurn, true);
     SetGameHint("game-hint-sabotage");
@@ -251,7 +251,7 @@ function StartSabotagePhase() {
 }
 
 function StartSabotageWaitPhase() {
-    HideTimer();
+    ClearTimer();
     SetGameHint("game-hint-wait");
     HideChildren("game-hint-2");
     state.currentPhase = PHASE_SABOTAGE_WAIT;
@@ -507,6 +507,7 @@ function HandleConnectionMessage(msgText) {
 
         AutoScroll(false);
         SetBothGridActive();
+        ClearTimer();
         SetGameHint("hint-loose");
         WinAnimation(false, state.currentTurn);
         OnGameEnd();
@@ -523,6 +524,7 @@ function HandleConnectionMessage(msgText) {
 
         AutoScroll(true);
         SetBothGridActive();
+        ClearTimer();
         SetGameHint("hint-win");
         WinAnimation(true, state.currentTurn);
         OnGameEnd();
@@ -633,7 +635,7 @@ function SetVersionText() {
     });   
 }
 
-function HideTimer() {
+function ClearTimer() {
     document.getElementById("timer").classList.add("hidden");
     document.getElementById("game-hint").classList.remove("hidden");
 
@@ -659,7 +661,7 @@ function StartTimer(initialValue, onFinished) {
 
     timerTimeoutHandle = setTimeout(() => {
         clearInterval(timerIntervalHandle);
-        HideTimer();
+        ClearTimer();
         onFinished();
         timerIntervalHandle = null;
         timerTimeoutHandle = null;
