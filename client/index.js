@@ -68,16 +68,21 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-window.addEventListener("beforeunload", e => {
+window.onbeforeunload = e => {
     e.preventDefault();
     e.returnValue = true;
     return true;
-});
+};
 
 window.addEventListener('popstate', e => {
     if (currentPanel.id == "wait-panel" || currentPanel.id == "wait-other") {
         e.preventDefault();
         QuitGame("start-panel");
+        window.history.pushState({}, null, null);
+    }
+    else if (currentPanel.id == "game-panel") {
+        e.preventDefault();
+        window.location.reload();
         window.history.pushState({}, null, null);
     }
     else {
@@ -102,7 +107,6 @@ function Start() {
     */
     
 
-    window.history.pushState({}, null, null);
     HideAllPanels();
     SetupToasts();
     ClearTimer();
@@ -154,6 +158,8 @@ function JoinRoom()
 {
     ResetGlobalState();
 
+    window.history.pushState({}, null, null);
+
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
     state.roomCode = code;
 
@@ -180,6 +186,8 @@ function JoinRoom()
 }
 
 function CreateRoom() {
+    window.history.pushState({}, null, null);
+
     try {
         let connection = new WebSocket(GetApiUrl() + "/create-room");
 

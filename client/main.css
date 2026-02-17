@@ -315,6 +315,10 @@ button.connecting::after {
     margin-top: 20px;
 }
 
+#leave-confirmation-panel {
+    gap: 10px;
+}
+
 @keyframes panel-appear {
     0% {
         transform: translateY(100px);
