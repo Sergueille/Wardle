@@ -40,6 +40,13 @@ document.getElementById("host-ready-btn").addEventListener("click", ev => {
     document.getElementById("host-ready-btn").classList.add("hidden");
 });
 
+document.getElementById("option-change-ready-btn").addEventListener("click", ev => {
+    TrySendMessage("restart-ready", {});
+    document.getElementById("option-change-waiting-other-hint").classList.remove("hidden");
+    document.getElementById("option-change-ready-btn").classList.add("hidden");
+});
+
+
 document.addEventListener("keydown", (event) => {
     if (!state || !state.gameStarted) {
         return;
@@ -85,7 +92,14 @@ let timerIntervalHandle = null;
 let timerTimeoutHandle = null;
 
 function Start() {
-    window.history.pushState({}, null, null); // TEST
+    /* // TEST
+    HideAllPanels();
+    ShowPanel("game-panel");
+    document.getElementById("loading-screen").classList.add("hidden");
+    return;
+    */
+
+    window.history.pushState({}, null, null);
     HideAllPanels();
     SetupToasts();
     HideTimer();
@@ -95,7 +109,7 @@ function Start() {
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     SetVersionText();
     LoadOptions();
-    InitializeOptions();
+    PopulateOptionsUI();
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
@@ -269,6 +283,7 @@ function OnEnter() {
     else if (state.currentPhase == PHASE_RESTART) {
         SetSubElement("game-hint-2", "game-hint-restart-wait");
         SetKeyboardEnterIcon("icon-enter");
+        SetKeyboardBackspaceIcon("icon-backspace");
         state.currentPhase = PHASE_RESTART_WAIT;
         TrySendMessage("restart-ready", {});
     }
@@ -278,6 +293,18 @@ function OnBackspace() {
     if (state.currentPhase == PHASE_TYPE && state.typedWord.length > 0) {
         state.typedWord = state.typedWord.slice(0, -1);
         RemoveLetter(true, state.typedWord.length, state.currentTurn);
+    }
+    else if (state.currentPhase == PHASE_RESTART) {
+        SetKeyboardEnterIcon("icon-enter");
+        SetKeyboardBackspaceIcon("icon-backspace");
+        state.currentPhase = PHASE_RESTART_WAIT;
+        document.getElementById("option-change-waiting-other-hint").classList.add("hidden");
+        document.getElementById("option-change-ready-btn").classList.remove("hidden");
+
+        let optionsParent = document.getElementById("options-change-container-inner");
+        optionsParent.innerHTML = "";
+        PopulateOptionsInParent(optionsParent);
+        ShowPanel("option-change-panel");
     }
 }
 
@@ -300,6 +327,7 @@ function OnWordRejected() {
 function OnGameEnd() {
     SetSubElement("game-hint-2", "game-hint-restart");
     SetKeyboardEnterIcon("icon-restart");
+    SetKeyboardBackspaceIcon("icon-restart-options");
     state.currentPhase = PHASE_RESTART;
 }
 

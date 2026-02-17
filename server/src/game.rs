@@ -27,13 +27,7 @@ pub fn game_start(room: &mut RoomState) {
     println!("Word to guess is {}", word_to_guess);
     room.game_state.word_to_guess = Some(word_to_guess);
 
-    #[derive(serde::Serialize, Clone)]
-    struct MessageType {
-        options: GameOptions,
-    }
-    let current_options = MessageType { options: room.game_options.clone() };
-    send_message(room.get_player(false), "game-options", &current_options);
-
+    send_options(room.game_options.clone(), room.get_player(false));
     start_turn(room);
 }
 
@@ -196,8 +190,14 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             check_for_restart_end(room);
         },
         "game-options" => {
-            if room.game_started { return Err(String::from("Game already started")); }
+            if room.game_started && room.game_state.current_phase != GamePhase::Restarting { return Err(String::from("Game in progress")); } // TODO!
             room.game_options = serde_json::from_value(msg_contents.get("options").unwrap().clone()).expect("Invalid option format");
+
+            if room.game_state.current_phase == GamePhase::Restarting {
+                // Tell the other player only if in restart phase. 
+                // If the host changes the option for the first time, the options will be sent when the game starts
+                send_options(room.game_options.clone(), room.get_player(!is_host));
+            }
         },
         _ => {
             return Err(format!("Unknown message type {}", msg_type));
@@ -206,3 +206,14 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
     
     return Ok(());
 }
+
+
+pub fn send_options(options: GameOptions, player: &mut Player) {
+    #[derive(serde::Serialize, Clone)]
+    struct MessageType {
+        options: GameOptions,
+    }
+    let current_options = MessageType { options: options };
+    send_message(player, "game-options", &current_options);
+}
+

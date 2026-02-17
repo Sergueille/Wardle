@@ -96,7 +96,7 @@ L'autre joueur a fini son action
 
 ### `game-options`
 
-Options pour la partie (envoyé seulement au joueur non hote)
+Options pour la partie (envoyé quand l'autre joueur les change)
 
 ```json
 {

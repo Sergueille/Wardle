@@ -286,7 +286,7 @@ button.connecting::after {
     font-family: cascadia;
 }
 
-#options-container {
+#options-container, #options-change-container {
     position: relative;
     margin: 60px 0 50px 0;
     border: 2px solid var(--bg-lll);
@@ -298,6 +298,14 @@ button.connecting::after {
     gap: 10px;
 
     padding: 30px 100px 25px 100px;
+}
+
+#options-change-container-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .options-title {

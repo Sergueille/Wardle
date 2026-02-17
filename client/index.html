@@ -163,6 +163,21 @@
         <span id=icon-enter>ENTER</span>
         <span id=icon-restart>RESTART</span>
       </div>
+      <div id="key-backspace" class="keyboard-backspace"> <!-- Backspace key template for PopulateKeyboard() -->
+        <span id=icon-backspace>BACKSPACE</span>
+        <span id=icon-restart-options>CHANGE OPTIONS</span>
+      </div>
+    </div>
+
+    <!-- Changing options between two games -->
+    <div class="panel" id="option-change-panel">
+      <div id="options-change-container">
+        <span class="options-title">Game options</span>
+        <div id="options-change-container-inner">
+        </div>
+      </div>
+      <span id="option-change-waiting-other-hint" class="waiting-player-hint">Waiting for the other player...</span>
+      <button id="option-change-ready-btn">Ready to start</button>
     </div>
 
     <!-- Game rules -->

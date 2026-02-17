@@ -41,10 +41,14 @@ let defaultOptions = {
 let currentOptions = defaultOptions;
 
 // Populates the UI with the current options
-function InitializeOptions()
+function PopulateOptionsUI()
 {
-    let parent = document.getElementById("options-container");
+    PopulateOptionsInParent(document.getElementById("options-container"));
+    PopulateOptionsInParent(document.getElementById("options-change-container-inner"));
+}
 
+function PopulateOptionsInParent(parent)
+{
     for (let [key, val] of Object.entries(OPTIONS_UI)) {
         let cont = document.createElement("div");
         cont.classList.add("option-row");
@@ -83,7 +87,7 @@ function InitializeOptions()
             sel.value = 0;
             currentOptions = defaultOptions;
             StoreOptions();
-            InitializeOptions();
+            PopulateOptionsUI();
             return;
         }
 

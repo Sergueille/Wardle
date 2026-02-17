@@ -30,11 +30,10 @@ function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
                 lineElement.appendChild(key);
             }
             else if (line[i] == '!') {
-                el.classList.add("keyboard-backspace");
-                label.textContent = "BACKSPACE"
-                el.addEventListener("mouseup", ev => onBackspace())
-                el.id = "key-backspace";
-                lineElement.appendChild(el);
+                let key = document.getElementById("key-backspace");
+                key.addEventListener("mouseup", ev => onBackspace());
+                SetSubElement("key-backspace", "icon-backspace");
+                lineElement.appendChild(key);
             }
             else {
                 el.classList.add("keyboard-letter");
@@ -92,5 +91,9 @@ function ClearKeyboardHints() {
 
 function SetKeyboardEnterIcon(icon_id) {
     SetSubElement("key-enter", icon_id)
+}
+
+function SetKeyboardBackspaceIcon(icon_id) {
+    SetSubElement("key-backspace", icon_id)
 }
 
