@@ -16,28 +16,28 @@
   <body>
     <div id="toasts-container">
       <div class="toast error" id="toast-disconnected">
-        Connection lost!
+        Connection lost!<!-- Connection perdue ! -->
       </div>
       <div class="toast error" id="room-creation-failed">
-        Couldn't create room. Maybe the server is dead.
+        Couldn't create room. Maybe the server is dead. <!-- Impossible de créer une salle. Le serveur est peut-être mort. -->
       </div>
       <div class="toast error" id="room-join-failed">
-        Couldn't join room. Make sure the code is correct.
+        Couldn't join room. Make sure the code is correct. <!-- Impossible de rejoindre la salle. Assurer vous que le code est correct. -->
       </div>
       <div class="toast" id="room-reconnected">
-        Connected again!
+        Connected again! <!-- Connexion rétablie ! -->
       </div>
       <div class="toast" id="toast-invalid-word">
-        Invalid word!
+        Invalid word! <!-- Mot invalide ! -->
       </div>
       <div class="toast" id="toast-test">
         Test toast message.
       </div>
       <div class="toast error" id="toast-connection-fail">
-        Couldn't create a connection. I have no idea what could cause this
+        Couldn't create a connection. I have no idea what could cause this... <!-- Impossibe d'établir la connexion. Aucune idée de comment ça peut arriver... -->
       </div>
       <div class="toast" id="toast-too-late">
-        Too late!
+        Too late!<!-- Trop tard ! -->
       </div>
     </div>
 
@@ -80,51 +80,51 @@
       <div class="flex-col" id="start-options">
         
         <button id="create-room-btn">
-          Create a room
+          Create a room<!-- Créer une salle -->
         </button>
-        <span class="sep-text">or</span>
+        <span class="sep-text">or<!-- ou --></span>
         
         <div class="flex-row" id="join-room-row">
-          <input id="join-room-code" placeholder="Enter room code"> <span class="text-margins">and</span>
+          <input id="join-room-code" placeholder="Enter room code"> <span class="text-margins">and <!-- et --></span>
           
           <button id="join-room-btn">
-            Join a room
+            Join a room <!-- Rejoindre une salle -->
           </button>
         </div>
         
         <div class="margin"></div>
 
         <span>
-          <span class="small-text">You can also</span>
+          <span class="small-text">You can also<!-- Vous pouvez aussi --></span>
 
           <button class="small-text link-button" id="show-rules-btn">
-            see the rules
+            see the rules <!-- voir les règles -->
           </button>
         </span>
       </div>
 
       <div id="version">
-        Unknown version
+        Unknown version<!-- Version 1.0 -->
       </div>
     </div>
 
     <!-- Waiting menu for the host -->
     <div class="panel" id="wait-panel">
-      <span class="room-code-label">Here's your room code:</span>
+      <span class="room-code-label">Here's your room code:<!-- Voici votre code de salle : --></span>
       <span id="room-code"></span>
-      <span class="room-code-clipboard-hint">It has already been put in your clipboard!</span>
+      <span class="room-code-clipboard-hint">It has already been put in your clipboard!<!-- Il est déjà dans votre presse-papier ! --></span>
       <div id="options-container">
-        <span class="options-title">Game options</span>
+        <span class="options-title">Game options<!-- Options de jeu --></span>
       </div>
-      <span id="host-waiting-other-hint" class="waiting-player-hint">Waiting for another player to join...</span>
-      <button id="host-ready-btn">Ready to start</button>
-      <button id="host-cancel-btn" class="link-button gray">Cancel</button>
+      <span id="host-waiting-other-hint" class="waiting-player-hint">Waiting for another player to join...<!-- En attente d'un adversaire... --></span>
+      <button id="host-ready-btn">Ready to start<!-- Prêt --></button>
+      <button id="host-cancel-btn" class="link-button gray">Cancel<!-- Annuler --></button>
     </div>
 
     <!-- Waiting menu for the other player -->
     <div class="panel" id="wait-other">
-      <span class="waiting-player-hint">Waiting for the host player to be ready...</span>
-      <button id="other-wait-cancel-btn" class="link-button gray">Cancel</button>
+      <span class="waiting-player-hint">Waiting for the host player to be ready...<!-- En attente de l'hôte... --></span>
+      <button id="other-wait-cancel-btn" class="link-button gray">Cancel <!-- Annuler --></button>
     </div>
 
     <!-- Game screen -->
@@ -133,18 +133,18 @@
         99
       </div>
       <div id="game-hint">
-        <div id="game-hint-enter-word">Enter a word</div>
-        <div id="game-hint-wait">Wait for the other player...</div>
-        <div id="game-hint-sabotage">Sabotage a letter</div>
-        <div id="hint-win">Congratulations!</div>
-        <div id="hint-both-win">Congratulations!</div>
-        <div id="hint-loose">Too bad!</div>
-        <div id="hint-loose-solution">Too bad! The word was <span id="solution-hint">XXXXX</span></div>
+        <div id="game-hint-enter-word">Enter a word<!-- Entrez un mot --></div>
+        <div id="game-hint-wait">Wait for the other player...<!-- En attente de l'adversaire... --></div>
+        <div id="game-hint-sabotage">Sabotage a letter<!-- Sabotez une lettre --></div>
+        <div id="hint-win">Congratulations!<!-- Félicitations ! --></div>
+        <div id="hint-both-win">Congratulations!<!-- Félicitations ! --></div>
+        <div id="hint-loose">Too bad!<!-- Dommage ! --></div>
+        <div id="hint-loose-solution">Too bad! The word was <!-- Dommage ! Le mot était --><span id="solution-hint">XXXXX</span></div>
       </div>
       <div id="game-hint-2">
-        <div id="game-hint-restart">Press enter to start a new game</div>
-        <div id="game-hint-restart-wait">Wait for the other player to also restart...</div>
-        <div id="game-hint-other-done">The other player is waiting for you</div>
+        <div id="game-hint-restart">Press enter to start a new game<!-- Appuyez sur entrer pour recommencer--></div>
+        <div id="game-hint-restart-wait">Wait for the other player to also restart...<!-- En attente de l'adversaire pour recommencer... --></div>
+        <div id="game-hint-other-done">The other player is waiting for you<!-- Votre adversaire vous attend --></div>
       </div>
       <div id="grids-scroll-area">
         <div class="flex-row" id="grids-container">
@@ -172,12 +172,12 @@
     <!-- Changing options between two games -->
     <div class="panel" id="option-change-panel">
       <div id="options-change-container">
-        <span class="options-title">Game options</span>
+        <span class="options-title">Game options<!-- Options de jeu --></span>
         <div id="options-change-container-inner">
         </div>
       </div>
-      <span id="option-change-waiting-other-hint" class="waiting-player-hint">Waiting for the other player...</span>
-      <button id="option-change-ready-btn">Ready to start</button>
+      <span id="option-change-waiting-other-hint" class="waiting-player-hint">Waiting for the other player...<!-- En attente de l'adversaire... --></span>
+      <button id="option-change-ready-btn">Ready to start<!-- Prêt --></button>
     </div>
 
     <!-- Game rules -->
@@ -216,20 +216,21 @@
           </div>
         </div>
 
-        <span class="rules-title">game rules</span>
+        <span class="rules-title">Game rules</span>
+        <!--<span class="rules-title">Règles du jeu</span>-->
       </div>
 
       <div class="rules-container">
       <p>
-        This game is just like New York Time's <a class="link-button" href="https://www.nytimes.com/games/wordle/index.html">Wordle</a>, but in multiplayer.
+        This game is just like New York Times' <a class="link-button" href="https://www.nytimes.com/games/wordle/index.html">Wordle</a>, but in multiplayer.
       </p>
 
       <p>
-        You have to guess the secret word before your opponent does. To gain clues, you can enter an  existing 5-letter word each turn, while your opponent does the same. 
+        Both you and your opponent are given the same secret word. You have to guess it before them to win. To gain clues, enter an existing 5-letter word each turn, while your opponent does the same. You have 6 turns to guess the word.
       </p>
 
       <p>
-        Then you can sabotage one letter of your opponent. They will not have any information on the letter you choose at the end of the turn.
+        Then sabotage one letter of your opponent. They will not have any information on the letter you choose at the end of the turn.
       </p>
 
       <p>
@@ -274,6 +275,65 @@
       </ul>
       </div>
 
+      <!-- VERSION FRANCAIS DES RÈGLES
+      
+      <div class="rules-container">
+      <p>
+        Ce jeu fonctionne comme le <a class="link-button" href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> du New York Times, mais en multijoueur.
+      </p>
+
+      <p>
+        Vous et votre adversaire devez deviner un même mot secret. Celui qui y arrivera en premier remportera la partie. Pour obtenir des indices, vous entrez des mots existants de 5 lettres pendant chacun des 6 tours de jeu, en même temps que votre adversaire.
+      </p>
+
+      <p>
+        Ensuite sabotez une lettre de votre adversaire. À la fin du tour, aucune information ne sera disponible sur la lettre que vous choisissez.
+      </p>
+
+      <p>
+        Si vous jouez avec un timer, une fois qu'un joueur a fait son action (choisis son mot ou la lettre à saboter), l'autre a un temps limité pour faire la sienne. Si un joueur n'a plus de temps, une action (plutôt) aléatoire sera choisie pour lui.
+      </p>
+
+      <p>
+        Enfin, vous voyez les indices pour votre mot. Chaque couleur à une signification particulière : <br/>
+      </p>
+      <div class="rules-example">
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-green" id="logo-0">
+            <span class="word-grid-label">R</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none" id="logo-1">
+            <span class="word-grid-label">U</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-red" id="logo-2">
+            <span class="word-grid-label">L</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-yellow" id="logo-3">
+            <span class="word-grid-label">E</span>
+          </div>
+        </div>
+        <div class="word-grid-cell-container">
+          <div class="word-grid-cell hint-none" id="logo-4">
+            <span class="word-grid-label">S</span>
+          </div>
+        </div>
+      </div>
+      <ul>
+        <li>Ici, la lettre <span class="rule-letter">R</span> est dans le mot secret, à cette place.</li>
+        <li>La lettre <span class="rule-letter">E</span> est dans le mot secret, mais n'est pas à cette place.</li>
+        <li>Votre adversaire a saboté la lettre <span class="rule-letter">L</span>. Vous n'avez pas d'information sur cette lettre. Elle peut être dans le mot secret, ou pas, à cette place, ou pas. Après, peut-être que votre adversaire n'a pas saboté cette lettre au hasard...</li>
+        <li>Les autres lettres ne sont pas dans le mot secret.</li>
+      </ul>
+      </div>
+      
+      -->
+
       <button id="rules-done-btn">
         OK
       </button>
@@ -282,7 +342,7 @@
 
     <div id="loading-screen">
       <span>
-        Loading...
+        Loading... <!-- Chargement... -->
       </span>
     </div>
   </body>
