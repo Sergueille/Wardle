@@ -25,6 +25,8 @@ const PHASE_SABOTAGE_WAIT = 3;
 const PHASE_RESTART = 4;
 const PHASE_RESTART_WAIT = 5;
 
+const GAME_END_RESTART_DELAY = 3; // Delay before which backspace presses are ignored after the game end (seconds)
+
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
 document.getElementById("join-room-code").addEventListener("keydown", ev => { if (ev.key == "Enter") { JoinRoom(); }; });
@@ -149,6 +151,7 @@ function ResetGlobalGameState() {
     state.enemyWords = [];
     state.currentTurn = -1;
     state.currentPhase = PHASE_TYPE;
+    state.gameEndTime = 0; // Time when the game ended. Used to prevent restart immediately after game end (milliseconds)
     state.knownHints = {};
     state.typedWord = "";
     state.waitPhaseInterfaceTimeout = null;
@@ -305,7 +308,7 @@ function OnBackspace() {
         state.typedWord = state.typedWord.slice(0, -1);
         RemoveLetter(true, state.typedWord.length, state.currentTurn);
     }
-    else if (state.currentPhase == PHASE_RESTART) {
+    else if (state.currentPhase == PHASE_RESTART && Date.now() - state.gameEndTime > GAME_END_RESTART_DELAY * 1000) {
         SetKeyboardEnterIcon("icon-enter");
         SetKeyboardBackspaceIcon("icon-backspace");
         state.currentPhase = PHASE_RESTART_WAIT;
@@ -339,6 +342,7 @@ function OnGameEnd() {
     SetSubElement("game-hint-2", "game-hint-restart");
     SetKeyboardEnterIcon("icon-restart");
     SetKeyboardBackspaceIcon("icon-restart-options");
+    state.gameEndTime = Date.now();
     state.currentPhase = PHASE_RESTART;
 }
 

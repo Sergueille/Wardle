@@ -12,8 +12,7 @@
 - meilleur codes de salles
 - crédits (Rezel, Alexis, Arsène, Wardle (the guy))
 - changement titre onglet
-- bas de backspace pour recommencer avec options
-- delai avant de restart
+- FAIT delai avant de restart
 
 - montrer les options avant chaque partie (au au moins notifier du changement)
 - fix animation cassée quand pas focus
