@@ -11,7 +11,9 @@
 - A TESTER: gérer retour/rechargement de la page correctement
 - meilleur codes de salles
 - crédits (Rezel, Alexis, Arsène, Wardle (the guy))
+- changement titre onglet
 
+- montrer les options avant chaque partie (au au moins notifier du changement)
 - fix animation cassée quand pas focus
 - son?
 
