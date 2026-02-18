@@ -12,6 +12,8 @@
 - meilleur codes de salles
 - crédits (Rezel, Alexis, Arsène, Wardle (the guy))
 - changement titre onglet
+- bas de backspace pour recommencer avec options
+- delai avant de restart
 
 - montrer les options avant chaque partie (au au moins notifier du changement)
 - fix animation cassée quand pas focus
@@ -34,6 +36,7 @@
 - changement de logo en fonction de l'url
 - lien vers le wordle sur la page d'accueil
 - si déconnexion manuelle du joueur, envoyer un message au serveur pour tout de suit supprimer la pièce et avertir l'autre joueur
+- support clavier
 
 ### Server
 
