@@ -580,7 +580,8 @@ button.connecting::after {
 
 .keyboard-icon {
     filter: invert(1);
-    height: 80%;
+    width: 80%;
+    max-height: 70%;
 }
 
 /* TOASTS */

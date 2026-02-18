@@ -7,7 +7,7 @@
 - FAIT Possibilité de changer les options pendant un restart (genre restart ave les mêmes règles / changer les règles et restart)
 - Passage en azerty en français
 - FAIT icônes (*4)
-- icônes trop grands sur mobile
+- FAIT icônes trop grands sur mobile
 - A TESTER: gérer retour/rechargement de la page correctement
 - meilleur codes de salles
 - crédits (Rezel, Alexis, Arsène, Wardle (the guy))
