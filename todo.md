@@ -24,6 +24,7 @@
 
 - tester autres types de sabotage (plusieurs par tour)
 - option pour mode difficile
+- Meilleur francais-few
 
 ### Interface
 
