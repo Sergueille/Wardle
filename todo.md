@@ -17,6 +17,7 @@
 - montrer les options avant chaque partie (au au moins notifier du changement)
 - fix animation cassée quand pas focus
 - son?
+- Réparer espaces entre lettres du clavier
 
 ## TODO important
 
@@ -46,6 +47,7 @@
 
 - améliorer interface pour rejouer après la partie
 - afficher indices chez l'adversaire (et en faire une option)
+- afficher les indices que l'adversaire (pdv de son écran) à la fin de la partie, et proposer une exportation de fin de partie avec des emojis
 - make a request to server on frontend startup to see if the server is alive
 - add a delay before a room can be deleted when both player disconnect
 - chat
