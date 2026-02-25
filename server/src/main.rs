@@ -13,7 +13,7 @@ use actix_web::web;
 
 use crate::game::MAX_WORD_COUNT;
 
-#[derive(PartialEq, Eq)]
+#[derive(serde::Serialize, PartialEq, Eq)]
 enum GamePhase {
     Typing, Sabotaging, Restarting
 }
@@ -23,6 +23,7 @@ enum HintType {
     Green, Yellow, Red, Gray, None
 }
 
+#[derive(serde::Serialize)]
 struct GameState {
     word_to_guess: Option<String>,
     current_turn: i64,
@@ -68,10 +69,12 @@ struct SocketConnection {
 }
 
 /// Think we know about a player in a game
+#[derive(serde::Serialize)]
 struct Player {
     player_info: Option<PlayerInfo>, // None if not sent by the player yet
     messages_to_send: Vec<String>,
     connection_alive: bool,
+    #[serde(skip_serializing)]
     last_ping_time: std::time::Instant,
     typed_word_this_turn: Option<String>,
     letter_sabotaged_this_turn: Option<u64>,
@@ -79,6 +82,7 @@ struct Player {
     ready_to_restart: bool,
 }
 
+#[derive(serde::Serialize)]
 struct RoomState {
     game_state: GameState,
     host_player: Player,
@@ -204,6 +208,19 @@ async fn reconnect(req: actix_web::HttpRequest, stream: web::Payload, data: web:
     }
 }
 
+#[actix_web::get("/room-state/{room_code}")]
+async fn get_room_state(data: web::Data<&ProtectedAppState>, path: web::Path<String>) -> impl actix_web::Responder {
+    let room_code = path.into_inner();
+
+    if data.rooms.lock().unwrap().contains_key(&room_code) {
+        let room = Arc::clone(&data.rooms.lock().unwrap()[&room_code]);
+        Ok::<HttpResponse, actix_web::Error>(HttpResponse::Ok().body(serde_json::to_string_pretty(room.as_ref()).unwrap()))
+    }
+    else {
+        Ok::<HttpResponse, actix_web::Error>(HttpResponse::NotFound().body("No room with this code"))
+    }
+}
+
 #[actix_web::get("/ping")]
 async fn ping() -> impl actix_web::Responder {
     Ok::<HttpResponse, actix_web::Error>(HttpResponse::Ok().body(""))
@@ -231,10 +248,11 @@ async fn main() -> std::io::Result<()> {
 
     actix_web::HttpServer::new(|| {
         actix_web::App::new()
-        .app_data(actix_web::web::Data::new(&APP_DATA))
+            .app_data(actix_web::web::Data::new(&APP_DATA))
             .service(create_room)
             .service(join_room)
             .service(reconnect)
+            .service(get_room_state)
             .service(ping)
     })
     .bind(address)?
