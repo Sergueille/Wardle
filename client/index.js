@@ -222,6 +222,9 @@ function OnGameStart() {
     PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
     ClearKeyboardHints();
     ResetGlobalGameState();
+
+    document.getElementById("ingame-room-code").textContent = state.roomCode;
+
     ShowPanel("game-panel");
     HideChildren("game-hint-2")
     state.gameStarted = true;

@@ -319,6 +319,18 @@ button.connecting::after {
     gap: 10px;
 }
 
+#ingame-room-code-container {
+    font-size: 0.9em;
+    color: var(--txt-dd);
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+
+#ingame-room-code {
+    font-family: cascadia;
+}
+
 @keyframes panel-appear {
     0% {
         transform: translateY(100px);
