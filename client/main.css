@@ -631,7 +631,7 @@ button.connecting::after {
 
 /* OPTIONS */
 
-#options-container, #options-change-container {
+#options-container, #options-change-container, #options-readonly-container {
     position: relative;
     margin: 60px 0 50px 0;
     border: 2px solid var(--bg-lll);
@@ -684,6 +684,17 @@ button.connecting::after {
     flex-direction: row;
     align-items: baseline;
     justify-content: center;
+}
+
+.option-value-text {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 2px 0 2px 5px;
+}
+
+.game-start-hint {
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 /* RESPONSIVENESS */

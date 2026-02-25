@@ -158,9 +158,9 @@ pub fn check_for_restart_end(room: &mut RoomState) {
         return;
     }
 
+    game_start(room); // Do game start setup before sending restart message to make sure the new options arrive first
+    
     room.do_for_all_players(&|p, _| { send_message(p, "restart", &()); });
-
-    game_start(room);
 }
 
 pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &JsonMap, is_host: bool) -> Result<(), String> {    
