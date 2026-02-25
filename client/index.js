@@ -127,7 +127,7 @@ function Start() {
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     SetVersionText();
     LoadOptions();
-    PopulateOptionsInParent(document.getElementById("options-container"), false);
+    PopulateOptionsInParent(document.getElementById("options-container-inner"), false);
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();

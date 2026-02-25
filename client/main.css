@@ -645,7 +645,7 @@ button.connecting::after {
     padding: 30px 100px 25px 100px;
 }
 
-#options-change-container-inner {
+#options-container-inner, #options-change-container-inner, #options-readonly-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -657,6 +657,7 @@ button.connecting::after {
     background-color: var(--bg);
     position: absolute;
     font-size: 1.3em;
+    text-wrap: nowrap;
 
     top: 0;
     left: 50%;
@@ -673,6 +674,7 @@ button.connecting::after {
     color: var(--txt-d);
     font-size: 0.9em;
     margin-top: -8px;
+    text-align: center;
 }
 
 .option-select {
@@ -786,6 +788,13 @@ button.connecting::after {
 
     .flex-column-when-screen-too-small {
         flex-direction: column;
+    }
+
+    #options-container, #options-change-container, #options-readonly-container {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 }
 
