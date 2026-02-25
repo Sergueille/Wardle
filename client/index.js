@@ -98,6 +98,13 @@ let allowedWords = [];
 let timerIntervalHandle = null;
 let timerTimeoutHandle = null;
 
+let windowFocused = true;
+
+window.addEventListener("blur", () => { windowFocused = false; });
+window.addEventListener("focus", () => OnWindowFocused());
+
+OnWindowFocused();
+
 function Start() {
     /*
     // TEST
@@ -245,6 +252,7 @@ function StartNextTurn() {
     state.typedWord = "";
     SetLeftGridActive();
     AutoScroll(true);
+    ShowActionRequired();
 }
 
 function StartTypeWaitPhase() {
@@ -265,6 +273,7 @@ function StartSabotagePhase() {
     SetSabotageTarget(false, state.currentTurn, true);
     SetGameHint("game-hint-sabotage");
     HideChildren("game-hint-2");
+    ShowActionRequired();
 }
 
 function StartSabotageWaitPhase() {
@@ -345,6 +354,7 @@ function OnGameEnd() {
     SetSubElement("game-hint-2", "game-hint-restart");
     SetKeyboardEnterIcon("icon-restart");
     SetKeyboardBackspaceIcon("icon-restart-options");
+    ShowActionRequired();
     state.gameEndTime = Date.now();
     state.currentPhase = PHASE_RESTART;
 }
@@ -696,4 +706,21 @@ function QuitGame()
     state.websocketConnection = null;
 
     ShowPanel("start-panel");
+}
+
+function ShowActionRequired()
+{
+    if (!windowFocused) {
+        document.title = document.getElementById("document-title-action-required").content;
+    }
+
+    if (navigator.vibrate) { // No vibrations on Firefox :(
+        navigator.vibrate(100);
+    }
+}
+
+function OnWindowFocused()
+{
+    windowFocused = true;
+    document.title = document.getElementById("document-title-normal").content;
 }
