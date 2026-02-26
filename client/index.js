@@ -115,7 +115,6 @@ function Start() {
     HideAllPanels();
     ShowPanel("game-panel");
     document.getElementById("loading-screen").classList.add("hidden");
-    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     return;
     */
     
@@ -126,7 +125,6 @@ function Start() {
     ShowPanel("start-panel");
     GetAllWords();
     HideChildren("game-hint-2");
-    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     SetVersionText();
     LoadOptions();
     PopulateOptionsInParent(document.getElementById("options-container-inner"), false);
@@ -235,6 +233,7 @@ function OnGameStart() {
     PopulateWordGrids(WORD_LENGTH, MAX_WORD_COUNT, OnSabotageLetter);
     ClearKeyboardHints();
     ResetGlobalGameState();
+    PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace(), currentOptions.language);
 
     document.getElementById("ingame-room-code").textContent = state.roomCode;
 

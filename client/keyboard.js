@@ -1,18 +1,33 @@
 
-const KEYBOARD_LAYOUT = [
+const KEYBOARD_LAYOUT_QWERTY = [
     "QWERTYUIOP",
     ".ASDFGHJKL.",
     "%ZXCVBNM!"
-]
+];
+
+const KEYBOARD_LAYOUT_AZERTY = [
+    "AZERTYUIOP",
+    "QSDFGHJKLM",
+    ".%ZXCVBN!."
+];
 
 
-function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
-    let keyboard_container = document.getElementById("keyboard");
+function PopulateKeyboard(onPressCallback, onEnter, onBackspace, language) {
+    let keyboardContainer = document.getElementById("keyboard");
+    keyboardContainer.innerHTML = ""; // Clear the parent
 
-    for (line of KEYBOARD_LAYOUT) {
+    let layout;
+    if (language == "English") {
+        layout = KEYBOARD_LAYOUT_QWERTY;
+    }
+    else if (language == "French") {
+        layout = KEYBOARD_LAYOUT_AZERTY;
+    }
+
+    for (line of layout) {
         let lineElement = document.createElement("div");
         lineElement.classList.add("keyboard-line");
-        keyboard_container.appendChild(lineElement);
+        keyboardContainer.appendChild(lineElement);
 
         for (let i = 0; i < line.length; i++) {
             let el = document.createElement("div");
@@ -24,15 +39,15 @@ function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
                 lineElement.appendChild(el);
             }
             else if (line[i] == '%') {
-                let key = document.getElementById("key-enter");
+                let key = document.getElementById("key-enter-template").cloneNode(true);
+                key.id = "key-enter";
                 key.addEventListener("mouseup", ev => onEnter());
-                SetSubElement("key-enter", "icon-enter");
                 lineElement.appendChild(key);
             }
             else if (line[i] == '!') {
-                let key = document.getElementById("key-backspace");
+                let key = document.getElementById("key-backspace-template").cloneNode(true);
+                key.id = "key-backspace";
                 key.addEventListener("mouseup", ev => onBackspace());
-                SetSubElement("key-backspace", "icon-backspace");
                 lineElement.appendChild(key);
             }
             else {
@@ -47,6 +62,10 @@ function PopulateKeyboard(onPressCallback, onEnter, onBackspace) {
             }
         }
     }
+
+    // Set initial icons
+    SetSubElement("key-enter", "icon-enter");
+    SetSubElement("key-backspace", "icon-backspace");
 }
 
 function SetKeyboardHint(char, hintType) {
