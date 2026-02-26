@@ -27,6 +27,8 @@ const PHASE_RESTART_WAIT = 5;
 
 const GAME_END_RESTART_DELAY = 3; // Delay before which backspace presses are ignored after the game end (seconds)
 
+const OPTIONS_QUICK_VIEW_DURATION = 2000; //ms
+
 document.getElementById("join-room-btn").addEventListener("click", ev => JoinRoom());
 document.getElementById("create-room-btn").addEventListener("click", ev => CreateRoom());
 document.getElementById("join-room-code").addEventListener("keydown", ev => { if (ev.key == "Enter") { JoinRoom(); }; });
@@ -38,12 +40,14 @@ document.getElementById("other-wait-cancel-btn").addEventListener("click", ev =>
 
 document.getElementById("host-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
+    document.getElementById("options-container-inner").setAttribute("disabled", "disabled");
     document.getElementById("host-waiting-other-hint").classList.remove("hidden");
     document.getElementById("host-ready-btn").classList.add("hidden");
 });
 
 document.getElementById("option-change-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
+    document.getElementById("options-change-container-inner").setAttribute("disabled", "disabled");
     document.getElementById("option-change-waiting-other-hint").classList.remove("hidden");
     document.getElementById("option-change-ready-btn").classList.add("hidden");
 });
@@ -125,7 +129,7 @@ function Start() {
     PopulateKeyboard(letter => OnLetterTyped(letter), () => OnEnter(), () => OnBackspace());
     SetVersionText();
     LoadOptions();
-    PopulateOptionsUI();
+    PopulateOptionsInParent(document.getElementById("options-container-inner"), false);
 
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
@@ -213,6 +217,7 @@ function CreateRoom() {
             StartPingLoop();
             LoadOptions();
             SendOptionsToServer();
+            currentOptionsWereSetByPlayer = true;
         });
         connection.onerror = ev => {
             document.getElementById("create-room-btn").classList.remove("connecting");
@@ -327,10 +332,9 @@ function OnBackspace() {
         document.getElementById("option-change-waiting-other-hint").classList.add("hidden");
         document.getElementById("option-change-ready-btn").classList.remove("hidden");
 
-        let optionsParent = document.getElementById("options-change-container-inner");
-        optionsParent.innerHTML = "";
-        PopulateOptionsInParent(optionsParent);
+        PopulateOptionsInParent(document.getElementById("options-change-container-inner"), false);
         ShowPanel("option-change-panel");
+        currentOptionsWereSetByPlayer = true;
     }
 }
 
@@ -482,7 +486,15 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "restart") {
         document.getElementById("join-room-btn").classList.remove("connecting");
-        OnGameStart();
+
+        if (!currentOptionsWereSetByPlayer) { // Show options briefly if the player didn't set them
+            PopulateOptionsInParent(document.getElementById("options-readonly-container-inner"), true);
+            ShowPanel("option-quick-view");
+        }
+
+        setTimeout(() => {
+            OnGameStart();
+        }, OPTIONS_QUICK_VIEW_DURATION);
     }
     else if (msg.type == "wait-for-host") {
         document.getElementById("join-room-btn").classList.remove("connecting");
@@ -523,6 +535,7 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "game-options") {
         currentOptions = msg.content.options;
+        currentOptionsWereSetByPlayer = false;
         console.log("Options received.")
     }
     else if (msg.type == "other-player-win") {

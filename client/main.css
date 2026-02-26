@@ -78,6 +78,17 @@ button, input, select {
     border: none;
 }
 
+*[disabled="disabled"] input, *[disabled="disabled"] select {
+    filter: brightness(0.7);
+    opacity: 0.7;
+}
+
+fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
 button:hover {
     transform: scale(1.1);
 }
@@ -631,7 +642,7 @@ button.connecting::after {
 
 /* OPTIONS */
 
-#options-container, #options-change-container {
+#options-container, #options-change-container, #options-readonly-container {
     position: relative;
     margin: 60px 0 50px 0;
     border: 2px solid var(--bg-lll);
@@ -645,7 +656,7 @@ button.connecting::after {
     padding: 30px 100px 25px 100px;
 }
 
-#options-change-container-inner {
+#options-container-inner, #options-change-container-inner, #options-readonly-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -657,6 +668,7 @@ button.connecting::after {
     background-color: var(--bg);
     position: absolute;
     font-size: 1.3em;
+    text-wrap: nowrap;
 
     top: 0;
     left: 50%;
@@ -673,6 +685,7 @@ button.connecting::after {
     color: var(--txt-d);
     font-size: 0.9em;
     margin-top: -8px;
+    text-align: center;
 }
 
 .option-select {
@@ -684,6 +697,17 @@ button.connecting::after {
     flex-direction: row;
     align-items: baseline;
     justify-content: center;
+}
+
+.option-value-text {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 2px 0 2px 5px;
+}
+
+.game-start-hint {
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 /* RESPONSIVENESS */
@@ -775,6 +799,13 @@ button.connecting::after {
 
     .flex-column-when-screen-too-small {
         flex-direction: column;
+    }
+
+    #options-container, #options-change-container, #options-readonly-container {
+        padding-left: 30px;
+        padding-right: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 }
 
