@@ -8,7 +8,7 @@ const KEYBOARD_LAYOUT_QWERTY = [
 const KEYBOARD_LAYOUT_AZERTY = [
     "AZERTYUIOP",
     "QSDFGHJKLM",
-    ".%ZXCVBN!."
+    ".%WXCVBN!."
 ];
 
 
