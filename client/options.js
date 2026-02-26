@@ -41,10 +41,12 @@ let defaultOptions = {
 };
 
 let currentOptions = defaultOptions;
+let currentOptionsWereSetByPlayer = false;
 
 function PopulateOptionsInParent(parent, readonly)
 {
     parent.innerHTML = ""; // Empty the parent
+    parent.removeAttribute("disabled");
     
     for (let [key, val] of Object.entries(OPTIONS_UI)) {
         let cont = document.createElement("div");

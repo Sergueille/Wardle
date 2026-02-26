@@ -40,12 +40,14 @@ document.getElementById("other-wait-cancel-btn").addEventListener("click", ev =>
 
 document.getElementById("host-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
+    document.getElementById("options-container-inner").setAttribute("disabled", "disabled");
     document.getElementById("host-waiting-other-hint").classList.remove("hidden");
     document.getElementById("host-ready-btn").classList.add("hidden");
 });
 
 document.getElementById("option-change-ready-btn").addEventListener("click", ev => {
     TrySendMessage("restart-ready", {});
+    document.getElementById("options-change-container-inner").setAttribute("disabled", "disabled");
     document.getElementById("option-change-waiting-other-hint").classList.remove("hidden");
     document.getElementById("option-change-ready-btn").classList.add("hidden");
 });
@@ -215,6 +217,7 @@ function CreateRoom() {
             StartPingLoop();
             LoadOptions();
             SendOptionsToServer();
+            currentOptionsWereSetByPlayer = true;
         });
         connection.onerror = ev => {
             document.getElementById("create-room-btn").classList.remove("connecting");
@@ -331,6 +334,7 @@ function OnBackspace() {
 
         PopulateOptionsInParent(document.getElementById("options-change-container-inner"), false);
         ShowPanel("option-change-panel");
+        currentOptionsWereSetByPlayer = true;
     }
 }
 
@@ -483,8 +487,11 @@ function HandleConnectionMessage(msgText) {
     else if (msg.type == "restart") {
         document.getElementById("join-room-btn").classList.remove("connecting");
 
-        PopulateOptionsInParent(document.getElementById("options-readonly-container-inner"), true);
-        ShowPanel("option-quick-view");
+        if (!currentOptionsWereSetByPlayer) { // Show options briefly if the player didn't set them
+            PopulateOptionsInParent(document.getElementById("options-readonly-container-inner"), true);
+            ShowPanel("option-quick-view");
+        }
+
         setTimeout(() => {
             OnGameStart();
         }, OPTIONS_QUICK_VIEW_DURATION);
@@ -528,6 +535,7 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "game-options") {
         currentOptions = msg.content.options;
+        currentOptionsWereSetByPlayer = false;
         console.log("Options received.")
     }
     else if (msg.type == "other-player-win") {
