@@ -26,32 +26,12 @@ impl Position {
 
 }
 
-/// Generate a room code at is (hopefully) pronounceable
 pub fn create_random_code() -> String {
-    let consonants: Vec<&str> = vec![
-        "z", "r", "t", "tt", "tr", "p", "pr", "q", "s", "ss", "sr", "st", "sp", "d", "f", "g", "gs", "h", "th", "sh", "sk",
-        "j", "k", "l", "lt", "lp", "ls", "ld", "pl", "ll", "m", "mp", "sm", "w", "x", "c", "ct", "cl", "ch", "cr", "ck", "v", "b", "sb", "mb", "n", "nt", "ns", "ng"
-    ];
-
-    let vowels: Vec<&str> = vec! [
-        "a", "e", "i", "o", "u", "y", "ei", "ou", "oo", "ee", "ay", "ea"
-    ];
-
-    let mut res = String::with_capacity(ROOM_CODE_SIZE as usize);
-
-    let mut vowel = true;
-    while res.chars().count() < ROOM_CODE_SIZE {
-        if vowel {
-            res.push_str(vowels.choose(&mut rand::rng()).unwrap());
-            vowel = false;
-        }
-        else {
-            res.push_str(consonants.choose(&mut rand::rng()).unwrap());
-            vowel = true;
-        }
-    }
-
-    return res;
+    return format!(
+        "{}-{}", 
+        get_random_secret_word(crate::Language::English), 
+        get_random_secret_word(crate::Language::English)
+    ).to_ascii_lowercase();
 }
 
 pub fn get_random_secret_word(lang: crate::Language) -> String {
