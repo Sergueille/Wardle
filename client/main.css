@@ -607,6 +607,10 @@ button.connecting::after {
     max-height: 70%;
 }
 
+#key-enter-template, #key-backspace-template {
+    display: none;
+}
+
 /* TOASTS */
 
 #toasts-container {
