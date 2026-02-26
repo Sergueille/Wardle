@@ -189,6 +189,7 @@ function JoinRoom()
         connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
         connection.addEventListener("open", ev => {
             StartPingLoop();
+            currentOptionsWereSetByPlayer = false;
         });
         connection.onerror = ev => {
             document.getElementById("join-room-btn").classList.remove("connecting");
@@ -317,6 +318,7 @@ function OnEnter() {
         SetKeyboardEnterIcon("icon-enter");
         SetKeyboardBackspaceIcon("icon-backspace");
         state.currentPhase = PHASE_RESTART_WAIT;
+        currentOptionsWereSetByPlayer = false;
         TrySendMessage("restart-ready", {});
     }
 }
@@ -536,7 +538,6 @@ function HandleConnectionMessage(msgText) {
     }
     else if (msg.type == "game-options") {
         currentOptions = msg.content.options;
-        currentOptionsWereSetByPlayer = false;
         console.log("Options received.")
     }
     else if (msg.type == "other-player-win") {
