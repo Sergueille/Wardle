@@ -175,6 +175,7 @@ function JoinRoom()
     window.history.pushState({}, null, null);
 
     let code = document.getElementById("join-room-code").value.toLowerCase().trim();
+    code = code.replace(" ", "-");
     state.roomCode = code;
 
     try {
