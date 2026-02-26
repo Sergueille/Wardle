@@ -35,6 +35,8 @@ document.getElementById("join-room-code").addEventListener("keydown", ev => { if
 
 document.getElementById("show-rules-btn").addEventListener("click", ev => ShowPanel("game-rules-panel"));
 document.getElementById("rules-done-btn").addEventListener("click", ev => ShowPanel("start-panel"));
+document.getElementById("show-credits-btn").addEventListener("click", ev => ShowPanel("credits-panel"));
+document.getElementById("credits-done-btn").addEventListener("click", ev => ShowPanel("start-panel"));
 document.getElementById("host-cancel-btn").addEventListener("click", ev => QuitGame());
 document.getElementById("other-wait-cancel-btn").addEventListener("click", ev => QuitGame());
 

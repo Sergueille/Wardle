@@ -149,25 +149,30 @@ button.connecting::after {
     font-style: italic;
 }
 
-.link-button {
+.link-button, a {
     color: white;
     margin: 10px 2px;
     background-color: transparent;
     display: inline;
     padding: 0;
-    text-decoration: none;
-    font-family: cascadia;
-    font-style: normal;
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
-.link-button:hover {
+.link-button:hover, a:hover {
     transform: none;
     text-decoration: underline;
 }
 
-.link-button.gray {
+.link-button.gray, a.gray {
     color: var(--txt-dd);
     font-size: 1.0em;
+}
+
+.link-button.small, a.small {
+    color: var(--txt-d);
+    font-family: roboto;
+    font-weight: bold;
 }
 
 .flex-col {
@@ -340,6 +345,10 @@ button.connecting::after {
 
 #ingame-room-code {
     font-family: cascadia;
+}
+
+#credits-panel {
+    gap: 20px;
 }
 
 @keyframes panel-appear {
