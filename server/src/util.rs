@@ -1,5 +1,3 @@
-use rand::seq::IndexedRandom;
-
 
 const ROOM_CODE_SIZE: usize = 8;
 
