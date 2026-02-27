@@ -3,6 +3,8 @@ const HINT_REVEAL_ANIMATION_DURATION = 100; // ms
 const MULTIPLE_LETTERS_ANIMATION_DELAY = 40; // ms
 const WIN_ANIMATION_DELAY = 100; // ms
 
+const WINDOW_UNFOCUSED_RETRY_DELAY = 0.4; // ms // Time before retrying to start an animation if the window is not focused
+
 
 function PopulateWordGrids(nbColumn, nbRow, onSabotage) {
     let left = document.getElementById("left-grid");
@@ -148,16 +150,28 @@ function InvalidAnimation(isLeftGrid, rowId) {
 
 function WinAnimation(isLeftGrid, rowId) {
     for (let y = 0; y < MAX_WORD_COUNT; y++) {
-        for (let x = 0; x < WORD_LENGTH; x++) {
-            let el = document.getElementById(GetCellId(isLeftGrid, x, y));
+        if (y == rowId) {
+            function doLetter(x) {
+                let el = document.getElementById(GetCellId(isLeftGrid, x, y));
 
-            if (y == rowId) {
-                setTimeout(() => {
-                    el.classList.add("win-animation");
-                    el.classList.add("hint-green")
-                    el.classList.remove("typed-unchecked");
-                }, WIN_ANIMATION_DELAY * x);
+                el.classList.add("win-animation");
+                el.classList.add("hint-green")
+                el.classList.remove("typed-unchecked");
+            
+                if (x + 1 >= WORD_LENGTH) { return; }
+                setTimeout(() => doLetter(x + 1), WIN_ANIMATION_DELAY)
             }
+
+            function startIfFocused() {
+                if (windowFocused) {
+                    doLetter(0);
+                }
+                else {
+                    setTimeout(() => startIfFocused(), WINDOW_UNFOCUSED_RETRY_DELAY);
+                }
+            }
+
+            startIfFocused();
         }
     }
 

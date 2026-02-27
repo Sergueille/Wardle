@@ -547,13 +547,14 @@ function HandleConnectionMessage(msgText) {
         }
 
         SetWord(false, state.currentTurn, msg.content);
+        setTimeout(() => WinAnimation(false, state.currentTurn), MULTIPLE_LETTERS_ANIMATION_DELAY * WORD_LENGTH);
+        
         state.enemyWords.push(msg.content);
 
         AutoScroll(false);
         SetBothGridActive();
         ClearTimer();
         SetGameHint("hint-loose");
-        WinAnimation(false, state.currentTurn);
         OnGameEnd();
     }
     else if (msg.type == "you-win") {
