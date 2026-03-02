@@ -440,6 +440,10 @@ function HandleConnectionMessage(msgText) {
         console.error(msgText);
     }
 
+    if (msg.type != "ping") {
+        console.log("Message: ", msg)
+    }
+
     if (msg.type == "room-code") {
         state.roomCode = msg.content;
         document.getElementById("room-code").textContent = state.roomCode;

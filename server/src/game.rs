@@ -169,7 +169,11 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             // Nothing to do
         },
         "word" => {
-            if room.game_state.current_phase != GamePhase::Typing { return Err(String::from("Wrong phase")); }
+            if room.game_state.current_phase == GamePhase::Restarting { // Word received too late!
+                
+            }
+
+            if room.game_state.current_phase != GamePhase::Typing { return Err(String::from("Word received during wrong phase")); }
 
             let word = crate::util::get_json_str(msg_contents, "word").unwrap();
 
@@ -186,7 +190,7 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             }
         },
         "sabotage" => {
-            if room.game_state.current_phase != GamePhase::Sabotaging { return Err(String::from("Wrong phase")); }
+            if room.game_state.current_phase != GamePhase::Sabotaging { return Err(String::from("Sabotage received during wrong phase")); }
 
             let id = crate::util::get_json_number(msg_contents, "id").unwrap();
             room.get_player(is_host).letter_sabotaged_this_turn = Some(id.as_u64().unwrap()); // TODO: check that the number is between 0 and 5
@@ -196,7 +200,7 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
             if !ended { send_message(room.get_player(!is_host), "other-player-is-done", &()); }
         },
         "restart-ready" => {
-            if room.game_state.current_phase != GamePhase::Restarting && room.game_started { return Err(String::from("Wrong phase")); }
+            if room.game_state.current_phase != GamePhase::Restarting && room.game_started { return Err(String::from("Restart request received during wrong phase")); }
             room.get_player(is_host).ready_to_restart = true;
             check_for_restart_end(room);
         },
