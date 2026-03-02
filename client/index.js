@@ -724,6 +724,10 @@ function QuitGame()
     if (state.websocketConnection != null) {
         state.websocketConnection.onerror = () => {};
         state.websocketConnection.close();
+
+        if (state.pingLoopHandle) {
+            clearTimeout(state.pingLoopHandle);
+        }
     }
 
     state.websocketConnection = null;
