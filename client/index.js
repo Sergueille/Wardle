@@ -403,7 +403,9 @@ function OnDisconnection() {
     setTimeout(() => { // Wait a little before reconnecting
         state.inReconnectionDelay = false;
 
-        let connection = new WebSocket("http://" + GetApiUrl() + "/reconnect/" + (state.isHostPlayer ? 0 : 1) + "/" + state.roomCode);
+        Toast("room-reconnecting");
+
+        let connection = new WebSocket(GetApiUrl() + "/reconnect/" + (state.isHostPlayer ? 0 : 1) + "/" + state.roomCode);
         state.websocketConnection = connection;
         
         connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
