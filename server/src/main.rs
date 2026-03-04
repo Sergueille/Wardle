@@ -5,6 +5,7 @@ mod util;
 mod game;
 mod server_internal;
 mod hints;
+mod statistics;
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -31,7 +32,7 @@ struct GameState {
 }
 
 // NOTE: do not rename these enums' values! Serialization depend on the names.
-#[derive(serde::Deserialize, serde::Serialize, Clone, Copy)]
+#[derive(serde::Deserialize, serde::Serialize, Clone, Copy, PartialEq, Eq, Hash)]
 enum Language {
     French, English
 }
@@ -90,10 +91,15 @@ struct RoomState {
     join_code: String,
     game_started: bool,
     game_options: GameOptions,
+    game_count: u64, // How many games were played before?
+
+    #[serde(skip)]
+    statistics: statistics::StatsHandle,
 }
 
 struct AppState {
     rooms: Mutex<HashMap<String, Arc<Mutex<RoomState>>>>,
+    statistics: statistics::StatsHandle
 }
 
 type ProtectedAppState = std::sync::LazyLock<Arc<AppState>>;
@@ -127,9 +133,17 @@ async fn create_room(req: actix_web::HttpRequest, stream: web::Payload, data: we
         join_code: code.clone(),
         game_started: false,
         game_options: GameOptions::default(),
+        statistics: data.statistics.clone(),
+        game_count: 0,
     };
 
-    println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, data.rooms.lock().unwrap().len() + 1);
+    let active_room_count = data.rooms.lock().unwrap().len() + 1;
+
+    println!("Room creation request: {}. Now there are {} rooms active.", new_room.join_code, active_room_count);
+
+    statistics::update_stats(&data.statistics, &|stats| {
+        stats.max_room_active_at_same_time = u64::max(stats.max_room_active_at_same_time, active_room_count as u64);
+    });
 
     let room_in_arc = Arc::new(Mutex::new(new_room));
 
@@ -227,7 +241,8 @@ async fn ping() -> impl actix_web::Responder {
 }
 
 static APP_DATA: ProtectedAppState = std::sync::LazyLock::new(|| Arc::new(AppState { 
-    rooms: Mutex::new(HashMap::new())
+    rooms: Mutex::new(HashMap::new()),
+    statistics: Arc::new(Mutex::new(statistics::load())),
 }));
 
 #[actix_web::main]

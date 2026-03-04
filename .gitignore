@@ -2,3 +2,4 @@
 server/target
 server/Cargo.lock
 */version.txt
+statistics.json

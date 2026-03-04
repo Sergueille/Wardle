@@ -51,7 +51,7 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     let b_wins = handle_victory_condition(player_b, player_a, word_to_guess);
 
     if a_wins || b_wins { // Game finished 
-        on_game_end(room);
+        on_game_end(room, false);
         return true;
     } 
 
@@ -94,7 +94,7 @@ pub fn check_for_type_end(room: &mut RoomState) -> bool {
     });
 
     if was_last_guess { 
-        on_game_end(room);
+        on_game_end(room, true);
     }
 
     return true;
@@ -121,10 +121,27 @@ pub fn handle_victory_condition(player: &mut Player, other: &mut Player, word_to
     }
 }
 
-pub fn on_game_end(room: &mut RoomState) {
+pub fn on_game_end(room: &mut RoomState, is_a_draw: bool) {
     // Just reset the room for it to be ready for restart
     room.game_state = get_initial_game_state();
     room.game_state.current_phase = GamePhase::Restarting;
+
+    room.game_count += 1;
+
+    statistics::update_stats(&room.statistics, &|stats| {
+        if is_a_draw {
+            stats.total_draws += 1;
+        }
+        else {
+            stats.total_wins += 1;
+        }
+        statistics::increment_stat_map_counter(&mut stats.language, room.game_options.language);
+        statistics::increment_stat_map_counter(&mut stats.timer, room.game_options.timer as u64);
+        statistics::increment_stat_map_counter(&mut stats.game_count_for_one_room, room.game_count);
+
+        log::info!("{}", room.game_state.current_turn);
+        statistics::increment_stat_map_counter(&mut stats.win_turn, room.game_state.current_turn.unsigned_abs());
+    });
 }
 
 pub fn check_for_sabotage_end(room: &mut RoomState) -> bool {
