@@ -187,7 +187,7 @@ pub fn handle_one_message(room: &mut RoomState, msg_type: &str, msg_contents: &J
         },
         "word" => {
             if room.game_state.current_phase == GamePhase::Restarting { // Word received too late!
-                
+                return Ok(());
             }
 
             if room.game_state.current_phase != GamePhase::Typing { return Err(String::from("Word received during wrong phase")); }
