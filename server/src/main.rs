@@ -252,14 +252,20 @@ async fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
 
     println!("Starting backend server!");
+
+    let port = match args.iter().position(|a| a == "--port") {
+        Some(p) => &args[p+1],
+        None => "4268",
+    };
     
     let address = if args.contains(&String::from("--localhost")) {
-        println!("Serving on local network");
-        "0.0.0.0:4268"
+        format!("0.0.0.0:{}", port)
     }
     else {
-        "[2a09:6847:fa10:1410::278]:4268"
+        format!("[2a09:6847:fa10:1410::278]:{}", port)
     };
+
+    println!("Serving on {}", address);
 
     actix_web::HttpServer::new(|| {
         actix_web::App::new()
