@@ -15,6 +15,7 @@ while read branch || [[ -n $branch ]]; do
 
   # Set up the files
   git checkout $branch >/dev/null
+  echo "$branch ($(git rev-parse --short HEAD))" > ../client/version.txt
 
   # Compile and send the executable
   cd ../server
