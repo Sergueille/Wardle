@@ -31,7 +31,10 @@ WantedBy=multi-user.target
 
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
-  reverse_proxy /$branch/* localhost:$port"
+  handle /$branch/* {
+    uri strip_prefix /$branch
+    reverse_proxy localhost:$port
+  }"
 
   port=$((port+1))
 
