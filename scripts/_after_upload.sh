@@ -42,7 +42,7 @@ done </opt/server_versions.txt
 
 # Tell caddy about the new config
 echo "
-wardle.rezel.net {
+:80 {
   root * /root/client/www
   file_server
 }
@@ -52,5 +52,8 @@ wardle.rezel.net {
 " > /opt/server/client/Caddyfile
 
 cd /opt/server/client
+systemctl stop caddy
+caddy stop
 caddy adapt
-systemctl restart caddy
+caddy run --config Caddyfile
+
