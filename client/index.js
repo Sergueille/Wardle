@@ -1,6 +1,5 @@
 
 const DEFAULT_API_URL = "https://api.wardle.rezel.net";
-const LOCALHOST_API_URL = "http://localhost:4268";
 const API_PORT = 4268;
 
 const TEMPORARY_INFO_DELAY = 10000; //ms
@@ -633,7 +632,7 @@ function GetApiUrl() {
         return "http://" + window.location.host.split(":")[0] + ":" + API_PORT.toString();;
     }
     else {   
-        return DEFAULT_API_URL;
+        return DEFAULT_API_URL + window.location.pathname;
     }
 }
 
