@@ -632,7 +632,7 @@ function GetApiUrl() {
         return "http://" + window.location.host.split(":")[0] + ":" + API_PORT.toString();;
     }
     else {   
-        return DEFAULT_API_URL + window.location.pathname;
+        return DEFAULT_API_URL + "/" + window.location.pathname.replaceAll("/", "");
     }
 }
 
