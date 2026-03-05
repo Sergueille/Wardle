@@ -29,10 +29,10 @@ WantedBy=multi-user.target
   # Start the unit
   systemctl start wardle-backend-$branch.service
 
-  port=$((i+1))
+  port=$((port+1))
 
   # Add a proxy command to caddy
-  caddy_proxy_command="$caddy_proxy_command\n  reverse_proxy /$branch/* localhost:$port"
+  caddy_proxy_command="${echo -e "$caddy_proxy_command\n  reverse_proxy /$branch/* localhost:$port"}"
 
 done </opt/server_versions.txt
 
