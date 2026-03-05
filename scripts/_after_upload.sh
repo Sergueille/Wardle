@@ -1,5 +1,5 @@
 
-port=4268
+port=4269
 
 caddy_proxy_command=""
 
@@ -29,11 +29,11 @@ WantedBy=multi-user.target
   # Start the unit
   systemctl start wardle-backend-$branch.service
 
-  port=$((port+1))
-
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
   reverse_proxy /$branch/* localhost:$port"
+
+  port=$((port+1))
 
 done </opt/server_versions.txt
 
@@ -44,7 +44,7 @@ wardle.rezel.net {
   file_server
 }
 
-api.wardle.rezel.net {$caddy_proxy_command
+:4268 {$caddy_proxy_command
 }
 " > /opt/server/client/Caddyfile
 
