@@ -53,8 +53,9 @@ echo "
 " > /opt/server/client/Caddyfile
 
 cd /opt/server/client
-systemctl stop caddy
-caddy stop
-caddy adapt
-caddy start --config Caddyfile
+systemctl stop caddy >/dev/null
+caddy stop >/dev/null
+caddy adapt >/dev/null
+echo "#### Please press ^C after caddy has started"
+caddy start --config Caddyfile >/dev/null 
 

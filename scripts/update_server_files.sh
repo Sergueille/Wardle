@@ -1,4 +1,5 @@
 
+echo "Setup..."
 scp ../server_versions.txt root@[2a09:6847:fa10:1410::278]:/opt/server_versions.txt >/dev/null
 ssh root@2a09:6847:fa10:1410::278 < _before_upload.sh >/dev/null
 
@@ -11,8 +12,6 @@ while read branch || [[ -n $branch ]]; do
     branch_path=$branch/
   fi
   
-  echo "Uploading $branch..."
-
   # Set up the files
   git checkout $branch >/dev/null
 
@@ -28,10 +27,14 @@ while read branch || [[ -n $branch ]]; do
   scp target/release/wardle-server root@\[2a09:6847:fa10:1410::278\]:/opt/server/backend/$branch/server >/dev/null
   cd ../scripts
 
+  echo "Uploading files..."
+
   # Send frontend files
   scp -r ../client/* root@\[2a09:6847:fa10:1410::278\]:/opt/server/client/www/$branch_path >/dev/null
 
 done <../server_versions.txt
+
+echo "Restarting everything..."
 
 ssh root@2a09:6847:fa10:1410::278 < _after_upload.sh >/dev/null
 

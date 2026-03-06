@@ -5,25 +5,21 @@
 
 ### Start the backend server
 
-- Install rust
-- go to `server` folder
-- run `cargo run -- --localhost`
+`./local_server`
 
 ### Start the frontend server
 
-- go to `client` folder
-- start a local server (for instance you can use the python test server: `python -m http.server`, which will serve files on `https://localhost:8000/`)
+`./local_client`
 
 ## Send files to server
 
-- reboot the server
-- run `deploy_to_server.sh`
-- follow [Start the server](#start-the-server) steps
-
-## Start the server
-
-- make sure server is on
-- start an ssh session
-- `systemctl start wardle-backend.service`
-- `systemctl start caddy`
+- Make sure the server is on
+- Make sur your git working directory is clean
+- Create `server_versions.txt`:
+    - Each line contains the name of the git branch to be uploaded
+    - The file must contain the `production branch`
+- Create `server_versions.txt`: must contain the name of the version that will be displayed for the production branch
+- `cd scripts`
+- `./update_server_files.sh`
+- **Press `^C`** after caddy has started (the script tells you when)! For some reason the caddy command blocks forever
 
