@@ -6,7 +6,7 @@ ssh root@2a09:6847:fa10:1410::278 < _before_upload.sh >/dev/null
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 while read branch || [[ -n $branch ]]; do
-  if [ $branch == production ]; then
+  if [ $branch == main ]; then
     branch_path=
   else
     branch_path=$branch/
@@ -15,7 +15,7 @@ while read branch || [[ -n $branch ]]; do
   # Set up the files
   git checkout $branch >/dev/null
 
-  if [ $branch == production ]; then
+  if [ $branch == main ]; then
     echo "$(cat ../production_version.txt) ($(git rev-parse --short HEAD))" > ../client/version.txt
   else
     echo "$branch ($(git rev-parse --short HEAD))" > ../client/version.txt

@@ -17,8 +17,8 @@
 - Make sur your git working directory is clean
 - Create `server_versions.txt`:
     - Each line contains the name of the git branch to be uploaded
-    - The file must contain the `production branch`
-- Create `server_versions.txt`: must contain the name of the version that will be displayed for the production branch
+    - The file must contain the `main` branch
+- Create `server_versions.txt`: must contain the name of the version that will be displayed for the main branch
 - `cd scripts`
 - `./update_server_files.sh`
 - **Press `^C`** after caddy has started (the script tells you when)! For some reason the caddy command blocks forever
