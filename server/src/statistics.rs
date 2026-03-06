@@ -3,8 +3,6 @@ use std::sync::Mutex;
 use std::sync::Arc;
 use std::collections::HashMap;
 
-const STATS_PATH: &str = "statistics.json";
-
 static FILE_MUTEX: Option<Mutex<Stats>> = None;
 
 /// Global statistics
@@ -38,8 +36,10 @@ pub fn update_stats(stats: &Arc<Mutex<Option<Stats>>>, update_fn: &dyn Fn(&mut S
 }
 
 pub fn load() -> Option<Stats> {
-    if fs::exists(STATS_PATH).is_ok_and(|exists| exists) {
-        let statistics_json = fs::read(STATS_PATH)
+    let stats_path = get_stats_path().map_err(|err| log::error!("{}", err)).ok()?;
+
+    if fs::exists(&stats_path).is_ok_and(|exists| exists) {
+        let statistics_json = fs::read(&stats_path)
             .map_err(|err| log::error!("Couldn't read stats file: {}. Stats will not be modified.", err)).ok()?;
         let stats = serde_json::from_slice::<Stats>(&statistics_json)
             .map_err(|err| log::error!("Couldn't deserialize stats file: {}. Stats will not be modified.", err)).ok()?;
@@ -62,10 +62,12 @@ pub fn load() -> Option<Stats> {
 }
 
 pub fn save(stats: &Stats) -> Result<(), ()> {
+    let stats_path = get_stats_path().map_err(|err| log::error!("{}", err))?;
+
     let serialized_stats = serde_json::to_string_pretty(stats)
         .map_err(|err| log::error!("Couldn't serialize stats file: {}", err))?;
 
-    fs::write(STATS_PATH, serialized_stats)
+    fs::write(&stats_path, serialized_stats)
         .map_err(|err| log::error!("Couldn't write stats file: {}", err))?;
 
     Ok(())
@@ -84,4 +86,12 @@ fn empty_map<T>() -> HashMap<T, u64> {
 
 fn zero() -> u64 {
     0
+}
+
+fn get_stats_path() -> Result<String, String> {
+    Ok(String::from(
+        std::env::current_exe().map_err(|e| e.to_string())?
+        .parent().ok_or("couldn't get parent of executable")?
+        .join("statistics.json")
+        .to_str().ok_or("couldn't convert the stats path to string")?))
 }
