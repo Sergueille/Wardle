@@ -16,7 +16,7 @@ while read branch || [[ -n $branch ]]; do
 Description=Wardle backend for version $branch (automatically generated)
 
 [Service]
-ExecStart=/opt/server/backend/$branch/server --port $port
+ExecStart=/opt/server/backend/$branch/server --port $port --localhost
 Restart=on-failure
 
 [Install]
@@ -31,10 +31,9 @@ WantedBy=multi-user.target
 
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
-  handle /api/$branch/* {
-    uri strip_prefix /api/$branch
-    reverse_proxy localhost:$port
-  }"
+    handle_path /api/$branch* {
+      reverse_proxy localhost:$port
+    }"
 
   port=$((port+1))
 
@@ -43,9 +42,13 @@ done </opt/server_versions.txt
 # Tell caddy about the new config
 echo "
 :80 {
-  root * /root/client/www
-  file_server
-  $caddy_proxy_command
+  handle {
+    root * /opt/server/client/www
+    file_server
+  }
+  
+  handle /api* {$caddy_proxy_command
+  }
 }
 " > /opt/server/client/Caddyfile
 
