@@ -1,6 +1,6 @@
 
-const DEFAULT_API_URL = "https://api.wardle.rezel.net";
-const API_PORT = 4268;
+const DEFAULT_API_URL = "https://wardle.rezel.net/api";
+const DEFAULT_PORT = 4268;
 
 const TEMPORARY_INFO_DELAY = 10000; //ms
 const WORD_OK_DELAY = 100; //ms
@@ -629,7 +629,7 @@ function HintTextToId(hintText) {
 
 function GetApiUrl() {
     if (IsConnectedLocally()) {
-        return "http://" + window.location.host.split(":")[0] + ":" + API_PORT.toString();;
+        return "http://" + window.location.host.split(":")[0] + ":" + DEFAULT_PORT.toString();;
     }
     else {   
         return DEFAULT_API_URL + "/" + window.location.pathname.replaceAll("/", "");

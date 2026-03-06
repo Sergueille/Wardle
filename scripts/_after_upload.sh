@@ -31,8 +31,8 @@ WantedBy=multi-user.target
 
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
-  handle /$branch/* {
-    uri strip_prefix /$branch
+  handle /api/$branch/* {
+    uri strip_prefix /api/$branch
     reverse_proxy localhost:$port
   }"
 
@@ -45,9 +45,7 @@ echo "
 :80 {
   root * /root/client/www
   file_server
-}
-
-:4268 {$caddy_proxy_command
+  $caddy_proxy_command
 }
 " > /opt/server/client/Caddyfile
 
@@ -55,5 +53,5 @@ cd /opt/server/client
 systemctl stop caddy
 caddy stop
 caddy adapt
-caddy run --config Caddyfile
+caddy start --config Caddyfile
 
