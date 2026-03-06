@@ -178,7 +178,7 @@ function JoinRoom()
     state.roomCode = code;
 
     try {
-        let connection = new WebSocket(GetApiUrl() + "/join-room/" + code);
+        let connection = new WebSocket(GetApiUrl() + "join-room/" + code);
 
         document.getElementById("join-room-btn").classList.add("connecting");
 
@@ -204,7 +204,7 @@ function CreateRoom() {
     window.history.pushState({}, null, null);
 
     try {
-        let connection = new WebSocket(GetApiUrl() + "/create-room");
+        let connection = new WebSocket(GetApiUrl() + "create-room");
 
         ResetGlobalState();
         state.websocketConnection = connection;
@@ -404,7 +404,7 @@ function OnDisconnection() {
 
         Toast("room-reconnecting");
 
-        let connection = new WebSocket(GetApiUrl() + "/reconnect/" + (state.isHostPlayer ? 0 : 1) + "/" + state.roomCode);
+        let connection = new WebSocket(GetApiUrl() + "reconnect/" + (state.isHostPlayer ? 0 : 1) + "/" + state.roomCode);
         state.websocketConnection = connection;
         
         connection.addEventListener("message", ev => HandleConnectionMessage(ev.data));
@@ -629,10 +629,17 @@ function HintTextToId(hintText) {
 
 function GetApiUrl() {
     if (IsConnectedLocally()) {
-        return "http://" + window.location.host.split(":")[0] + ":" + DEFAULT_PORT.toString();;
+        return "http://" + window.location.host.split(":")[0] + ":" + DEFAULT_PORT.toString() + "/";
     }
     else {   
-        return DEFAULT_API_URL + "/" + window.location.pathname.replaceAll("/", "");
+        let locationPath = window.location.pathname.replaceAll("/", "");
+
+        if (locationPath == "") {
+            return DEFAULT_API_URL + "/";
+        }
+        else {
+            return DEFAULT_API_URL + "/" + locationPath + "/";
+        }
     }
 }
 

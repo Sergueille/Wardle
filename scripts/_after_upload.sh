@@ -5,9 +5,9 @@ caddy_proxy_command=""
 
 while read branch || [[ -n $branch ]]; do
   if [ $branch == main ]; then
-    branch_path=
+    branch_path=""
   else
-    branch_path=$branch/
+    branch_path="/$branch"
   fi
 
   # Create the systemd unit
@@ -31,7 +31,7 @@ WantedBy=multi-user.target
 
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
-    handle_path /api/$branch* {
+    handle_path /api$branch_path* {
       reverse_proxy localhost:$port
     }"
 
