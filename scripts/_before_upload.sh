@@ -8,7 +8,7 @@ done
 rm -r /opt/server/client/www
 
 while read branch || [[ -n $branch ]]; do
-  if [ $branch == main ]; then
+  if [ $branch == production ]; then
     branch_path=
   else
     branch_path=$branch/

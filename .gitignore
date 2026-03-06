@@ -4,3 +4,4 @@ server/Cargo.lock
 */version.txt
 statistics.json
 server_versions.txt
+production_version.txt

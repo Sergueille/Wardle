@@ -118,7 +118,6 @@ function Start() {
     document.getElementById("loading-screen").classList.add("hidden");
     return;
     */
-    
 
     HideAllPanels();
     SetupToasts();
@@ -133,8 +132,12 @@ function Start() {
     document.getElementById("loading-screen").classList.add("hidden");
     BeginningAnimation();
 
+    // Tell the user if they're using a different version
     if (IsConnectedLocally()) {
         CustomToast("Frontend will connect to local server: " + GetApiUrl())
+    }
+    if (window.location.pathname.replaceAll("/", "") != "") {
+        Toast("toast-other-version");
     }
 }
 

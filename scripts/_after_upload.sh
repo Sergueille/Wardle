@@ -4,7 +4,7 @@ port=4269
 caddy_proxy_command=""
 
 while read branch || [[ -n $branch ]]; do
-  if [ $branch == main ]; then
+  if [ $branch == production ]; then
     branch_path=""
   else
     branch_path="/$branch"
