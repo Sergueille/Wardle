@@ -361,6 +361,7 @@ function OnWordRejected() {
 }
 
 function OnGameEnd() {
+    ClearTimer();
     SetSubElement("game-hint-2", "game-hint-restart");
     SetKeyboardEnterIcon("icon-restart");
     SetKeyboardBackspaceIcon("icon-restart-options");
@@ -561,7 +562,6 @@ function HandleConnectionMessage(msgText) {
 
         AutoScroll(false);
         SetBothGridActive();
-        ClearTimer();
         SetGameHint("hint-loose");
         OnGameEnd();
     }
@@ -577,7 +577,6 @@ function HandleConnectionMessage(msgText) {
 
         AutoScroll(true);
         SetBothGridActive();
-        ClearTimer();
         SetGameHint("hint-win");
         WinAnimation(true, state.currentTurn);
         OnGameEnd();
