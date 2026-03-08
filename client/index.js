@@ -44,6 +44,7 @@ document.getElementById("host-ready-btn").addEventListener("click", ev => {
     document.getElementById("options-container-inner").setAttribute("disabled", "disabled");
     document.getElementById("host-waiting-other-hint").classList.remove("hidden");
     document.getElementById("host-ready-btn").classList.add("hidden");
+    document.getElementById("host-cancel-btn").classList.add("hidden");
 });
 
 document.getElementById("option-change-ready-btn").addEventListener("click", ev => {
