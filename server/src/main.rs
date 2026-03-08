@@ -163,8 +163,11 @@ async fn join_room(req: actix_web::HttpRequest, stream: web::Payload, data: web:
     if data.rooms.lock().unwrap().contains_key(&room_code) { // Room exists
         let room = Arc::clone(&data.rooms.lock().unwrap()[&room_code]);
 
-        if room.lock().unwrap().other_player.is_some() { // Room already full
-            return Ok::<HttpResponse, actix_web::Error>(HttpResponse::BadRequest().body("Room already full"));
+        {
+            let room_ref = room.lock().unwrap();
+            if room_ref.game_started || (room_ref.other_player.is_some() && room_ref.other_player.as_ref().unwrap().connection_alive) { // Room already full
+                return Ok::<HttpResponse, actix_web::Error>(HttpResponse::BadRequest().body("Room already full"));
+            }
         }
         
         println!("Player is joining room {}", room_code);
