@@ -529,15 +529,21 @@ function HandleConnectionMessage(msgText) {
                         "French": ["MERDE", "FLUTE"],
                     };
 
-                    let word = lateWords[currentOptions.language][Math.floor(rand * lateWords[currentOptions.language].length)];
+                    let isCurrentWordOk = CheckIfWordIsValid(state.typedWord, currentOptions.language);
 
-                    state.typedWord = word;
-                    for (let i = 0; i < WORD_LENGTH; i++) {
-                        SetLetter(true, i, state.currentTurn, state.typedWord[i]);
+                    if (!isCurrentWordOk) {
+                        let randId = Math.floor(rand * lateWords[currentOptions.language].length);
+                        let randWord = lateWords[currentOptions.language][randId];
+                        state.typedWord = randWord;
+
+                        for (let i = 0; i < WORD_LENGTH; i++) {
+                            SetLetter(true, i, state.currentTurn, state.typedWord[i]);
+                        }
                     }
-
+                        
                     InvalidAnimation(true, state.currentTurn);
                     Toast("toast-too-late");
+
                     OnEnter();
                 }
                 else if (state.currentPhase == PHASE_SABOTAGE) {
@@ -667,7 +673,7 @@ function GetAllWords() {
 }
 
 function CheckIfWordIsValid(word, lang) {
-    return allowedWords[lang].includes(word.toLowerCase());
+    return word.length == WORD_LENGTH && allowedWords[lang].includes(word.toLowerCase());
 }
 
 function BeginningAnimation() {
