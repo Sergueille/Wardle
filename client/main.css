@@ -560,7 +560,6 @@ button.connecting::after {
     align-items: center;
     justify-content: center;
     background-color: var(--keyboard-no-hint);
-    filter: none !important;
 
     transition: 600ms;
 }
@@ -821,6 +820,13 @@ button.connecting::after {
         padding-right: 30px;
         margin-left: 10px;
         margin-right: 10px;
+    }
+}
+
+@media (hover: none) { /* Detect touch screen */
+    .keyboard-letter {
+        /* Disable hover highlight because some assholes at mozilla found it funny to keep the hover class on the element even when the user is not pressing it */
+        filter: none !important;
     }
 }
 
