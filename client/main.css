@@ -540,6 +540,7 @@ button.connecting::after {
     justify-content: stretch;
     gap: 7px;
     width: 550px;
+    user-select: none;
 }
 
 .keyboard-line {
@@ -559,6 +560,7 @@ button.connecting::after {
     align-items: center;
     justify-content: center;
     background-color: var(--keyboard-no-hint);
+    filter: none !important;
 
     transition: 600ms;
 }
@@ -608,10 +610,6 @@ button.connecting::after {
 
 .keyboard-letter.hint-yellow {
     background-color: var(--hint-yellow);
-}
-
-#keyboard-letter {
-    
 }
 
 .keyboard-icon {
