@@ -52,6 +52,9 @@ echo "
 }
 " > /opt/server/client/Caddyfile
 
+# Copy it there just in case, caddy seems to complain this file is missing sometimes
+cp /opt/server/client/Caddyfile /etc/caddy/Caddyfile
+
 cd /opt/server/client
 systemctl stop caddy >/dev/null
 caddy stop >/dev/null
