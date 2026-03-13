@@ -27,7 +27,8 @@ WantedBy=multi-user.target
   systemctl daemon-reload
 
   # Start the unit
-  systemctl start wardle-backend-$branch.service
+  systemctl enable wardle-backend-$branch.service 
+  systemctl restart wardle-backend-$branch.service
 
   # Add a proxy command to caddy
   caddy_proxy_command="$caddy_proxy_command
