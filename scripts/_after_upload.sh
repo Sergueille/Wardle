@@ -50,15 +50,6 @@ echo "
   handle /api* {$caddy_proxy_command
   }
 }
-" > /opt/server/client/Caddyfile
+" > /etc/caddy/Caddyfile
 
-# Copy it there just in case, caddy seems to complain this file is missing sometimes
-cp /opt/server/client/Caddyfile /etc/caddy/Caddyfile
-
-cd /opt/server/client
-systemctl stop caddy >/dev/null
-caddy stop >/dev/null
-caddy adapt >/dev/null
-echo "#### Please press ^C after caddy has started"
-caddy start --config Caddyfile >/dev/null 
-
+systemctl restart caddy
